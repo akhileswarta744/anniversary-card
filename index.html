@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LOVE-OS v5.0 // 5th Anniversary Live P2P Terminal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=VT323&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <!-- PeerJS for Real-time P2P WebRTC Live Chat & Payments -->
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+    <!-- Lightweight QR Code Generator -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-cyberpunk">
+    <!-- Matrix Heart Canvas Background -->
+    <canvas id="matrix-canvas"></canvas>
+
+    <!-- CRT Overlay Effects -->
+    <div class="crt-scanlines"></div>
+    <div class="crt-vignette"></div>
+
+    <!-- Main Terminal Container -->
+    <div class="terminal-wrapper">
+        <!-- Top Cyber HUD Header -->
+        <header class="terminal-header">
+            <div class="header-left">
+                <span class="status-indicator" id="p2p-status-light"></span>
+                <span class="system-title">LOVE-OS <span class="badge">v5.0-P2P</span></span>
+                <span class="p2p-badge" id="p2p-badge">PEER: STANDALONE</span>
+                <span class="uptime-badge" id="hud-uptime">UPTIME: 5Y 0D 00:00:00</span>
+            </div>
+            <div class="header-right">
+                <button id="btn-invite" class="hud-btn highlight-btn" title="Generate Shareable Link / QR Code for Her">
+                    <span class="icon">🔗</span> <span class="label">INVITE HER</span>
+                </button>
+                <button id="btn-sound-toggle" class="hud-btn" title="Toggle Sound FX">
+                    <span class="icon">🔊</span> <span class="label">SFX: ON</span>
+                </button>
+                <button id="btn-music-toggle" class="hud-btn" title="Toggle Romantic Synthwave Music">
+                    <span class="icon">🎵</span> <span class="label">BGM: OFF</span>
+                </button>
+                <select id="theme-selector" class="hud-select" title="Switch Theme">
+                    <option value="theme-cyberpunk">Neon Cyberpunk</option>
+                    <option value="theme-matrix">Matrix Green</option>
+                    <option value="theme-amber">Retro Amber</option>
+                    <option value="theme-vaporwave">Vaporwave Glow</option>
+                </select>
+            </div>
+        </header>
+
+        <!-- Live Metrics Bar -->
+        <div class="metrics-bar">
+            <div class="metric-item">
+                <span class="metric-label">SYS_STATUS:</span>
+                <span class="metric-val text-success" id="hud-sys-status">INITIALIZED</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-label">P2P_LINK:</span>
+                <span class="metric-val text-accent" id="hud-p2p-status">READY_TO_CONNECT</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-label">LOVE_WALLET:</span>
+                <span class="metric-val text-gold" id="hud-wallet-balance">9,999 $KISSES</span>
+            </div>
+            <div class="metric-item">
+                <span class="metric-label">AUTH_PAIR:</span>
+                <span class="metric-val text-highlight" id="hud-partner-names">AKHIL &hearts; HER</span>
+            </div>
+        </div>
+
+        <!-- Terminal Output Screen -->
+        <main class="terminal-body" id="terminal-body" role="log" aria-live="polite">
+            <div id="output"></div>
+        </main>
+
+        <!-- Command Input Line -->
+        <footer class="terminal-footer">
+            <div class="prompt-line">
+                <span class="prompt-user" id="prompt-user">akhil@love-os</span>
+                <span class="prompt-symbol">:~$</span>
+                <input 
+                    type="text" 
+                    id="cli-input" 
+                    class="cli-input" 
+                    autocomplete="off" 
+                    autocorrect="off" 
+                    autocapitalize="off" 
+                    spellcheck="false" 
+                    placeholder="Type 'chat Hello my love!' or click below..." 
+                    autofocus
+                >
+            </div>
+            
+            <!-- Quick Command Touch/Click Action Bar -->
+            <div class="quick-bar" id="quick-bar">
+                <button class="quick-chip" data-cmd="invite">🔗 invite her</button>
+                <button class="quick-chip" data-cmd="chat">💬 chat</button>
+                <button class="quick-chip" data-cmd="pay 500 $KISSES for being my everything">💸 pay $KISSES</button>
+                <button class="quick-chip" data-cmd="pay 100 $HUGS for warm cuddles">🤗 pay $HUGS</button>
+                <button class="quick-chip" data-cmd="uptime">⏳ uptime</button>
+                <button class="quick-chip" data-cmd="decrypt">🔓 decrypt letter</button>
+                <button class="quick-chip" data-cmd="coupons">🎟️ coupons</button>
+                <button class="quick-chip" data-cmd="sudo marry-again">💍 marry-again</button>
+                <button class="quick-chip" data-cmd="customize">⚙️ set names</button>
+                <button class="quick-chip" data-cmd="help">📜 help</button>
+                <button class="quick-chip" data-cmd="clear">🧹 clear</button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Live Invite & QR Code Modal -->
+    <div id="invite-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 class="text-highlight">⚡ CONNECT HER DEVICE TO TERMINAL</h3>
+                <button class="modal-close" id="btn-close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="text-dim" style="margin-bottom:12px;">
+                    Scan this QR code on her phone or share the link below to open a direct, encrypted WebRTC connection. Once connected, you can <strong>chat live</strong> and <strong>send payments in real-time</strong>!
+                </p>
+                <div class="qr-wrapper">
+                    <div id="qrcode"></div>
+                </div>
+                <div class="invite-link-box">
+                    <input type="text" id="invite-link-input" readonly>
+                    <button id="btn-copy-link" class="hud-btn highlight-btn">📋 COPY LINK</button>
+                </div>
+                <div class="room-code-display">
+                    ROOM ID: <span class="text-accent" id="modal-room-id">GENERATING...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Celebration Fireworks/Confetti Canvas Overlay -->
+    <canvas id="celebration-canvas"></canvas>
+
+    <script src="terminal.js"></script>
+</body>
+</html>
