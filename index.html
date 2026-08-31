@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LOVE-OS v5.0 // 5th Anniversary Live P2P Terminal</title>
+    <title>LOVE-OS v5.0 // 5th Anniversary Live Terminal</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=VT323&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
-    <!-- PeerJS for Real-time P2P WebRTC Live Chat & Payments -->
-    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+    
+    <!-- MQTT.js over Secure WebSockets (100% Reliable across Cellular 4G/5G and all Telecoms in India) -->
+    <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <!-- Lightweight QR Code Generator -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
     <link rel="stylesheet" href="styles.css">
 </head>
 <body class="theme-cyberpunk">
@@ -26,13 +28,13 @@
         <!-- Top Cyber HUD Header -->
         <header class="terminal-header">
             <div class="header-left">
-                <span class="status-indicator" id="p2p-status-light"></span>
-                <span class="system-title">LOVE-OS <span class="badge">v5.0-P2P</span></span>
-                <span class="p2p-badge" id="p2p-badge">PEER: STANDALONE</span>
+                <span class="status-indicator" id="cloud-status-light"></span>
+                <span class="system-title">LOVE-OS <span class="badge">v5.0-LIVE</span></span>
+                <span class="p2p-badge" id="hud-room-badge">ROOM: AKHIL-5Y</span>
                 <span class="uptime-badge" id="hud-uptime">UPTIME: 5Y 0D 00:00:00</span>
             </div>
             <div class="header-right">
-                <button id="btn-invite" class="hud-btn highlight-btn" title="Generate Shareable Link / QR Code for Her">
+                <button id="btn-invite" class="hud-btn highlight-btn" title="Share Link or QR Code with Her">
                     <span class="icon">🔗</span> <span class="label">INVITE HER</span>
                 </button>
                 <button id="btn-sound-toggle" class="hud-btn" title="Toggle Sound FX">
@@ -53,12 +55,12 @@
         <!-- Live Metrics Bar -->
         <div class="metrics-bar">
             <div class="metric-item">
-                <span class="metric-label">SYS_STATUS:</span>
-                <span class="metric-val text-success" id="hud-sys-status">INITIALIZED</span>
+                <span class="metric-label">CLOUD_RELAY:</span>
+                <span class="metric-val text-success" id="hud-relay-status">CONNECTING...</span>
             </div>
             <div class="metric-item">
-                <span class="metric-label">P2P_LINK:</span>
-                <span class="metric-val text-accent" id="hud-p2p-status">READY_TO_CONNECT</span>
+                <span class="metric-label">ACTIVE_USERS:</span>
+                <span class="metric-val text-accent" id="hud-active-users">YOU</span>
             </div>
             <div class="metric-item">
                 <span class="metric-label">LOVE_WALLET:</span>
@@ -88,17 +90,17 @@
                     autocorrect="off" 
                     autocapitalize="off" 
                     spellcheck="false" 
-                    placeholder="Type 'chat Hello my love!' or click below..." 
+                    placeholder="Type 'chat Hello my love!' or click quick commands below..." 
                     autofocus
                 >
             </div>
             
-            <!-- Quick Command Touch/Click Action Bar -->
+            <!-- Quick Command Action Bar -->
             <div class="quick-bar" id="quick-bar">
                 <button class="quick-chip" data-cmd="invite">🔗 invite her</button>
                 <button class="quick-chip" data-cmd="chat">💬 chat</button>
-                <button class="quick-chip" data-cmd="pay 500 $KISSES for being my everything">💸 pay $KISSES</button>
-                <button class="quick-chip" data-cmd="pay 100 $HUGS for warm cuddles">🤗 pay $HUGS</button>
+                <button class="quick-chip" data-cmd="pay 500 $KISSES for endless joy">💸 pay $KISSES</button>
+                <button class="quick-chip" data-cmd="pay 100 $HUGS for warm hugs">🤗 pay $HUGS</button>
                 <button class="quick-chip" data-cmd="uptime">⏳ uptime</button>
                 <button class="quick-chip" data-cmd="decrypt">🔓 decrypt letter</button>
                 <button class="quick-chip" data-cmd="coupons">🎟️ coupons</button>
@@ -114,12 +116,12 @@
     <div id="invite-modal" class="modal-overlay hidden">
         <div class="modal-card">
             <div class="modal-header">
-                <h3 class="text-highlight">⚡ CONNECT HER DEVICE TO TERMINAL</h3>
+                <h3 class="text-highlight">⚡ CONNECT HER PHONE (KA ↔ KL)</h3>
                 <button class="modal-close" id="btn-close-modal">&times;</button>
             </div>
             <div class="modal-body">
                 <p class="text-dim" style="margin-bottom:12px;">
-                    Scan this QR code on her phone or share the link below to open a direct, encrypted WebRTC connection. Once connected, you can <strong>chat live</strong> and <strong>send payments in real-time</strong>!
+                    Send this link to her on WhatsApp or scan the QR code. Both of you will connect to the same secure room <strong><span id="modal-room-name" class="text-highlight">akhil-5y</span></strong> in real-time!
                 </p>
                 <div class="qr-wrapper">
                     <div id="qrcode"></div>
@@ -129,13 +131,13 @@
                     <button id="btn-copy-link" class="hud-btn highlight-btn">📋 COPY LINK</button>
                 </div>
                 <div class="room-code-display">
-                    ROOM ID: <span class="text-accent" id="modal-room-id">GENERATING...</span>
+                    ROOM: <span class="text-accent" id="modal-room-id">AKHIL-5Y</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Celebration Fireworks/Confetti Canvas Overlay -->
+    <!-- Celebration Fireworks Canvas -->
     <canvas id="celebration-canvas"></canvas>
 
     <script src="terminal.js"></script>
