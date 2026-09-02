@@ -623,6 +623,29 @@ body {
     font-size: 13px;
 }
 
+.btn-send {
+    background: var(--text-accent);
+    border: none;
+    color: #fff;
+    font-size: 14px;
+    width: 34px;
+    height: 34px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 0 10px var(--text-accent);
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.btn-send:hover, .btn-send:active {
+    background: #fff;
+    color: #000;
+    transform: scale(1.05);
+}
+
 /* 8. QUICK COMMAND ACTION CHIPS */
 .quick-bar {
     display: flex;
@@ -659,7 +682,8 @@ body {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.82);
+    height: 100dvh;
+    background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(8px);
     z-index: 200;
     display: flex;
@@ -706,6 +730,7 @@ body {
     color: var(--text-dim);
     font-size: 24px;
     cursor: pointer;
+    padding: 4px 8px;
 }
 
 .modal-close:hover {
@@ -717,9 +742,9 @@ body {
     justify-content: center;
     align-items: center;
     background: #fff;
-    padding: 16px;
+    padding: 14px;
     border-radius: 8px;
-    margin: 16px auto;
+    margin: 14px auto;
     width: fit-content;
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
 }
@@ -749,44 +774,211 @@ body {
     font-family: var(--font-mono);
 }
 
-/* 10. RESPONSIVENESS */
+/* 10. COMPREHENSIVE MOBILE RESPONSIVENESS */
 @media (max-width: 768px) {
+    body {
+        height: 100vh;
+        height: 100dvh;
+        overflow: hidden;
+    }
+
     .terminal-wrapper {
         width: 100vw;
         height: 100vh;
+        height: 100dvh;
         border-radius: 0;
         border: none;
+        box-shadow: none;
     }
     
     .terminal-header {
-        padding: 8px 12px;
+        padding: 8px 10px;
+        gap: 6px;
+    }
+
+    .header-left {
+        gap: 8px;
+    }
+
+    .system-title {
+        font-size: 13px;
+        letter-spacing: 0.8px;
+    }
+
+    .system-title .badge {
+        font-size: 9px;
+        padding: 1px 4px;
+    }
+
+    .p2p-badge {
+        font-size: 9.5px;
+        padding: 2px 5px;
     }
 
     .uptime-badge {
-        display: none;
+        font-size: 9.5px;
+        padding: 2px 5px;
     }
 
-    .metrics-bar {
-        font-size: 10.5px;
-        gap: 8px;
-        padding: 4px 12px;
+    .header-right {
+        gap: 6px;
     }
 
-    .terminal-body {
-        padding: 10px 12px;
+    .hud-btn {
+        padding: 4px 7px;
+        font-size: 11px;
+    }
+
+    .hud-btn .icon {
         font-size: 13px;
     }
 
+    .hud-select {
+        font-size: 11px;
+        padding: 4px 6px;
+        max-width: 115px;
+    }
+
+    /* Swipeable Metrics Strip on Mobile */
+    .metrics-bar {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding: 6px 10px;
+        gap: 12px;
+        font-size: 11px;
+    }
+
+    .metrics-bar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .metric-item {
+        flex-shrink: 0;
+    }
+
+    /* Terminal Output for Mobile */
+    .terminal-body {
+        padding: 10px 10px;
+        font-size: 13px;
+        -webkit-overflow-scrolling: touch;
+    }
+
     .ascii-banner {
-        font-size: 10px;
+        font-size: min(2.5vw, 10px);
+        line-height: 1.1;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        white-space: pre;
+        margin: 6px 0 10px 0;
+        padding: 4px 0;
+    }
+
+    .help-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .cyber-receipt, .love-letter-box {
+        max-width: 100%;
+        padding: 12px 10px;
+    }
+
+    .chat-thread {
+        max-width: 100%;
+    }
+
+    .chat-bubble {
+        padding: 8px 10px;
+        font-size: 13px;
+    }
+
+    /* Sticky Footer with Safe Area on Mobile */
+    .terminal-footer {
+        padding: 8px 10px;
+        padding-bottom: max(10px, env(safe-area-inset-bottom));
+        gap: 8px;
     }
 
     .prompt-line {
         padding: 6px 8px;
+        gap: 6px;
     }
-    
+
+    .prompt-user {
+        font-size: 12px;
+    }
+
+    .prompt-symbol {
+        font-size: 12px;
+    }
+
+    /* 16px font-size prevents iOS Safari auto-zoom on input focus */
+    .cli-input {
+        font-size: 16px;
+    }
+
+    .btn-send {
+        width: 32px;
+        height: 32px;
+        font-size: 13px;
+    }
+
+    /* Horizontal Touch Swipe Quick Bar */
+    .quick-bar {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding: 2px 0 4px 0;
+        gap: 6px;
+    }
+
+    .quick-bar::-webkit-scrollbar {
+        display: none;
+    }
+
     .quick-chip {
-        font-size: 10.5px;
-        padding: 3px 8px;
+        flex-shrink: 0;
+        font-size: 11px;
+        height: 30px;
+        padding: 0 10px;
+        display: inline-flex;
+        align-items: center;
+        border-radius: 12px;
+    }
+
+    /* Modal Mobile Adjustments */
+    .modal-card {
+        width: 92vw;
+        max-width: 380px;
+        padding: 16px 12px;
+    }
+
+    .qr-wrapper {
+        padding: 10px;
+        margin: 10px auto;
+    }
+
+    #qrcode img {
+        max-width: 150px;
+        height: auto;
+    }
+
+    .invite-link-box {
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .invite-link-box input {
+        font-size: 11px;
+    }
+
+    .invite-link-box button {
+        width: 100%;
+        justify-content: center;
     }
 }

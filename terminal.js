@@ -93,6 +93,7 @@
     const promptUser = document.getElementById('prompt-user');
 
     const btnInvite = document.getElementById('btn-invite');
+    const btnSend = document.getElementById('btn-send');
     const btnSound = document.getElementById('btn-sound-toggle');
     const btnMusic = document.getElementById('btn-music-toggle');
     const themeSelect = document.getElementById('theme-selector');
@@ -1290,6 +1291,17 @@ Happy Anniversary, my love! ❤️
             if (match) inputEl.value = match;
         }
     });
+
+    if (btnSend) {
+        btnSend.addEventListener('click', () => {
+            initAudio();
+            playKeyClick();
+            const val = inputEl.value;
+            inputEl.value = '';
+            executeCommand(val);
+            inputEl.focus();
+        });
+    }
 
     btnSound.addEventListener('click', () => {
         state.sfx = !state.sfx;
