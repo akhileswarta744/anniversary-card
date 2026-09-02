@@ -28,7 +28,7 @@
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
     <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 
-    <link rel="stylesheet" href="styles.css?v=19.0">
+    <link rel="stylesheet" href="styles.css?v=21.0">
 </head>
 <body class="theme-minimal-romantic">
 
@@ -204,6 +204,16 @@
             </div>
         </section>
 
+        <!-- Music Experience Switcher: Retro Vinyl vs Our Spotify -->
+        <div class="music-mode-switcher">
+            <button class="music-mode-btn active" id="btn-mode-vinyl">
+                <span>💿 Retro Vinyl (8 Classics)</span>
+            </button>
+            <button class="music-mode-btn" id="btn-mode-spotify">
+                <span>💚 Our Spotify "LOVE 💕" (32 Songs)</span>
+            </button>
+        </div>
+
         <!-- Aesthetic 90s Romantic Vinyl Record Music Player Widget -->
         <div class="vinyl-player-widget" id="vinyl-player-widget">
             <audio id="vinyl-real-audio" preload="metadata"></audio>
@@ -257,6 +267,30 @@
             </div>
             <div class="playlist-items-list" id="playlist-items-list">
                 <!-- Dynamically populated 90s songs -->
+            </div>
+        </div>
+
+        <!-- Embedded Spotify Playlist Player Widget -->
+        <div class="spotify-player-widget hidden" id="spotify-player-widget">
+            <div class="spotify-card-header">
+                <div class="spotify-title-group">
+                    <span class="spotify-logo-icon">🎧</span>
+                    <div>
+                        <h4 class="spotify-card-title">LOVE 💕 &bull; Our Couple Playlist</h4>
+                        <span class="spotify-card-sub">Curated by Akhil &bull; 32 Songs</span>
+                    </div>
+                </div>
+                <a href="https://open.spotify.com/playlist/58fQptmtVwQVZmNV7M61dS" target="_blank" rel="noopener noreferrer" class="spotify-open-app-btn">
+                    Open in Spotify ↗
+                </a>
+            </div>
+            <div class="spotify-iframe-container">
+                <iframe style="border-radius:20px; width:100%; height:380px; border:none; display:block;" 
+                    src="https://open.spotify.com/embed/playlist/58fQptmtVwQVZmNV7M61dS?utm_source=generator&theme=0" 
+                    allowfullscreen="" 
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                    loading="lazy">
+                </iframe>
             </div>
         </div>
 
@@ -807,6 +841,6 @@
         </div>
     </div>
 
-    <script src="terminal.js?v=20.0"></script>
+    <script src="terminal.js?v=21.0"></script>
 </body>
 </html>

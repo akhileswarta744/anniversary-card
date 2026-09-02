@@ -3063,6 +3063,34 @@ Happy 4th Anniversary, my love! ❤️
     // Initialize first track
     initTrack(0, false);
 
+    // Music Mode Switcher: Vinyl vs Spotify
+    const btnModeVinyl = document.getElementById('btn-mode-vinyl');
+    const btnModeSpotify = document.getElementById('btn-mode-spotify');
+    const vinylWidget = document.getElementById('vinyl-player-widget');
+    const spotifyWidget = document.getElementById('spotify-player-widget');
+
+    if (btnModeVinyl && btnModeSpotify) {
+        btnModeVinyl.addEventListener('click', () => {
+            initAudio();
+            playKeyClick();
+            btnModeVinyl.classList.add('active');
+            btnModeSpotify.classList.remove('active');
+            if (vinylWidget) vinylWidget.classList.remove('hidden');
+            if (spotifyWidget) spotifyWidget.classList.add('hidden');
+        });
+
+        btnModeSpotify.addEventListener('click', () => {
+            initAudio();
+            playKeyClick();
+            stopMusic();
+            btnModeSpotify.classList.add('active');
+            btnModeVinyl.classList.remove('active');
+            if (vinylWidget) vinylWidget.classList.add('hidden');
+            if (playlistDrawer) playlistDrawer.classList.add('hidden');
+            if (spotifyWidget) spotifyWidget.classList.remove('hidden');
+        });
+    }
+
     // =========================================================
     // 17. POLAROID MEMORY SCRAPBOOK CONTROLLER
     // =========================================================
