@@ -2098,15 +2098,18 @@ Happy 4th Anniversary, my love! ❤️
         setTimeout(() => circle.remove(), 550);
     });
 
-    // 14. LIVE LOCATION & DISTANCE RADAR (Karnataka ↔ Kerala)
+    // 14. LIVE LOCATION & LEAFLET COUPLE MAP (Karnataka ↔ Kerala)
     const btnShareLoc = document.getElementById('btn-share-loc');
     const locDistanceBadge = document.getElementById('loc-distance-badge');
     const locStatusFooter = document.getElementById('loc-status-footer');
-    const locP1Place = document.getElementById('loc-p1-place');
-    const locP2Place = document.getElementById('loc-p2-place');
 
     let p1Coords = { lat: 12.9716, lng: 77.5946, place: 'Karnataka (KA)' }; // Bangalore
     let p2Coords = { lat: 9.9312, lng: 76.2673, place: 'Kerala (KL)' };     // Kochi
+
+    let coupleMap = null;
+    let markerP1 = null;
+    let markerP2 = null;
+    let polylineRoute = null;
 
     function calculateDistance(lat1, lon1, lat2, lon2) {
         const R = 6371; // km
@@ -2119,13 +2122,86 @@ Happy 4th Anniversary, my love! ❤️
         return Math.round(R * c);
     }
 
+    function initCoupleMap() {
+        const mapContainer = document.getElementById('couple-map');
+        if (!mapContainer || typeof L === 'undefined') return;
+
+        try {
+            coupleMap = L.map('couple-map', {
+                center: [11.45, 76.9],
+                zoom: 6,
+                zoomControl: true,
+                scrollWheelZoom: false
+            });
+
+            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+                attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+                maxZoom: 18
+            }).addTo(coupleMap);
+
+            const iconP1 = L.divIcon({
+                className: 'custom-map-icon',
+                html: `
+                    <div class="leaflet-couple-pin">
+                        <div class="couple-pin-bubble">❤️</div>
+                        <div class="couple-pin-label">${escapeHTML(state.partner1)}</div>
+                    </div>
+                `,
+                iconSize: [42, 58],
+                iconAnchor: [21, 48]
+            });
+
+            const iconP2 = L.divIcon({
+                className: 'custom-map-icon',
+                html: `
+                    <div class="leaflet-couple-pin">
+                        <div class="couple-pin-bubble" style="border-color:#e91e63;">💕</div>
+                        <div class="couple-pin-label">${escapeHTML(state.partner2)}</div>
+                    </div>
+                `,
+                iconSize: [42, 58],
+                iconAnchor: [21, 48]
+            });
+
+            markerP1 = L.marker([p1Coords.lat, p1Coords.lng], { icon: iconP1 }).addTo(coupleMap);
+            markerP1.bindPopup(`<strong>❤️ ${escapeHTML(state.partner1)}</strong><br>${p1Coords.place || 'Karnataka'}`);
+
+            markerP2 = L.marker([p2Coords.lat, p2Coords.lng], { icon: iconP2 }).addTo(coupleMap);
+            markerP2.bindPopup(`<strong>💕 ${escapeHTML(state.partner2)}</strong><br>${p2Coords.place || 'Kerala'}`);
+
+            polylineRoute = L.polyline([[p1Coords.lat, p1Coords.lng], [p2Coords.lat, p2Coords.lng]], {
+                color: '#ff4081',
+                weight: 3.5,
+                dashArray: '8, 8',
+                opacity: 0.85
+            }).addTo(coupleMap);
+
+            coupleMap.fitBounds(polylineRoute.getBounds(), { padding: [40, 40] });
+
+            setTimeout(() => {
+                if (coupleMap) coupleMap.invalidateSize();
+            }, 450);
+        } catch (e) {
+            console.warn('Error initializing Leaflet map:', e);
+        }
+    }
+
     function updateLiveDistanceUI() {
         const dist = calculateDistance(p1Coords.lat, p1Coords.lng, p2Coords.lat, p2Coords.lng);
         if (locDistanceBadge) {
-            locDistanceBadge.textContent = `${dist.toLocaleString()} km apart`;
+            locDistanceBadge.textContent = `📍 ${dist.toLocaleString()} km apart`;
         }
-        if (locP1Place) locP1Place.textContent = p1Coords.place || 'Karnataka (KA)';
-        if (locP2Place) locP2Place.textContent = p2Coords.place || 'Kerala (KL)';
+
+        if (coupleMap && markerP1 && markerP2 && polylineRoute) {
+            markerP1.setLatLng([p1Coords.lat, p1Coords.lng]);
+            markerP1.setPopupContent(`<strong>❤️ ${escapeHTML(state.partner1)}</strong><br>${p1Coords.place || 'Karnataka'}`);
+
+            markerP2.setLatLng([p2Coords.lat, p2Coords.lng]);
+            markerP2.setPopupContent(`<strong>💕 ${escapeHTML(state.partner2)}</strong><br>${p2Coords.place || 'Kerala'}`);
+
+            polylineRoute.setLatLngs([[p1Coords.lat, p1Coords.lng], [p2Coords.lat, p2Coords.lng]]);
+            coupleMap.fitBounds(polylineRoute.getBounds(), { padding: [40, 40], maxZoom: 10 });
+        }
     }
 
     if (btnShareLoc) {
@@ -2159,7 +2235,7 @@ Happy 4th Anniversary, my love! ❤️
                         place: myPlace
                     });
                     if (locStatusFooter) {
-                        locStatusFooter.innerHTML = `📍 Live location shared! Distance updated in real time 💕`;
+                        locStatusFooter.innerHTML = `📍 Live location updated on the map! Distance: ${calculateDistance(p1Coords.lat, p1Coords.lng, p2Coords.lat, p2Coords.lng)} km 💕`;
                     }
                     launchCelebration(40);
                 },
@@ -2170,10 +2246,12 @@ Happy 4th Anniversary, my love! ❤️
                         locStatusFooter.innerHTML = '📍 Default Karnataka ↔ Kerala connection active! Distance is only physical 💕';
                     }
                 },
-                { enableHighAccuracy: false, timeout: 8000 }
+                { enableHighAccuracy: true, timeout: 10000 }
             );
         });
     }
+
+    initCoupleMap();
     updateLiveDistanceUI();
 
     // 15. QUICK 1-TAP CHAT REACTION EMOJIS

@@ -13,7 +13,11 @@
     <!-- Lightweight QR Code Generator -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
-    <link rel="stylesheet" href="styles.css?v=8.0">
+    <!-- Leaflet.js Interactive Maps (Free, mobile touch enabled, no API keys) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <link rel="stylesheet" href="styles.css?v=9.0">
 </head>
 <body class="theme-minimal-romantic">
 
@@ -110,41 +114,30 @@
             </div>
         </section>
 
-        <!-- Live Location & Distance Radar -->
+        <!-- Live Couple Map & Distance Radar -->
         <section class="live-location-section">
             <div class="location-card">
                 <div class="location-header">
                     <div class="loc-title-group">
                         <span class="loc-pulse-dot"></span>
-                        <h3 class="section-heading" style="margin:0; padding:0;">📍 Live Couple Radar</h3>
+                        <h3 class="section-heading" style="margin:0; padding:0;">📍 Live Couple Map</h3>
                     </div>
                     <button id="btn-share-loc" class="loc-share-btn" title="Share My Real GPS Location">
                         <span>📡 Share Location</span>
                     </button>
                 </div>
                 
-                <div class="radar-visual">
-                    <div class="partner-pin partner-pin-left">
-                        <div class="pin-avatar">❤️</div>
-                        <strong class="pin-name">Akhil</strong>
-                        <span class="pin-place" id="loc-p1-place">Karnataka (KA)</span>
-                    </div>
-                    
-                    <div class="radar-route">
-                        <div class="radar-track"></div>
-                        <div class="radar-flight">✈️</div>
-                        <div class="radar-distance-badge" id="loc-distance-badge">~365 km apart</div>
-                        <div class="radar-heart-badge">0 km at heart 💕</div>
-                    </div>
+                <!-- Real Interactive Leaflet Map -->
+                <div id="couple-map" class="couple-map-container"></div>
 
-                    <div class="partner-pin partner-pin-right">
-                        <div class="pin-avatar">💕</div>
-                        <strong class="pin-name" id="loc-p2-name">Her</strong>
-                        <span class="pin-place" id="loc-p2-place">Kerala (KL)</span>
-                    </div>
+                <!-- Live Map Status Pills -->
+                <div class="map-status-bar">
+                    <div class="map-pill" id="loc-distance-badge">📍 ~365 km apart</div>
+                    <div class="map-pill heart-pill">💞 0 km at heart</div>
                 </div>
+
                 <div class="loc-status-footer" id="loc-status-footer">
-                    <span>✨ Connected live across Karnataka &amp; Kerala &bull; Long distance mastered!</span>
+                    <span>✨ Tracking Karnataka (KA) &harr; Kerala (KL) live on map &bull; Tap 'Share Location' to sync your real GPS!</span>
                 </div>
             </div>
         </section>
@@ -411,6 +404,6 @@
         </div>
     </div>
 
-    <script src="terminal.js?v=8.0"></script>
+    <script src="terminal.js?v=9.0"></script>
 </body>
 </html>
