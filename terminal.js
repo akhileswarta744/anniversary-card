@@ -20,7 +20,7 @@
     const defaultState = {
         partner1: 'Akhil',
         partner2: 'My Sweetheart',
-        anniversaryDate: '2021-08-31T00:00:00',
+        anniversaryDate: '2022-08-31T00:00:00',
         wallet: {
             '$KISSES': 9999,
             '$HUGS': 5000,
@@ -54,7 +54,12 @@
         try {
             const saved = localStorage.getItem(STORAGE_KEY);
             if (saved) {
-                return Object.assign({}, defaultState, JSON.parse(saved));
+                const loaded = Object.assign({}, defaultState, JSON.parse(saved));
+                // Auto-migrate if previously set to 2021 or missing
+                if (loaded.anniversaryDate === '2021-08-31T00:00:00' || !loaded.anniversaryDate) {
+                    loaded.anniversaryDate = '2022-08-31T00:00:00';
+                }
+                return loaded;
             }
         } catch (e) {}
         return JSON.parse(JSON.stringify(defaultState));
@@ -395,7 +400,7 @@
         const remDays = Math.floor(days % 365.25);
 
         const pad = (n) => String(n).padStart(2, '0');
-        hudUptime.textContent = `UPTIME: ${years}Y ${remDays}D ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        hudUptime.textContent = `UPTIME: ${years}Y ${remDays}D ${pad(hours)}:${pad(minutes)}:${pad(seconds)} (YEAR 5)`;
 
         hudWallet.textContent = `${state.wallet['$KISSES'].toLocaleString()} $KISSES`;
         hudPartners.innerHTML = `${state.partner1.toUpperCase()} &hearts; ${state.partner2.toUpperCase()}`;
@@ -858,18 +863,20 @@
                 const now = new Date();
                 const totalDays = Math.floor((now - start) / (1000 * 60 * 60 * 24));
                 const totalHours = totalDays * 24;
+                const completedYears = Math.floor(totalDays / 365.25);
                 
                 const html = `
 <div class="timeline-card">
-    <div class="timeline-year">💖 RELATIONSHIP UPTIME REPORT // 5 YEARS COMPLETED</div>
+    <div class="timeline-year">💖 RELATIONSHIP UPTIME REPORT // ENTERING YEAR 5</div>
     <div style="margin: 8px 0;">
         <p>▶ <strong>Pair:</strong> <span class="text-highlight">${state.partner1}</span> &amp; <span class="text-accent">${state.partner2}</span></p>
-        <p>▶ <strong>Inception Date:</strong> ${start.toDateString()}</p>
-        <p>▶ <strong>Total Active Days:</strong> <span class="text-success">${totalDays.toLocaleString()} days</span> (${totalHours.toLocaleString()} hours)</p>
+        <p>▶ <strong>Inception Date:</strong> August 31, 2022</p>
+        <p>▶ <strong>Milestones:</strong> <span class="text-success">${completedYears} Years Completed</span> (${totalDays.toLocaleString()} active days)</p>
+        <p>▶ <strong>Current Chapter:</strong> <span class="text-highlight">Officially entering Year 5 of love! 🚀❤️</span></p>
         <p>▶ <strong>Love SLA Availability:</strong> <span class="text-accent">100.000% (Zero downtime)</span></p>
         <p>▶ <strong>Cloud Relay Status:</strong> <span class="text-gold">${isCloudConnected ? 'ONLINE 🟢 (INTER-STATE)' : 'CONNECTING...'}</span></p>
     </div>
-    <p class="text-dim" style="font-size:12px;">"5 years of building dreams, debugging life together, and crafting infinite memories."</p>
+    <p class="text-dim" style="font-size:12px;">"Debugging life together since 31-Aug-2022. Infinite love loop active."</p>
 </div>
 `;
                 printRawHTML(html);
@@ -901,11 +908,11 @@
             exec: (args) => {
                 playBeep(700, 'sine', 0.1);
                 const memoryLogs = [
-                    { year: 'YEAR 1 (2021-2022)', title: 'THE INITIAL COMMIT & SPARK', desc: 'The moment our paths merged. Endless late-night talks, butterflies, discovering each other\'s worlds, and setting the foundation for something extraordinary.' },
-                    { year: 'YEAR 2 (2022-2023)', title: 'EXPEDITIONS & SHARED ADVENTURES', desc: 'Exploring new places, mastering shared inside jokes, cooking experiments, and realizing that home isn\'t a place—it\'s being next to you.' },
-                    { year: 'YEAR 3 (2023-2024)', title: 'UNBREAKABLE ENCRYPTION & SUPPORT', desc: 'Navigating life\'s highs and lows hand in hand. Strengthening our bond, supporting each other\'s ambitions, and standing as an unshakeable team.' },
-                    { year: 'YEAR 4 (2024-2025)', title: 'GROWING DREAMS & EVERYDAY MAGIC', desc: 'Celebrating quiet cozy mornings, big wins, silly laughs, and building the future we always talked about. Growing deeper in love every single day.' },
-                    { year: 'YEAR 5 (2025-2026)', title: 'HALF A DECADE & FOREVER AHEAD', desc: '5 full years of unconditional love, trust, and happiness. Today we celebrate half a decade of pure magic, and the adventure has only just begun.' }
+                    { year: 'YEAR 1 (2022-2023)', title: 'THE INITIAL COMMIT & SPARK', desc: 'August 31, 2022: The moment our paths merged. Endless late-night talks, butterflies, discovering each other\'s worlds, and setting the foundation for something extraordinary.' },
+                    { year: 'YEAR 2 (2023-2024)', title: 'EXPEDITIONS & SHARED ADVENTURES', desc: 'Exploring new places, mastering shared inside jokes, cooking experiments, and realizing that home isn\'t a place—it\'s being next to you.' },
+                    { year: 'YEAR 3 (2024-2025)', title: 'UNBREAKABLE ENCRYPTION & SUPPORT', desc: 'Navigating life\'s highs and lows hand in hand. Strengthening our bond, supporting each other\'s ambitions, and standing as an unshakeable team.' },
+                    { year: 'YEAR 4 (2025-2026)', title: 'GROWING DREAMS & 4 YEARS COMPLETED', desc: 'Celebrating quiet cozy mornings, big wins, silly laughs, and building the future we always talked about. 4 full years strong!' },
+                    { year: 'YEAR 5 (2026+)', title: 'STEPPING INTO YEAR 5 & FOREVER AHEAD', desc: '4 completed years of unconditional love, trust, and happiness. Today we step into our 5th year together, and the best is yet to come!' }
                 ];
 
                 let targetLogs = memoryLogs;
@@ -948,17 +955,19 @@
                     launchCelebration(80);
                     const letterHTML = `
 <div class="love-letter-box">
-    <div class="love-letter-title">💌 TOP SECRET // 5TH ANNIVERSARY LOVE LETTER 💌</div>
+    <div class="love-letter-title">💌 TOP SECRET // LOVE LETTER 💌</div>
     <div class="love-letter-content">
 To my dearest ${escapeHTML(state.partner2)},
 
-Happy 5th Anniversary! Five years ago, we began this incredible journey together, and every day since has been an absolute gift.
+Happy Anniversary! On August 31, 2022, our beautiful journey began, and every single day with you has been an absolute blessing.
 
-Through every laugh, every adventure, every quiet moment, and every challenge, you have been my rock, my favorite person, and my greatest blessing. Thank you for loving me, inspiring me, and filling our life with so much warmth and joy.
+Through every laugh, every late-night conversation, every adventure across states, and every hurdle we conquered hand-in-hand, you have been my rock, my favorite person, and my happiest home.
 
-Five years down, a lifetime to go. I would choose you all over again in every lifetime, in every timeline, and in every universe.
+We have officially completed 4 wonderful years together, and today we step into our 5th year stronger and more in love than ever before. 
 
-Happy 5th Anniversary, my love! ❤️
+A lifetime to go, and I would choose you all over again in every lifetime, in every timeline, and in every universe.
+
+Happy Anniversary, my love! ❤️
     </div>
     <div class="love-letter-seal">
         — Forever yours, ${escapeHTML(state.partner1)} &hearts;
@@ -1235,13 +1244,13 @@ Happy 5th Anniversary, my love! ❤️
     // 12. WELCOME BANNER
     function printWelcomeBanner() {
         const asciiArt = `
-  ██████╗     ██╗   ██╗███████╗ █████╗ ██████╗ ███████╗
-  ╚════██╗    ╚██╗ ██╔╝██╔════╝██╔══██╗██╔══██╗██╔════╝
-   █████╔╝     ╚████╔╝ █████╗  ███████║██████╔╝███████╗
-   ╚═══██╗      ╚██╔╝  ██╔══╝  ██╔══██║██╔══██╗╚════██║
-  ██████╔╝       ██║   ███████╗██║  ██║██║  ██║███████║
-  ╚═════╝        ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝
-   ⚡ LOVE-OS v5.0 // INTER-STATE CLOUD RELAY (KA ↔ KL) ⚡
+  ███████╗    ██╗   ██╗███████╗ █████╗ ██████╗ ███████╗
+  ██╔════╝    ╚██╗ ██╔╝██╔════╝██╔══██╗██╔══██╗██╔════╝
+  ███████╗     ╚████╔╝ █████╗  ███████║██████╔╝███████╗
+  ╚════██║      ╚██╔╝  ██╔══╝  ██╔══██║██╔══██╗╚════██║
+  ███████║       ██║   ███████╗██║  ██║██║  ██║███████║
+  ╚══════╝       ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝
+   ⚡ LOVE-OS v5.0 // STEPPING INTO YEAR 5 (SINCE 31-AUG-2022) ⚡
 `;
         printRawHTML(`<div class="ascii-banner">${asciiArt}</div>`);
         printLine(`🎉 Logged in as [${getMyName()}] in Secure Room [${roomId.toUpperCase()}]!`, 'text-highlight');
