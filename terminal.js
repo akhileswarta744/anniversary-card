@@ -544,85 +544,127 @@
     // 90s ROMANTIC VINYL AUDIO ENGINE & PLAYLIST
     // =========================================================
     const RETRO_90S_PLAYLIST = [
+        // --- 10 90s MALAYALAM EVERGREEN CLASSICS ---
         {
-            id: 'bombay-theme',
-            title: 'Bombay Theme (1995)',
-            movie: 'Bombay',
-            artist: 'A.R. Rahman',
-            year: '1995',
-            sub: 'A.R. Rahman &bull; Evergreen Love Symphony',
-            src: 'audio/track1_bombay_theme.mp3',
-            tag: 'A.R. Rahman'
+            id: 'ml-ambalappuzhe',
+            title: 'Ambalappuzhe Unni Kannanodu',
+            movie: 'Adhwaytham (1992)',
+            artist: 'M.G. Sreekumar & K.S. Chithra',
+            year: '1992',
+            sub: 'M.G. Sreekumar & K.S. Chithra &bull; 1992',
+            src: 'audio/ml_track01_ambalappuzhe.mp3',
+            tag: 'Malayalam Evergreen'
         },
         {
-            id: 'pehla-nasha',
+            id: 'ml-samayam',
+            title: 'Samayamithapoorva Sayahnam',
+            movie: 'Harikrishnans (1998)',
+            artist: 'K.J. Yesudas & K.S. Chithra',
+            year: '1998',
+            sub: 'K.J. Yesudas & K.S. Chithra &bull; 1998',
+            src: 'audio/ml_track02_samayamithapoorva.mp3',
+            tag: 'Malayalam Romance'
+        },
+        {
+            id: 'ml-aalilamanjalil',
+            title: 'Aalilamanjalil',
+            movie: 'Surya Gayathri (1992)',
+            artist: 'K.J. Yesudas & K.S. Chithra',
+            year: '1992',
+            sub: 'K.J. Yesudas & K.S. Chithra &bull; Raveendran',
+            src: 'audio/ml_track03_aalilamanjalil.mp3',
+            tag: 'Malayalam Classic'
+        },
+        {
+            id: 'ml-sreeragamo',
+            title: 'Sreeragamo',
+            movie: 'Pavithram (1994)',
+            artist: 'K.J. Yesudas & Sharreth',
+            year: '1994',
+            sub: 'K.J. Yesudas &bull; Sharreth &bull; 1994',
+            src: 'audio/ml_track04_sreeragamo.mp3',
+            tag: 'Malayalam Soul'
+        },
+        {
+            id: 'ml-chandanacholayil',
+            title: 'Chandanacholayil Mungi',
+            movie: 'Oru Maravathoor Kanavu (1998)',
+            artist: 'K.J. Yesudas & Sujatha Mohan',
+            year: '1998',
+            sub: 'K.J. Yesudas & Sujatha &bull; Vidyasagar',
+            src: 'audio/ml_track05_chandanacholayil.mp3',
+            tag: 'Malayalam Melody'
+        },
+        {
+            id: 'ml-pranayamani',
+            title: 'Pranayamani Thooval',
+            movie: 'Azhakiya Ravanan (1996)',
+            artist: 'K.J. Yesudas & Sujatha',
+            year: '1996',
+            sub: 'K.J. Yesudas &bull; Vidyasagar &bull; 1996',
+            src: 'audio/ml_track06_pranayamani_thooval.mp3',
+            tag: 'Malayalam Pure Gold'
+        },
+        {
+            id: 'ml-manjakkiliyude',
+            title: 'Manjakkiliyude Moolippattunde',
+            movie: 'Kanmadam (1998)',
+            artist: 'K.J. Yesudas & K.S. Chithra',
+            year: '1998',
+            sub: 'K.J. Yesudas & K.S. Chithra &bull; Raveendran',
+            src: 'audio/ml_track07_manjakkiliyude.mp3',
+            tag: 'Malayalam Evergreen'
+        },
+        {
+            id: 'ml-kilukkam',
+            title: 'Kilukkam Kilu Kilukkam',
+            movie: 'Kilukkam (1991)',
+            artist: 'M.G. Sreekumar & K.S. Chithra',
+            year: '1991',
+            sub: 'M.G. Sreekumar & K.S. Chithra &bull; 1991',
+            src: 'audio/ml_track08_kilukkam.mp3',
+            tag: 'Kilukkam Magic'
+        },
+        {
+            id: 'ml-etho-nidrathan',
+            title: 'Etho Nidrathan',
+            movie: 'Ayal Kadha Ezhuthukayanu (1998)',
+            artist: 'K.J. Yesudas & K.S. Chithra',
+            year: '1998',
+            sub: 'K.J. Yesudas & K.S. Chithra &bull; Raveendran',
+            src: 'audio/ml_track09_etho_nidrathan.mp3',
+            tag: 'Malayalam Twilight'
+        },
+        {
+            id: 'ml-harimuraleeravam',
+            title: 'Harimuraleeravam',
+            movie: 'Aaraam Thampuran (1997)',
+            artist: 'K.J. Yesudas & Raveendran',
+            year: '1997',
+            sub: 'K.J. Yesudas &bull; Raveendran Masterpiece',
+            src: 'audio/ml_track10_harimuraleeravam.mp3',
+            tag: 'Malayalam Legendary'
+        },
+        // --- 2 90s HINDI ROMANTIC CLASSICS ---
+        {
+            id: 'hi-pehla-nasha',
             title: 'Pehla Nasha',
-            movie: 'Jo Jeeta Wohi Sikandar',
+            movie: 'Jo Jeeta Wohi Sikandar (1992)',
             artist: 'Udit Narayan & Sadhana Sargam',
             year: '1992',
             sub: 'Udit Narayan & Sadhana Sargam &bull; 1992',
-            src: 'audio/track2_pehla_nasha.mp3',
-            tag: '90s Classic'
+            src: 'audio/hi_track01_pehla_nasha.mp3',
+            tag: '90s Hindi Classic'
         },
         {
-            id: 'ennavale',
-            title: 'Ennavale Adi Ennavale',
-            movie: 'Kadhalan',
-            artist: 'P. Unnikrishnan & A.R. Rahman',
-            year: '1994',
-            sub: 'P. Unnikrishnan & A.R. Rahman &bull; 1994',
-            src: 'audio/track3_ennavale.mp3',
-            tag: '90s South Melody'
-        },
-        {
-            id: 'jiya-jale',
-            title: 'Jiya Jale (Punjiri Thanji)',
-            movie: 'Dil Se',
-            artist: 'Lata Mangeshkar, Preetha & A.R. Rahman',
-            year: '1998',
-            sub: 'Lata Mangeshkar & A.R. Rahman &bull; 1998',
-            src: 'audio/track4_jiya_jale.mp3',
-            tag: 'KA ↔ KL Anthem'
-        },
-        {
-            id: 'tujhe-dekha-toh',
+            id: 'hi-tujhe-dekha-toh',
             title: 'Tujhe Dekha Toh',
-            movie: 'Dilwale Dulhania Le Jayenge',
+            movie: 'Dilwale Dulhania Le Jayenge (1995)',
             artist: 'Kumar Sanu & Lata Mangeshkar',
             year: '1995',
             sub: 'Kumar Sanu & Lata Mangeshkar &bull; 1995',
-            src: 'audio/track5_tujhe_dekha_toh.mp3',
-            tag: 'DDLJ Romance'
-        },
-        {
-            id: 'pudhu-vellai-mazhai',
-            title: 'Pudhu Vellai Mazhai',
-            movie: 'Roja',
-            artist: 'Unni Menon, Sujatha & A.R. Rahman',
-            year: '1992',
-            sub: 'Unni Menon, Sujatha & A.R. Rahman &bull; 1992',
-            src: 'audio/track6_pudhu_vellai_mazhai.mp3',
-            tag: 'Roja Classic'
-        },
-        {
-            id: 'malare-mounama',
-            title: 'Malare Mounama',
-            movie: 'Karna',
-            artist: 'S.P.B & S. Janaki (Vidyasagar)',
-            year: '1995',
-            sub: 'S.P.B & S. Janaki &bull; 1995 Evergreen Melody',
-            src: 'audio/track7_malare_mounama.mp3',
-            tag: 'S.P.B & Janaki'
-        },
-        {
-            id: 'harikrishnans',
-            title: 'Samayamithapoorva Sayahnam',
-            movie: 'Harikrishnans',
-            artist: 'K.J. Yesudas & K.S. Chithra',
-            year: '1998',
-            sub: 'K.J. Yesudas & K.S. Chithra &bull; 1998 Classic',
-            src: 'audio/track8_harikrishnans.mp3',
-            tag: 'Malayalam Pure Gold'
+            src: 'audio/hi_track02_tujhe_dekha_toh.mp3',
+            tag: '90s Hindi Romance'
         }
     ];
 

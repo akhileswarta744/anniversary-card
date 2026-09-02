@@ -1,5 +1,5 @@
 // Service Worker for Akhil & Her Progressive Web App
-const CACHE_NAME = 'akhil-her-app-v9';
+const CACHE_NAME = 'akhil-her-app-v10';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -10,14 +10,18 @@ const ASSETS_TO_CACHE = [
     './icons/icon-512.png',
     './icons/apple-touch-icon.png',
     './icons/icon.svg',
-    './audio/track1_bombay_theme.mp3',
-    './audio/track2_pehla_nasha.mp3',
-    './audio/track3_ennavale.mp3',
-    './audio/track4_jiya_jale.mp3',
-    './audio/track5_tujhe_dekha_toh.mp3',
-    './audio/track6_pudhu_vellai_mazhai.mp3',
-    './audio/track7_malare_mounama.mp3',
-    './audio/track8_harikrishnans.mp3'
+    './audio/ml_track01_ambalappuzhe.mp3',
+    './audio/ml_track02_samayamithapoorva.mp3',
+    './audio/ml_track03_aalilamanjalil.mp3',
+    './audio/ml_track04_sreeragamo.mp3',
+    './audio/ml_track05_chandanacholayil.mp3',
+    './audio/ml_track06_pranayamani_thooval.mp3',
+    './audio/ml_track07_manjakkiliyude.mp3',
+    './audio/ml_track08_kilukkam.mp3',
+    './audio/ml_track09_etho_nidrathan.mp3',
+    './audio/ml_track10_harimuraleeravam.mp3',
+    './audio/hi_track01_pehla_nasha.mp3',
+    './audio/hi_track02_tujhe_dekha_toh.mp3'
 ];
 
 self.addEventListener('install', (event) => {
