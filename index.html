@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LOVE-OS // 4th Anniversary Live Terminal</title>
+    <title>LOVE-OS // 4th Anniversary</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600;700&family=VT323&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Fira+Code:wght@300;400;500;600&family=Orbitron:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
     
     <!-- MQTT.js over Secure WebSockets (100% Reliable across Cellular 4G/5G and all Telecoms in India) -->
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <!-- Lightweight QR Code Generator -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
-    <link rel="stylesheet" href="styles.css?v=4.8">
+    <link rel="stylesheet" href="styles.css?v=5.0">
 </head>
-<body class="theme-cyberpunk">
+<body class="theme-romantic">
     <!-- Matrix Heart Canvas Background -->
     <canvas id="matrix-canvas"></canvas>
 
@@ -44,6 +44,7 @@
                     <span class="icon">🎵</span> <span class="label">BGM: OFF</span>
                 </button>
                 <select id="theme-selector" class="hud-select" title="Switch Theme">
+                    <option value="theme-romantic" selected>💖 Romantic Rose</option>
                     <option value="theme-cyberpunk">Neon Cyberpunk</option>
                     <option value="theme-matrix">Matrix Green</option>
                     <option value="theme-amber">Retro Amber</option>
@@ -79,6 +80,42 @@
 
         <!-- Command Input Line -->
         <footer class="terminal-footer">
+            <!-- Pretty Touch-Friendly Love Dock (Easily Accessible for Mobile & Laptop) -->
+            <div class="love-dock" id="love-dock">
+                <button class="dock-btn dock-kiss" data-action="kiss" title="Send Sweet Kiss">
+                    <span class="dock-icon">💋</span>
+                    <span class="dock-label">Kiss</span>
+                </button>
+                <button class="dock-btn dock-hug" data-action="hug" title="Send Warm Hug">
+                    <span class="dock-icon">🤗</span>
+                    <span class="dock-label">Hug</span>
+                </button>
+                <button class="dock-btn dock-slap" data-action="slap-modal" title="Playful Teasing">
+                    <span class="dock-icon">👋</span>
+                    <span class="dock-label">Tease</span>
+                </button>
+                <button class="dock-btn dock-letter" data-action="letter-modal" title="Secret Love Letter">
+                    <span class="dock-icon">💌</span>
+                    <span class="dock-label">Letter</span>
+                </button>
+                <button class="dock-btn dock-coupons" data-action="coupons-modal" title="Romantic Coupons Vault">
+                    <span class="dock-icon">🎟️</span>
+                    <span class="dock-label">Coupons</span>
+                </button>
+                <button class="dock-btn dock-story" data-action="story-modal" title="Our 4-Year Story">
+                    <span class="dock-icon">⏳</span>
+                    <span class="dock-label">Our Story</span>
+                </button>
+                <button class="dock-btn dock-wallet" data-action="send-love-modal" title="Send Love Currency">
+                    <span class="dock-icon">💸</span>
+                    <span class="dock-label">Send Love</span>
+                </button>
+                <button class="dock-btn dock-marry" data-action="marry" title="Renew Our Vows">
+                    <span class="dock-icon">💍</span>
+                    <span class="dock-label">Marry</span>
+                </button>
+            </div>
+
             <div class="prompt-line">
                 <span class="prompt-user" id="prompt-user">akhil@love-os</span>
                 <span class="prompt-symbol">:~$</span>
@@ -90,22 +127,20 @@
                     autocorrect="off" 
                     autocapitalize="off" 
                     spellcheck="false" 
-                    placeholder="Type 'chat Hello my love!' or click below..." 
+                    placeholder="Type anything (e.g. 'I miss you') or tap above..." 
                     autofocus
                 >
-                <button id="btn-send" class="btn-send" aria-label="Send" title="Send Command / Message">➤</button>
+                <button id="btn-send" class="btn-send" aria-label="Send" title="Send Message">➤</button>
             </div>
             
             <!-- Quick Command Action Bar -->
             <div class="quick-bar" id="quick-bar">
                 <button class="quick-chip" data-cmd="invite">🔗 invite her</button>
-                <button class="quick-chip" data-cmd="chat">💬 chat</button>
                 <button class="quick-chip" data-cmd="kiss for being the love of my life">💋 kiss</button>
                 <button class="quick-chip" data-cmd="hug for always supporting me">🤗 hug</button>
                 <button class="quick-chip chip-angry" data-cmd="slap angry">😡 poda patti</button>
                 <button class="quick-chip chip-sad" data-cmd="slap sad">🥺 ni poda happy aa</button>
                 <button class="quick-chip chip-happy" data-cmd="slap happy">😄 slap ok</button>
-                <button class="quick-chip" data-cmd="slap">👋 slap menu</button>
                 <button class="quick-chip" data-cmd="pay 500 $KISSES for endless joy">💸 pay $KISSES</button>
                 <button class="quick-chip" data-cmd="pay 100 $HUGS for warm hugs">🤗 pay $HUGS</button>
                 <button class="quick-chip" data-cmd="uptime">⏳ uptime</button>
@@ -119,12 +154,12 @@
         </footer>
     </div>
 
-    <!-- Live Invite & QR Code Modal -->
+    <!-- 1. Live Invite & QR Code Modal -->
     <div id="invite-modal" class="modal-overlay hidden">
         <div class="modal-card">
             <div class="modal-header">
                 <h3 class="text-highlight">⚡ CONNECT HER PHONE (KA ↔ KL)</h3>
-                <button class="modal-close" id="btn-close-modal">&times;</button>
+                <button class="modal-close" data-close="invite-modal">&times;</button>
             </div>
             <div class="modal-body">
                 <p class="text-dim" style="margin-bottom:12px;">
@@ -144,12 +179,200 @@
         </div>
     </div>
 
+    <!-- 2. Romantic Love Letter Modal -->
+    <div id="letter-modal" class="modal-overlay hidden">
+        <div class="modal-card modal-letter-card">
+            <div class="modal-header">
+                <h3 class="text-highlight">💌 OUR 4TH ANNIVERSARY LOVE LETTER</h3>
+                <button class="modal-close" data-close="letter-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="letter-scroll-content">
+                    <div class="letter-heading">Dearest Love,</div>
+                    <p class="letter-para">
+                        Happy 4th Anniversary! On <strong>August 31, 2022</strong>, our beautiful journey began, and every single second with you has been an absolute blessing.
+                    </p>
+                    <p class="letter-para">
+                        Through late-night talks, endless laughs, every flight, train, and silly tease across Karnataka &amp; Kerala, you have been my rock, my favorite person, and my happiest home.
+                    </p>
+                    <p class="letter-para">
+                        We have officially completed <strong>4 magnificent years together</strong>, and I would choose you all over again in every lifetime, in every timeline, and in every universe without a second thought.
+                    </p>
+                    <div class="letter-sign">
+                        Forever &amp; Always Yours,<br>
+                        <span class="letter-signature" id="modal-letter-author">Akhil ❤️</span>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 18px;">
+                    <button class="dock-btn-primary" id="btn-letter-kiss">
+                        💋 SEAL WITH A KISS
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Interactive Coupon Vault Modal -->
+    <div id="coupons-modal" class="modal-overlay hidden">
+        <div class="modal-card modal-coupons-card">
+            <div class="modal-header">
+                <h3 class="text-highlight">🎟️ 4TH ANNIVERSARY COUPON VAULT</h3>
+                <button class="modal-close" data-close="coupons-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="text-dim" style="font-size: 13px; margin-bottom: 14px;">
+                    Tap <strong>"CLAIM"</strong> on any voucher to redeem it live on his screen! Valid forever with zero expiration:
+                </p>
+                <div class="coupons-visual-grid" id="modal-coupons-grid">
+                    <!-- Dynamic vouchers rendered by JS -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Relationship Story & Timeline Modal -->
+    <div id="story-modal" class="modal-overlay hidden">
+        <div class="modal-card modal-story-card">
+            <div class="modal-header">
+                <h3 class="text-highlight">⏳ OUR 4-YEAR JOURNEY (2022 – 2026)</h3>
+                <button class="modal-close" data-close="story-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="story-stat-hero">
+                    <div class="hero-number" id="story-days-count">1,463</div>
+                    <div class="hero-label">DAYS OF LOVE &amp; HAPPINESS</div>
+                    <div class="hero-uptime" id="story-uptime-badge">UPTIME: 100.000% (ZERO DOWNTIME)</div>
+                </div>
+                <div class="story-timeline-list">
+                    <div class="story-milestone">
+                        <div class="milestone-badge">🌱 YEAR 1</div>
+                        <div class="milestone-info">
+                            <strong>August 31, 2022 — The Inception</strong>
+                            <p>Where our magical story began. The butterflies, endless chats, and falling head over heels.</p>
+                        </div>
+                    </div>
+                    <div class="story-milestone">
+                        <div class="milestone-badge">🌟 YEAR 2</div>
+                        <div class="milestone-info">
+                            <strong>August 31, 2023 — Unbreakable Bond</strong>
+                            <p>Learning every quirk, becoming each other's safest sanctuary, and mastering long distance.</p>
+                        </div>
+                    </div>
+                    <div class="story-milestone">
+                        <div class="milestone-badge">💫 YEAR 3</div>
+                        <div class="milestone-info">
+                            <strong>August 31, 2024 — Soulmates in Sync</strong>
+                            <p>Conquering life's milestones together, laughing through every challenge, and growing stronger.</p>
+                        </div>
+                    </div>
+                    <div class="story-milestone">
+                        <div class="milestone-badge">👑 YEAR 4</div>
+                        <div class="milestone-info">
+                            <strong>August 31, 2026 — 4 Years Completed!</strong>
+                            <p>Four unforgettable years completed, forever to go. Ready for all our dreams ahead!</p>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 16px;">
+                    <button class="dock-btn-primary" id="btn-story-marry">
+                        💍 CELEBRATE &amp; MARRY AGAIN
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Quick Send Love Modal -->
+    <div id="send-love-modal" class="modal-overlay hidden">
+        <div class="modal-card modal-send-card">
+            <div class="modal-header">
+                <h3 class="text-highlight">💸 SEND LOVE &amp; AFFECTION</h3>
+                <button class="modal-close" data-close="send-love-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="text-dim" style="font-size: 13px; margin-bottom: 14px;">
+                    Tap any voucher to transfer affection coins live across states:
+                </p>
+                <div class="send-love-grid">
+                    <button class="love-card-btn" onclick="window.sendLovePreset(100, '$KISSES', 'sweet tender kisses')">
+                        <span class="btn-emoji">💋</span>
+                        <strong>100 $KISSES</strong>
+                        <small>Sweet tender kisses</small>
+                    </button>
+                    <button class="love-card-btn" onclick="window.sendLovePreset(500, '$KISSES', 'endless love & kisses')">
+                        <span class="btn-emoji">💖</span>
+                        <strong>500 $KISSES</strong>
+                        <small>Endless love package</small>
+                    </button>
+                    <button class="love-card-btn" onclick="window.sendLovePreset(100, '$HUGS', 'warm tight squeeze')">
+                        <span class="btn-emoji">🤗</span>
+                        <strong>100 $HUGS</strong>
+                        <small>Warm cozy hug</small>
+                    </button>
+                    <button class="love-card-btn" onclick="window.sendLovePreset(500, '$HUGS', 'infinite bear cuddles')">
+                        <span class="btn-emoji">🧸</span>
+                        <strong>500 $HUGS</strong>
+                        <small>Infinite bear cuddles</small>
+                    </button>
+                    <button class="love-card-btn" onclick="window.sendLovePreset(1, '$COFFEE_BUCKS', 'coffee date treat')">
+                        <span class="btn-emoji">☕</span>
+                        <strong>Coffee Date</strong>
+                        <small>On my tab whenever you want</small>
+                    </button>
+                    <button class="love-card-btn" onclick="window.sendLovePreset(1, '$MASSAGE_PASS', 'relaxing massage session')">
+                        <span class="btn-emoji">💆</span>
+                        <strong>Massage Pass</strong>
+                        <small>Full pampering &amp; relaxation</small>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. Slap Mood Picker Modal -->
+    <div id="slap-mood-modal" class="modal-overlay hidden">
+        <div class="modal-card modal-slap-card">
+            <div class="modal-header">
+                <h3 class="text-highlight">👋 PLAYFUL BANTER &amp; SLAP</h3>
+                <button class="modal-close" data-close="slap-mood-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="text-dim" style="font-size: 13px; margin-bottom: 14px;">
+                    Pick a mood to tease your partner across states:
+                </p>
+                <div class="slap-modal-choices">
+                    <button class="slap-choice-card choice-angry" onclick="window.runTerminalCmd('slap angry'); document.getElementById('slap-mood-modal').classList.add('hidden');">
+                        <div class="choice-icon">😡👋</div>
+                        <div class="choice-text">
+                            <strong>BAD / ANGRY: "Poda patti!"</strong>
+                            <small>Crimson flame flash &amp; explosive comic smack!</small>
+                        </div>
+                    </button>
+                    <button class="slap-choice-card choice-sad" onclick="window.runTerminalCmd('slap sad'); document.getElementById('slap-mood-modal').classList.add('hidden');">
+                        <div class="choice-icon">🥺👋</div>
+                        <div class="choice-text">
+                            <strong>NEUTRAL / SAD: "Ni poda, happy aa?"</strong>
+                            <small>Neon blue rain wobble &amp; cartoon drop sound!</small>
+                        </div>
+                    </button>
+                    <button class="slap-choice-card choice-happy" onclick="window.runTerminalCmd('slap happy'); document.getElementById('slap-mood-modal').classList.add('hidden');">
+                        <div class="choice-icon">😄👋</div>
+                        <div class="choice-text">
+                            <strong>GOOD / HAPPY: "Ok!"</strong>
+                            <small>Golden sunshine sparkle &amp; cheerful boing!</small>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Slap Overlay Animation -->
     <div id="slap-overlay" class="slap-overlay"></div>
 
     <!-- Celebration Fireworks Canvas -->
     <canvas id="celebration-canvas"></canvas>
 
-    <script src="terminal.js?v=4.8"></script>
+    <script src="terminal.js?v=5.0"></script>
 </body>
 </html>

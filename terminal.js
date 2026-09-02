@@ -43,7 +43,7 @@
             { id: 'C4', title: 'Movie & Snack Pick Veto Pass', desc: 'Immunity against all movie genre debates tonight.', redeemed: false },
             { id: 'C5', title: 'One Free Golden Wish', desc: 'Redeemable anytime for any romantic or fun favor.', redeemed: false }
         ],
-        theme: 'theme-cyberpunk',
+        theme: 'theme-romantic',
         sfx: true,
         music: false
     };
@@ -58,6 +58,9 @@
                 // Auto-migrate if previously set to 2021 or missing
                 if (loaded.anniversaryDate === '2021-08-31T00:00:00' || !loaded.anniversaryDate) {
                     loaded.anniversaryDate = '2022-08-31T00:00:00';
+                }
+                if (!loaded.theme || loaded.theme === 'theme-cyberpunk') {
+                    loaded.theme = 'theme-romantic';
                 }
                 return loaded;
             }
@@ -609,15 +612,19 @@
     }
 
     function drawMatrix() {
-        matrixCtx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+        const isRomantic = state.theme === 'theme-romantic';
+        matrixCtx.fillStyle = isRomantic ? 'rgba(17, 4, 22, 0.12)' : 'rgba(0, 0, 0, 0.08)';
         matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+
+        const romanticChars = '♥♡💖💗💕✨🌸💝AKHIL4YEARSFOREVER';
+        const activeChars = isRomantic ? romanticChars : matrixChars;
 
         const themeColor = getComputedStyle(document.body).getPropertyValue('--matrix-char').trim() || '#ff007f';
         matrixCtx.fillStyle = themeColor;
-        matrixCtx.font = '14px monospace';
+        matrixCtx.font = isRomantic ? '15px "Plus Jakarta Sans", monospace' : '14px monospace';
 
         for (let i = 0; i < matrixDrops.length; i++) {
-            const text = matrixChars.charAt(Math.floor(Math.random() * matrixChars.length));
+            const text = activeChars.charAt(Math.floor(Math.random() * activeChars.length));
             const x = i * 14;
             const y = matrixDrops[i] * 14;
 
@@ -1845,8 +1852,10 @@ Happy 4th Anniversary, my love! ❤️
         if (commands[cmdName]) {
             commands[cmdName].exec(args);
         } else {
-            playBeep(300, 'sawtooth', 0.15);
-            printLine(`bash: command not found: ${escapeHTML(cmdName)}. Type 'help' to see all available commands.`, 'text-accent');
+            // Friendly Auto-Chat Fallback:
+            // If the user types anything that isn't a recognized CLI command (e.g. "I love you", "Happy anniversary!"),
+            // automatically deliver it as a live chat message across states!
+            commands.chat.exec([raw]);
         }
     }
 
@@ -1941,6 +1950,139 @@ Happy 4th Anniversary, my love! ❤️
         const cmd = target.getAttribute('data-cmd');
         if (cmd) window.runTerminalCmd(cmd);
     });
+
+    // 13. PRETTY LOVE DOCK & ACCESSIBLE MODALS
+    const loveDock = document.getElementById('love-dock');
+    if (loveDock) {
+        loveDock.addEventListener('click', (e) => {
+            const btn = e.target.closest('.dock-btn');
+            if (!btn) return;
+            const action = btn.getAttribute('data-action');
+            handleDockAction(action);
+        });
+    }
+
+    function handleDockAction(action) {
+        initAudio();
+        if (action === 'kiss') {
+            commands.kiss.exec();
+        } else if (action === 'hug') {
+            commands.hug.exec();
+        } else if (action === 'marry') {
+            commands['sudo marry-again'].exec();
+        } else if (action === 'slap-modal') {
+            openModal('slap-mood-modal');
+        } else if (action === 'letter-modal') {
+            openLetterModal();
+        } else if (action === 'coupons-modal') {
+            openCouponsModal();
+        } else if (action === 'story-modal') {
+            openStoryModal();
+        } else if (action === 'send-love-modal') {
+            openModal('send-love-modal');
+        }
+    }
+
+    function openModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.remove('hidden');
+            playBeep(700, 'sine', 0.08);
+        }
+    }
+
+    function closeModal(modalId) {
+        const modal = document.getElementById(modalId);
+        if (modal) {
+            modal.classList.add('hidden');
+        }
+    }
+
+    // Modal Close Button Handlers & Click-Outside Handlers
+    document.addEventListener('click', (e) => {
+        const closeBtn = e.target.closest('[data-close]');
+        if (closeBtn) {
+            const targetId = closeBtn.getAttribute('data-close');
+            closeModal(targetId);
+            return;
+        }
+
+        const overlay = e.target.closest('.modal-overlay');
+        if (overlay && e.target === overlay) {
+            overlay.classList.add('hidden');
+        }
+    });
+
+    function openLetterModal() {
+        const authorEl = document.getElementById('modal-letter-author');
+        if (authorEl) {
+            authorEl.textContent = `${state.partner1} ❤️`;
+        }
+        openModal('letter-modal');
+    }
+
+    function openCouponsModal() {
+        renderCouponsModal();
+        openModal('coupons-modal');
+    }
+
+    function renderCouponsModal() {
+        const grid = document.getElementById('modal-coupons-grid');
+        if (!grid) return;
+        let html = '';
+        state.coupons.forEach(c => {
+            const btn = c.redeemed 
+                ? `<span class="voucher-claimed-tag">✔ REDEEMED</span>` 
+                : `<button class="voucher-claim-btn" onclick="window.claimCouponModal('${c.id}')">🎁 CLAIM COUPON</button>`;
+            html += `
+                <div class="voucher-card ${c.redeemed ? 'redeemed' : ''}">
+                    <div class="voucher-left">
+                        <div class="voucher-title">🎟️ ${c.id}: ${escapeHTML(c.title)}</div>
+                        <div class="voucher-desc">${escapeHTML(c.desc)}</div>
+                    </div>
+                    <div>${btn}</div>
+                </div>
+            `;
+        });
+        grid.innerHTML = html;
+    }
+
+    window.claimCouponModal = function(id) {
+        initAudio();
+        commands.redeem.exec([id]);
+        renderCouponsModal();
+    };
+
+    function openStoryModal() {
+        const start = new Date(state.anniversaryDate);
+        const now = new Date();
+        const totalDays = Math.floor((now - start) / (1000 * 60 * 60 * 24));
+        const elDays = document.getElementById('story-days-count');
+        if (elDays) elDays.textContent = totalDays.toLocaleString();
+        openModal('story-modal');
+    }
+
+    window.sendLovePreset = function(amount, currency, reason) {
+        initAudio();
+        commands.pay.exec([amount, currency, 'for', reason]);
+        closeModal('send-love-modal');
+    };
+
+    const btnLetterKiss = document.getElementById('btn-letter-kiss');
+    if (btnLetterKiss) {
+        btnLetterKiss.addEventListener('click', () => {
+            commands.kiss.exec(['sealing our 4-year love letter']);
+            closeModal('letter-modal');
+        });
+    }
+
+    const btnStoryMarry = document.getElementById('btn-story-marry');
+    if (btnStoryMarry) {
+        btnStoryMarry.addEventListener('click', () => {
+            commands['sudo marry-again'].exec();
+            closeModal('story-modal');
+        });
+    }
 
     // Global Button Ripple & Cyber Sound Animation for EVERY button
     document.addEventListener('click', (e) => {

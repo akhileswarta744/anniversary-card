@@ -6,9 +6,28 @@
     --font-mono: 'Fira Code', 'Courier New', monospace;
     --font-display: 'Orbitron', 'VT323', monospace;
     --font-retro: 'VT323', monospace;
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-cursive: 'Dancing Script', cursive, sans-serif;
 }
 
 /* 1. THEMES DEFINITION */
+body.theme-romantic {
+    --bg-color: #110416;
+    --terminal-bg: rgba(26, 8, 36, 0.88);
+    --border-color: #ff69b4;
+    --text-main: #fff0f6;
+    --text-dim: #c48ba4;
+    --text-accent: #ff1493;
+    --text-highlight: #ff85c0;
+    --text-success: #00f0ff;
+    --scanline-color: rgba(255, 105, 180, 0.02);
+    --glow-color: rgba(255, 20, 147, 0.4);
+    --input-bg: rgba(45, 12, 58, 0.7);
+    --chip-bg: rgba(255, 105, 180, 0.16);
+    --chip-border: #ff69b4;
+    --matrix-char: #ff85c0;
+}
+
 body.theme-cyberpunk {
     --bg-color: #0d021a;
     --terminal-bg: rgba(18, 5, 34, 0.88);
@@ -1324,6 +1343,137 @@ button:active,
     transform: scale(1.05);
 }
 
+/* =========================================================
+   PRETTY LOVE DOCK (Accessible Touch Bar for Mobile/Laptop)
+   ========================================================= */
+.love-dock {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    overflow-x: auto;
+    padding: 6px 2px 10px 2px;
+    margin-bottom: 8px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
+}
+
+.love-dock::-webkit-scrollbar {
+    height: 4px;
+}
+
+.love-dock::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+.dock-btn {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 64px;
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1.5px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-main);
+    cursor: pointer;
+    transition: all 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    flex-shrink: 0;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.dock-btn:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 6px 18px var(--glow-color);
+    border-color: #fff;
+}
+
+.dock-btn:active {
+    transform: scale(0.92);
+}
+
+.dock-icon {
+    font-size: 20px;
+    line-height: 1;
+    margin-bottom: 3px;
+    filter: drop-shadow(0 0 6px var(--glow-color));
+}
+
+.dock-label {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+}
+
+/* Individual Dock Accents */
+.dock-btn.dock-kiss {
+    border-color: #ff4d94;
+    background: linear-gradient(135deg, rgba(255, 77, 148, 0.2), rgba(255, 20, 147, 0.08));
+}
+.dock-btn.dock-kiss:hover {
+    box-shadow: 0 0 16px rgba(255, 77, 148, 0.6);
+}
+
+.dock-btn.dock-hug {
+    border-color: #ffd700;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 140, 0, 0.08));
+}
+.dock-btn.dock-hug:hover {
+    box-shadow: 0 0 16px rgba(255, 215, 0, 0.6);
+}
+
+.dock-btn.dock-slap {
+    border-color: #ff4757;
+    background: linear-gradient(135deg, rgba(255, 71, 87, 0.2), rgba(255, 0, 85, 0.08));
+}
+.dock-btn.dock-slap:hover {
+    box-shadow: 0 0 16px rgba(255, 71, 87, 0.6);
+}
+
+.dock-btn.dock-letter {
+    border-color: #e056fd;
+    background: linear-gradient(135deg, rgba(224, 86, 253, 0.22), rgba(156, 39, 176, 0.08));
+}
+.dock-btn.dock-letter:hover {
+    box-shadow: 0 0 16px rgba(224, 86, 253, 0.6);
+}
+
+.dock-btn.dock-coupons {
+    border-color: #00f0ff;
+    background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(0, 150, 255, 0.08));
+}
+.dock-btn.dock-coupons:hover {
+    box-shadow: 0 0 16px rgba(0, 240, 255, 0.6);
+}
+
+.dock-btn.dock-story {
+    border-color: #ffbe76;
+    background: linear-gradient(135deg, rgba(255, 190, 118, 0.22), rgba(230, 126, 34, 0.08));
+}
+.dock-btn.dock-story:hover {
+    box-shadow: 0 0 16px rgba(255, 190, 118, 0.6);
+}
+
+.dock-btn.dock-wallet {
+    border-color: #05ffa1;
+    background: linear-gradient(135deg, rgba(5, 255, 161, 0.2), rgba(46, 213, 115, 0.08));
+}
+.dock-btn.dock-wallet:hover {
+    box-shadow: 0 0 16px rgba(5, 255, 161, 0.6);
+}
+
+.dock-btn.dock-marry {
+    border-color: #a29bfe;
+    background: linear-gradient(135deg, rgba(162, 155, 254, 0.22), rgba(108, 92, 231, 0.08));
+}
+.dock-btn.dock-marry:hover {
+    box-shadow: 0 0 16px rgba(162, 155, 254, 0.6);
+}
+
 /* 8. QUICK COMMAND ACTION CHIPS */
 .quick-bar {
     display: flex;
@@ -1380,17 +1530,315 @@ button:active,
 .modal-card {
     background: var(--terminal-bg);
     border: 2px solid var(--border-color);
-    border-radius: 12px;
-    box-shadow: 0 0 35px var(--glow-color);
-    padding: 24px;
-    max-width: 480px;
-    width: 90vw;
-    animation: modal-pop 0.25s ease;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 35px var(--glow-color);
+    padding: 22px;
+    max-width: 520px;
+    width: 92vw;
+    max-height: 88vh;
+    overflow-y: auto;
+    font-family: var(--font-sans);
+    backdrop-filter: blur(16px);
+    animation: modal-pop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 @keyframes modal-pop {
     0% { transform: scale(0.9); opacity: 0; }
     100% { transform: scale(1); opacity: 1; }
+}
+
+/* Primary Modal CTA Button */
+.dock-btn-primary {
+    background: linear-gradient(135deg, var(--text-accent), #ff1493);
+    border: none;
+    color: #fff;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px var(--glow-color);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.dock-btn-primary:hover {
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 6px 25px var(--glow-color);
+}
+.dock-btn-primary:active {
+    transform: scale(0.96);
+}
+
+/* 1. Love Letter Styling */
+.modal-letter-card {
+    border-color: #ff69b4;
+    background: linear-gradient(180deg, rgba(35, 10, 45, 0.95), rgba(20, 5, 30, 0.95));
+}
+.letter-scroll-content {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 105, 180, 0.25);
+    border-radius: 12px;
+    padding: 20px;
+    line-height: 1.75;
+    color: #fff;
+}
+.letter-heading {
+    font-family: var(--font-cursive);
+    font-size: 28px;
+    color: var(--text-highlight);
+    margin-bottom: 12px;
+}
+.letter-para {
+    font-size: 14.5px;
+    margin-bottom: 12px;
+    color: #ffe6f0;
+}
+.letter-sign {
+    margin-top: 16px;
+    text-align: right;
+    font-size: 14px;
+    color: var(--text-dim);
+}
+.letter-signature {
+    font-family: var(--font-cursive);
+    font-size: 26px;
+    color: var(--text-accent);
+    display: inline-block;
+    margin-top: 4px;
+}
+
+/* 2. Visual Coupons Grid */
+.coupons-visual-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 10px;
+}
+.voucher-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1.5px dashed rgba(255, 105, 180, 0.5);
+    border-radius: 12px;
+    padding: 12px 14px;
+    transition: all 0.2s ease;
+    gap: 12px;
+}
+.voucher-card:hover {
+    background: rgba(255, 105, 180, 0.08);
+    transform: translateX(4px);
+    box-shadow: 0 0 15px rgba(255, 105, 180, 0.25);
+}
+.voucher-card.redeemed {
+    opacity: 0.5;
+    border-color: #555;
+    filter: grayscale(0.8);
+}
+.voucher-left {
+    flex: 1;
+}
+.voucher-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 3px;
+}
+.voucher-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+}
+.voucher-claim-btn {
+    background: linear-gradient(135deg, #ff1493, #ff69b4);
+    border: none;
+    color: #fff;
+    font-family: var(--font-sans);
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 8px 14px;
+    border-radius: 20px;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 2px 10px rgba(255, 20, 147, 0.4);
+    transition: all 0.2s ease;
+}
+.voucher-claim-btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 14px rgba(255, 20, 147, 0.7);
+}
+.voucher-claimed-tag {
+    font-size: 11px;
+    color: #aaa;
+    font-weight: bold;
+}
+
+/* 3. Relationship Story & Timeline */
+.story-stat-hero {
+    text-align: center;
+    background: linear-gradient(135deg, rgba(255, 105, 180, 0.15), rgba(255, 20, 147, 0.05));
+    border: 1px solid rgba(255, 105, 180, 0.3);
+    border-radius: 14px;
+    padding: 18px;
+    margin-bottom: 16px;
+}
+.hero-number {
+    font-size: 44px;
+    font-weight: 800;
+    font-family: var(--font-display);
+    color: var(--text-highlight);
+    text-shadow: 0 0 15px var(--glow-color);
+    line-height: 1;
+}
+.hero-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #ffe6f0;
+    margin-top: 6px;
+}
+.hero-uptime {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 700;
+    background: rgba(0, 240, 255, 0.12);
+    border: 1px solid #00f0ff;
+    color: #00f0ff;
+    padding: 2px 8px;
+    border-radius: 10px;
+    margin-top: 8px;
+}
+.story-timeline-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.story-milestone {
+    display: flex;
+    gap: 12px;
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 3px solid var(--text-accent);
+    padding: 10px 14px;
+    border-radius: 8px;
+}
+.milestone-badge {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--text-highlight);
+    white-space: nowrap;
+    padding-top: 2px;
+}
+.milestone-info strong {
+    font-size: 13.5px;
+    color: #fff;
+    display: block;
+    margin-bottom: 2px;
+}
+.milestone-info p {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.45;
+}
+
+/* 4. Quick Send Love Grid */
+.send-love-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+.love-card-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1.5px solid var(--border-color);
+    border-radius: 12px;
+    padding: 14px 10px;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+.love-card-btn:hover {
+    background: rgba(255, 105, 180, 0.15);
+    border-color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px var(--glow-color);
+}
+.love-card-btn:active {
+    transform: scale(0.95);
+}
+.love-card-btn .btn-emoji {
+    font-size: 26px;
+    margin-bottom: 4px;
+}
+.love-card-btn strong {
+    font-size: 13px;
+    color: var(--text-highlight);
+    margin-bottom: 2px;
+}
+.love-card-btn small {
+    font-size: 10.5px;
+    color: var(--text-dim);
+}
+
+/* 5. Slap Mood Choices */
+.slap-modal-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.slap-choice-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1.5px solid var(--border-color);
+    color: #fff;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+}
+.slap-choice-card:hover {
+    transform: translateX(4px);
+}
+.slap-choice-card .choice-icon {
+    font-size: 32px;
+    flex-shrink: 0;
+}
+.slap-choice-card .choice-text strong {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 3px;
+}
+.slap-choice-card .choice-text small {
+    font-size: 12px;
+    color: var(--text-dim);
+}
+.slap-choice-card.choice-angry {
+    border-color: #ff0055;
+}
+.slap-choice-card.choice-angry:hover {
+    background: rgba(255, 0, 85, 0.15);
+    box-shadow: 0 0 16px rgba(255, 0, 85, 0.4);
+}
+.slap-choice-card.choice-sad {
+    border-color: #00d4ff;
+}
+.slap-choice-card.choice-sad:hover {
+    background: rgba(0, 212, 255, 0.15);
+    box-shadow: 0 0 16px rgba(0, 212, 255, 0.4);
+}
+.slap-choice-card.choice-happy {
+    border-color: #ffd700;
+}
+.slap-choice-card.choice-happy:hover {
+    background: rgba(255, 215, 0, 0.15);
+    box-shadow: 0 0 16px rgba(255, 215, 0, 0.4);
 }
 
 .modal-header {
