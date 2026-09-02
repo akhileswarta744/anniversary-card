@@ -325,18 +325,18 @@
             if (!reason || reason === 'being too cute') defaultQuote = 'Poda patti! 🐕💨';
         } else if (mood === 'sad') {
             handIcon = '🥺👋';
-            impactText = '💔 NI PODA, HAPPY AA? 💔';
+            impactText = '💔 NI PODA! 💔';
             moodClass = 'text-sad';
             tagBorder = '#00d4ff';
             tagColor = '#80d8ff';
-            if (!reason || reason === 'being too cute') defaultQuote = 'Ni poda, happy aa? 🥺🌧️';
+            if (!reason || reason === 'being too cute') defaultQuote = 'Ni poda 🥺🌧️';
         } else if (mood === 'happy') {
             handIcon = '😄👋';
-            impactText = '✨ OK! HAPPY AA! ✨';
+            impactText = '✨ AA OK! ✨';
             moodClass = 'text-happy';
             tagBorder = '#ffd700';
             tagColor = '#ffe57f';
-            if (!reason || reason === 'being too cute') defaultQuote = 'Ok! 😄💖';
+            if (!reason || reason === 'being too cute') defaultQuote = 'Aa ok! 😄💖';
         }
 
         overlay.innerHTML = `
@@ -1001,13 +1001,13 @@
 
                 if (incomingMood === 'sad') {
                     inCardClass = 'slap-sad';
-                    inTitle = '🌧️ 🥺 INCOMING SAD SLAP: NI PODA HAPPY AA? 🥺 🌧️';
-                    inAscii = '💔 ( ╥﹏╥ ) 💔 NI PODA, HAPPY AA?';
+                    inTitle = '🌧️ 🥺 INCOMING SAD SLAP: NI PODA! 🥺 🌧️';
+                    inAscii = '💔 ( ╥﹏╥ ) 💔 NI PODA!';
                     inMoodLabel = 'NEUTRAL / SAD 🥺';
                 } else if (incomingMood === 'happy') {
                     inCardClass = 'slap-happy';
-                    inTitle = '✨ 😄 INCOMING HAPPY SLAP: OK! 😄 ✨';
-                    inAscii = '✨ (≧◡≦) ✨ OK! HAPPY AA!';
+                    inTitle = '✨ 😄 INCOMING HAPPY SLAP: AA OK! 😄 ✨';
+                    inAscii = '✨ (≧◡≦) ✨ AA OK!';
                     inMoodLabel = 'GOOD / HAPPY 😄';
                 }
 
@@ -1020,12 +1020,12 @@
     <div style="margin: 6px 0;">
         <p>From: <strong class="text-accent">${escapeHTML(packet.senderName)}</strong></p>
         <p>Mood: <strong>${inMoodLabel}</strong></p>
-        <p>Dialogue: <em class="text-highlight">"${escapeHTML(packet.reason || (incomingMood === 'angry' ? 'Poda patti!' : incomingMood === 'sad' ? 'Ni poda, happy aa?' : 'Ok!'))}"</em></p>
+        <p>Dialogue: <em class="text-highlight">"${escapeHTML(packet.reason || (incomingMood === 'angry' ? 'Poda patti!' : incomingMood === 'sad' ? 'Ni poda' : 'Aa ok!'))}"</em></p>
     </div>
     <div class="slap-actions">
         <button class="action-btn" onclick="window.runTerminalCmd('slap angry')">😡 PODA PATTI BACK</button>
-        <button class="action-btn" onclick="window.runTerminalCmd('slap sad')">🥺 NI PODA HAPPY AA?</button>
-        <button class="action-btn" onclick="window.runTerminalCmd('slap happy')">😄 OK HAPPY AA!</button>
+        <button class="action-btn" onclick="window.runTerminalCmd('slap sad')">🥺 NI PODA BACK</button>
+        <button class="action-btn" onclick="window.runTerminalCmd('slap happy')">😄 AA OK!</button>
         <button class="action-btn" onclick="window.runTerminalCmd('kiss for sweet comfort')">💋 APOLOGIZE WITH KISS</button>
     </div>
 </div>
@@ -1399,21 +1399,21 @@
                 if (first === 'angry' || first === 'bad' || first === 'poda' || first === 'patti') {
                     mood = 'angry';
                     reason = args.length > 1 ? args.slice(1).join(' ') : 'Poda patti!';
-                } else if (first === 'sad' || first === 'neutral' || first === 'ni' || first === 'happy_aa') {
+                } else if (first === 'sad' || first === 'neutral' || first === 'ni') {
                     mood = 'sad';
-                    reason = args.length > 1 ? args.slice(1).join(' ') : 'Ni poda, happy aa?';
-                } else if (first === 'happy' || first === 'good' || first === 'ok') {
+                    reason = args.length > 1 ? args.slice(1).join(' ') : 'Ni poda';
+                } else if (first === 'happy' || first === 'good' || first === 'ok' || first === 'aa_ok' || first === 'aa') {
                     mood = 'happy';
-                    reason = args.length > 1 ? args.slice(1).join(' ') : 'Ok!';
+                    reason = args.length > 1 ? args.slice(1).join(' ') : 'Aa ok';
                 } else {
                     const fullText = args.join(' ');
                     if (/poda\s*patti|angry|bad/i.test(fullText)) {
                         mood = 'angry';
                         reason = fullText;
-                    } else if (/ni\s*poda|happy\s*aa|sad|neutral/i.test(fullText)) {
+                    } else if (/ni\s*poda|sad|neutral/i.test(fullText)) {
                         mood = 'sad';
                         reason = fullText;
-                    } else if (/happy|good|ok/i.test(fullText)) {
+                    } else if (/aa\s*ok|happy|good|ok/i.test(fullText)) {
                         mood = 'happy';
                         reason = fullText;
                     } else {
@@ -1444,13 +1444,13 @@
 
                 if (mood === 'sad') {
                     cardClass = 'slap-sad';
-                    titleText = '🌧️ 🥺 SAD SLAP DISPATCHED: NI PODA HAPPY AA? 🥺 🌧️';
-                    asciiFace = '( ╥﹏╥) ︵ 💔 NI PODA, HAPPY AA? 🌧️';
+                    titleText = '🌧️ 🥺 SAD SLAP DISPATCHED: NI PODA! 🥺 🌧️';
+                    asciiFace = '( ╥﹏╥) ︵ 💔 NI PODA! 🌧️';
                     moodLabel = 'NEUTRAL / SAD 🥺';
                 } else if (mood === 'happy') {
                     cardClass = 'slap-happy';
-                    titleText = '✨ 😄 HAPPY SLAP DISPATCHED: OK! 😄 ✨';
-                    asciiFace = '(≧◡≦) ︵ ✨ OK! HAPPY AA! 💖';
+                    titleText = '✨ 😄 HAPPY SLAP DISPATCHED: AA OK! 😄 ✨';
+                    asciiFace = '(≧◡≦) ︵ ✨ AA OK! 💖';
                     moodLabel = 'GOOD / HAPPY 😄';
                 }
 
