@@ -544,16 +544,76 @@
     // 90s ROMANTIC VINYL AUDIO ENGINE & PLAYLIST
     // =========================================================
     const RETRO_90S_PLAYLIST = [
-        // --- 10 90s MALAYALAM EVERGREEN CLASSICS ---
+        // --- ICONIC ALL-TIME 90s GOLDEN ROMANCE ---
         {
-            id: 'ml-ambalappuzhe',
-            title: 'Ambalappuzhe Unni Kannanodu',
-            movie: 'Adhwaytham (1992)',
-            artist: 'M.G. Sreekumar & K.S. Chithra',
+            id: 'bombay-theme',
+            title: 'Bombay Theme (1995)',
+            movie: 'Bombay',
+            artist: 'A.R. Rahman',
+            year: '1995',
+            sub: 'A.R. Rahman &bull; Evergreen Love Symphony',
+            src: 'audio/track1_bombay_theme.mp3',
+            tag: 'A.R. Rahman'
+        },
+        {
+            id: 'hi-pehla-nasha',
+            title: 'Pehla Nasha',
+            movie: 'Jo Jeeta Wohi Sikandar (1992)',
+            artist: 'Udit Narayan & Sadhana Sargam',
             year: '1992',
-            sub: 'M.G. Sreekumar & K.S. Chithra &bull; 1992',
-            src: 'audio/ml_track01_ambalappuzhe.mp3',
-            tag: 'Malayalam Evergreen'
+            sub: 'Udit Narayan & Sadhana Sargam &bull; 1992',
+            src: 'audio/hi_track01_pehla_nasha.mp3',
+            tag: '90s Hindi Classic'
+        },
+        {
+            id: 'ennavale',
+            title: 'Ennavale Adi Ennavale',
+            movie: 'Kadhalan (1994)',
+            artist: 'P. Unnikrishnan & A.R. Rahman',
+            year: '1994',
+            sub: 'P. Unnikrishnan & A.R. Rahman &bull; 1994',
+            src: 'audio/track3_ennavale.mp3',
+            tag: '90s South Melody'
+        },
+        {
+            id: 'jiya-jale',
+            title: 'Jiya Jale (Punjiri Thanji)',
+            movie: 'Dil Se (1998)',
+            artist: 'Lata Mangeshkar, Preetha & A.R. Rahman',
+            year: '1998',
+            sub: 'Lata Mangeshkar & A.R. Rahman &bull; 1998',
+            src: 'audio/track4_jiya_jale.mp3',
+            tag: 'KA ↔ KL Anthem'
+        },
+        {
+            id: 'hi-tujhe-dekha-toh',
+            title: 'Tujhe Dekha Toh',
+            movie: 'Dilwale Dulhania Le Jayenge (1995)',
+            artist: 'Kumar Sanu & Lata Mangeshkar',
+            year: '1995',
+            sub: 'Kumar Sanu & Lata Mangeshkar &bull; 1995',
+            src: 'audio/hi_track02_tujhe_dekha_toh.mp3',
+            tag: '90s Hindi Romance'
+        },
+        {
+            id: 'pudhu-vellai-mazhai',
+            title: 'Pudhu Vellai Mazhai',
+            movie: 'Roja (1992)',
+            artist: 'Unni Menon, Sujatha & A.R. Rahman',
+            year: '1992',
+            sub: 'Unni Menon, Sujatha & A.R. Rahman &bull; 1992',
+            src: 'audio/track6_pudhu_vellai_mazhai.mp3',
+            tag: 'Roja Classic'
+        },
+        {
+            id: 'malare-mounama',
+            title: 'Malare Mounama',
+            movie: 'Karna (1995)',
+            artist: 'S.P.B & S. Janaki (Vidyasagar)',
+            year: '1995',
+            sub: 'S.P.B & S. Janaki &bull; 1995 Evergreen Melody',
+            src: 'audio/track7_malare_mounama.mp3',
+            tag: 'S.P.B & Janaki'
         },
         {
             id: 'ml-samayam',
@@ -564,6 +624,17 @@
             sub: 'K.J. Yesudas & K.S. Chithra &bull; 1998',
             src: 'audio/ml_track02_samayamithapoorva.mp3',
             tag: 'Malayalam Romance'
+        },
+        // --- 90s MALAYALAM EVERGREEN CLASSICS ---
+        {
+            id: 'ml-ambalappuzhe',
+            title: 'Ambalappuzhe Unni Kannanodu',
+            movie: 'Adhwaytham (1992)',
+            artist: 'M.G. Sreekumar & K.S. Chithra',
+            year: '1992',
+            sub: 'M.G. Sreekumar & K.S. Chithra &bull; 1992',
+            src: 'audio/ml_track01_ambalappuzhe.mp3',
+            tag: 'Malayalam Evergreen'
         },
         {
             id: 'ml-aalilamanjalil',
@@ -644,27 +715,6 @@
             sub: 'K.J. Yesudas &bull; Raveendran Masterpiece',
             src: 'audio/ml_track10_harimuraleeravam.mp3',
             tag: 'Malayalam Legendary'
-        },
-        // --- 2 90s HINDI ROMANTIC CLASSICS ---
-        {
-            id: 'hi-pehla-nasha',
-            title: 'Pehla Nasha',
-            movie: 'Jo Jeeta Wohi Sikandar (1992)',
-            artist: 'Udit Narayan & Sadhana Sargam',
-            year: '1992',
-            sub: 'Udit Narayan & Sadhana Sargam &bull; 1992',
-            src: 'audio/hi_track01_pehla_nasha.mp3',
-            tag: '90s Hindi Classic'
-        },
-        {
-            id: 'hi-tujhe-dekha-toh',
-            title: 'Tujhe Dekha Toh',
-            movie: 'Dilwale Dulhania Le Jayenge (1995)',
-            artist: 'Kumar Sanu & Lata Mangeshkar',
-            year: '1995',
-            sub: 'Kumar Sanu & Lata Mangeshkar &bull; 1995',
-            src: 'audio/hi_track02_tujhe_dekha_toh.mp3',
-            tag: '90s Hindi Romance'
         }
     ];
 
