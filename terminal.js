@@ -181,6 +181,89 @@
         } catch (e) {}
     }
 
+    function playSlapSound() {
+        if (!state.sfx) return;
+        initAudio();
+        if (!audioCtx) return;
+        try {
+            const now = audioCtx.currentTime;
+            // 1. Noise burst (whip/crack sound)
+            const bufferSize = Math.floor(audioCtx.sampleRate * 0.09);
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.22));
+            }
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            const noiseFilter = audioCtx.createBiquadFilter();
+            noiseFilter.type = 'bandpass';
+            noiseFilter.frequency.setValueAtTime(1800, now);
+            const noiseGain = audioCtx.createGain();
+            noiseGain.gain.setValueAtTime(0.35, now);
+            noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
+            noise.connect(noiseFilter);
+            noiseFilter.connect(noiseGain);
+            noiseGain.connect(audioCtx.destination);
+            noise.start(now);
+
+            // 2. Low comic impact thump
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(280, now);
+            osc.frequency.exponentialRampToValueAtTime(45, now + 0.19);
+            gain.gain.setValueAtTime(0.35, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.2);
+        } catch (e) {}
+    }
+
+    function triggerSlapAnimation(isIncoming, senderName, reason) {
+        initAudio();
+        playSlapSound();
+
+        if (navigator.vibrate) {
+            try { navigator.vibrate([100, 40, 120]); } catch (e) {}
+        }
+
+        // Screen shake
+        const wrapper = document.querySelector('.terminal-wrapper');
+        if (wrapper) {
+            wrapper.classList.remove('screen-shake');
+            void wrapper.offsetWidth;
+            wrapper.classList.add('screen-shake');
+            setTimeout(() => wrapper.classList.remove('screen-shake'), 460);
+        }
+
+        // Slap Flash
+        const flash = document.createElement('div');
+        flash.className = 'slap-flash';
+        document.body.appendChild(flash);
+        setTimeout(() => flash.remove(), 460);
+
+        // Visual overlay
+        const overlay = document.getElementById('slap-overlay');
+        if (overlay) {
+            overlay.innerHTML = `
+                <div class="slap-animation-box">
+                    <div class="slap-hand-anim">👋</div>
+                    <div class="slap-smack-text">💥 SMACK! 💥</div>
+                    <div class="slap-reason-tag">
+                        ${isIncoming ? `FROM ${escapeHTML(senderName).toUpperCase()}: ` : 'SLAP DELIVERED: '}
+                        <em>"${escapeHTML(reason)}"</em>
+                    </div>
+                </div>
+            `;
+            setTimeout(() => {
+                overlay.innerHTML = '';
+            }, 850);
+        }
+    }
+
     function playCelebrateFanfare() {
         if (!state.sfx) return;
         initAudio();
@@ -661,6 +744,28 @@
                 launchCelebration(200);
                 commands['sudo marry-again'].exec(true);
                 break;
+
+            case 'SLAP':
+                triggerSlapAnimation(true, packet.senderName, packet.reason);
+
+                const slapReceiptHTML = `
+<div class="slap-card">
+    <div class="slap-card-title">⚠️ INCOMING PLAYFUL SLAP RECEIVED ⚠️</div>
+    <div style="margin: 6px 0;">
+        <p>From: <strong class="text-accent">${escapeHTML(packet.senderName)}</strong></p>
+        <p>Reason: <em class="text-highlight">"${escapeHTML(packet.reason)}"</em></p>
+        <p>Damage Report: <span class="text-gold">100% Cute Emotional Damage 💥</span></p>
+        <p>Defense Protocol: <span class="text-dim">Immediate counter-slap or peace offering required!</span></p>
+    </div>
+    <div class="slap-actions">
+        <button class="slap-btn" onclick="window.runTerminalCmd('slap for revenge')">👋 SLAP BACK</button>
+        <button class="slap-btn btn-peace" onclick="window.runTerminalCmd('pay 500 $KISSES to make peace')">💋 APOLOGIZE WITH 500 $KISSES</button>
+        <button class="slap-btn" onclick="window.runTerminalCmd('pay 100 $HUGS for forgiveness')">🤗 SEND BIG HUG</button>
+    </div>
+</div>
+`;
+                printRawHTML(slapReceiptHTML);
+                break;
         }
     }
 
@@ -677,8 +782,12 @@
         <div class="help-desc">Get WhatsApp share link & QR code for her phone in Kerala!</div>
     </div>
     <div class="help-card">
-        <span class="help-cmd" onclick="window.runTerminalCmd('chat Happy 5th Anniversary my love!')">💬 chat [message]</span>
+        <span class="help-cmd" onclick="window.runTerminalCmd('chat Happy 4th Anniversary my love!')">💬 chat [message]</span>
         <div class="help-desc">Send live messages across states in real-time.</div>
+    </div>
+    <div class="help-card">
+        <span class="help-cmd" onclick="window.runTerminalCmd('slap for being too cute')">👋 slap [reason]</span>
+        <div class="help-desc">Send playful slap across states with screen shake & smack sound!</div>
     </div>
     <div class="help-card">
         <span class="help-cmd" onclick="window.runTerminalCmd('pay 500 $KISSES for endless happiness')">💸 pay &lt;amt&gt; &lt;curr&gt; [for &lt;reason&gt;]</span>
@@ -690,11 +799,11 @@
     </div>
     <div class="help-card">
         <span class="help-cmd" onclick="window.runTerminalCmd('uptime')">⏳ uptime</span>
-        <div class="help-desc">5-year relationship uptime & live statistics.</div>
+        <div class="help-desc">4-year relationship uptime & live statistics.</div>
     </div>
     <div class="help-card">
         <span class="help-cmd" onclick="window.runTerminalCmd('decrypt')">🔓 decrypt / letter</span>
-        <div class="help-desc">Decrypt the secret 5th-anniversary love letter.</div>
+        <div class="help-desc">Decrypt the secret 4th-anniversary love letter.</div>
     </div>
     <div class="help-card">
         <span class="help-cmd" onclick="window.runTerminalCmd('coupons')">🎟️ coupons / redeem [id]</span>
@@ -702,7 +811,7 @@
     </div>
     <div class="help-card">
         <span class="help-cmd" onclick="window.runTerminalCmd('sudo marry-again')">💍 sudo marry-again</span>
-        <div class="help-desc">Renew 5-year vows with synchronized fireworks!</div>
+        <div class="help-desc">Renew 4-year vows with synchronized fireworks!</div>
     </div>
     <div class="help-card">
         <span class="help-cmd" onclick="window.runTerminalCmd('customize')">⚙️ customize</span>
@@ -850,6 +959,40 @@
     <div class="receipt-divider"></div>
     <div class="receipt-hash">TX_HASH: ${txHash}</div>
     <div class="receipt-status">✔ LIVE DELIVERED TO HER SCREEN!</div>
+</div>
+`;
+                printRawHTML(html);
+            }
+        },
+
+        slap: {
+            desc: 'Send a playful slap across states with comic sound & screen shake',
+            exec: (args) => {
+                const rawReason = (args && args.length > 0) ? args.join(' ') : 'being too cute';
+                const reason = rawReason.replace(/^for\s+/i, '').replace(/^["']|["']$/g, '');
+                const senderName = getMyName();
+                const recipientName = getPartnerName();
+                const timestamp = new Date().toLocaleTimeString();
+
+                triggerSlapAnimation(false, senderName, reason);
+
+                // Send live slap packet over MQTT
+                sendPacket({
+                    type: 'SLAP',
+                    senderName,
+                    recipientName,
+                    reason,
+                    time: timestamp
+                });
+
+                const html = `
+<div class="slap-card">
+    <div class="slap-card-title">👋 PLAYFUL SLAP DISPATCHED 👋</div>
+    <div style="margin: 6px 0;">
+        <p>Target: <strong class="text-accent">${escapeHTML(recipientName)}</strong></p>
+        <p>Reason: <em class="text-highlight">"${escapeHTML(reason)}"</em></p>
+        <p>Status: <span class="text-success">Delivered straight to their screen with 100% impact! 💥</span></p>
+    </div>
 </div>
 `;
                 printRawHTML(html);
