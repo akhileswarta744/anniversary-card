@@ -2494,4 +2494,342 @@ button:active, .action-tile:active, .pill-btn:active, .love-send-btn:active, .qu
     }
 }
 
+/* =========================================================
+   17. BIOMETRIC & PASSCODE APP LOCK SCREEN
+   ========================================================= */
+
+.app-lock-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    background: radial-gradient(circle at 50% 30%, rgba(255, 245, 248, 0.98), rgba(254, 226, 237, 0.96));
+    backdrop-filter: blur(35px);
+    -webkit-backdrop-filter: blur(35px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    opacity: 1;
+    transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.app-lock-screen.unlocked {
+    opacity: 0;
+    transform: scale(1.08);
+    pointer-events: none;
+}
+
+.lock-card {
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(20px);
+    border: 1.5px solid rgba(255, 182, 193, 0.6);
+    border-radius: 36px;
+    padding: 30px 24px 22px 24px;
+    max-width: 380px;
+    width: 100%;
+    box-shadow: 0 25px 70px rgba(233, 30, 99, 0.15), 0 4px 15px rgba(0, 0, 0, 0.04);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.lock-header {
+    margin-bottom: 16px;
+}
+
+.lock-icon-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: #fff0f6;
+    border: 1.5px solid #fbcfe8;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin: 0 auto 12px auto;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.lock-icon-wrap.granted {
+    background: #ecfdf5;
+    border-color: #a7f3d0;
+    transform: scale(1.15);
+}
+
+.lock-avatar-preview {
+    margin-bottom: 10px;
+}
+
+.lock-app-logo {
+    width: 68px;
+    height: 68px;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(236, 72, 153, 0.25);
+    display: inline-block;
+}
+
+.lock-title {
+    font-family: var(--font-serif);
+    font-size: 21px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 4px;
+}
+
+.lock-sub {
+    font-size: 12.5px;
+    color: var(--text-muted);
+    line-height: 1.4;
+}
+
+/* Mode toggle */
+.lock-mode-toggle {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    background: #fdf2f7;
+    border: 1px solid #fce7f3;
+    border-radius: 999px;
+    padding: 4px;
+    margin-bottom: 18px;
+}
+
+.lock-tab-btn {
+    background: transparent;
+    border: none;
+    border-radius: 999px;
+    padding: 7px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.lock-tab-btn.active {
+    background: #ffffff;
+    color: #ec4899;
+    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.18);
+}
+
+/* Views */
+.lock-view {
+    display: none;
+}
+
+.lock-view.active {
+    display: block;
+    animation: tabFadeIn 0.25s ease;
+}
+
+/* Biometric Scanner */
+.scanner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px 0 16px 0;
+}
+
+.scanner-ring {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #fff0f6 0%, #fde2ed 70%, #fce7f3 100%);
+    border: 3px solid #f472b6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    box-shadow: 0 10px 30px rgba(236, 72, 153, 0.2);
+    transition: all 0.25s ease;
+    overflow: hidden;
+}
+
+.scanner-ring:hover {
+    transform: scale(1.04);
+    box-shadow: 0 12px 35px rgba(236, 72, 153, 0.3);
+}
+
+.scanner-ring.scanning {
+    border-color: #ec4899;
+    box-shadow: 0 0 35px rgba(236, 72, 153, 0.55);
+    transform: scale(1.08);
+}
+
+.fingerprint-svg {
+    width: 65px;
+    height: 65px;
+    color: #ec4899;
+    transition: all 0.2s ease;
+}
+
+.scanner-heart {
+    position: absolute;
+    font-size: 16px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0.85;
+}
+
+.scanner-laser {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #ec4899, #c026d3, #ec4899, transparent);
+    box-shadow: 0 0 10px #ec4899;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.scanner-ring.scanning .scanner-laser {
+    opacity: 1;
+    animation: laserSweep 1.2s infinite ease-in-out alternate;
+}
+
+@keyframes laserSweep {
+    0% { top: 10%; }
+    100% { top: 85%; }
+}
+
+.scanner-progress-bar {
+    width: 130px;
+    height: 4px;
+    background: #f1ecf5;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 12px;
+}
+
+.scanner-progress-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #ec4899, #c026d3);
+    border-radius: 999px;
+    transition: width 0.08s linear;
+}
+
+.scanner-prompt {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 6px;
+}
+
+.lock-hint-btn {
+    background: none;
+    border: none;
+    font-size: 12px;
+    font-weight: 700;
+    color: #ec4899;
+    cursor: pointer;
+    margin-top: 4px;
+}
+
+.lock-hint-btn:hover {
+    text-decoration: underline;
+}
+
+/* PIN View */
+.pin-dots-row {
+    display: flex;
+    justify-content: center;
+    gap: 14px;
+    margin-bottom: 8px;
+}
+
+.pin-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid #f472b6;
+    background: transparent;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.pin-dot.filled {
+    background: linear-gradient(135deg, #ec4899, #c026d3);
+    border-color: #ec4899;
+    transform: scale(1.15);
+    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.4);
+}
+
+.pin-dot.error {
+    background: #ef4444;
+    border-color: #ef4444;
+}
+
+.pin-feedback {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+    min-height: 18px;
+}
+
+.pin-keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    max-width: 250px;
+    margin: 0 auto;
+}
+
+.key-btn {
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 182, 193, 0.5);
+    background: #ffffff;
+    font-family: var(--font-sans);
+    font-size: 20px;
+    font-weight: 700;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.03);
+}
+
+.key-btn:hover {
+    background: #fff0f6;
+    border-color: #fbcfe8;
+    color: #ec4899;
+    transform: scale(1.08);
+}
+
+.key-btn:active {
+    transform: scale(0.92);
+    background: #fce7f3;
+}
+
+.key-del, .key-hint {
+    font-size: 16px;
+    color: #9ca3af;
+}
+
+.lock-footer-text {
+    font-size: 11px;
+    color: #9ca3af;
+    margin-top: 18px;
+    letter-spacing: 0.2px;
+}
+
+.shake-anim {
+    animation: shakeScreen 0.4s ease-in-out;
+}
+
+@keyframes shakeScreen {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-8px); }
+    40%, 80% { transform: translateX(8px); }
+}
+
 

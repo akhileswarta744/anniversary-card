@@ -3144,6 +3144,247 @@ Happy 4th Anniversary, my love! ❤️
         console.log('Running as installed standalone mobile app!');
     }
 
+    // =========================================================
+    // 20. BIOMETRIC & PASSCODE APP LOCK CONTROLLER
+    // =========================================================
+    const lockScreen = document.getElementById('app-lock-screen');
+    const lockStatusIcon = document.getElementById('lock-status-icon');
+    const lockStatusWrap = document.getElementById('lock-icon-wrap');
+    const lockStatusText = document.getElementById('lock-status-text');
+    const scannerRing = document.getElementById('scanner-ring');
+    const scannerFill = document.getElementById('scanner-progress-fill');
+    const scannerPrompt = document.getElementById('scanner-prompt');
+
+    const btnTabBio = document.getElementById('btn-tab-bio');
+    const btnTabPin = document.getElementById('btn-tab-pin');
+    const viewBio = document.getElementById('view-biometric');
+    const viewPin = document.getElementById('view-pin');
+    const btnSwitchPin = document.getElementById('btn-switch-to-pin');
+    const btnLockHeader = document.getElementById('btn-lock-app');
+
+    const pinFeedback = document.getElementById('pin-feedback');
+    const CORRECT_PIN = '0831'; // August 31 (Anniversary Date!)
+    let enteredPin = '';
+
+    let isUnlocked = (sessionStorage.getItem('appUnlocked') === 'true');
+
+    function updateLockUI() {
+        if (!lockScreen) return;
+        if (isUnlocked) {
+            lockScreen.classList.add('unlocked');
+        } else {
+            lockScreen.classList.remove('unlocked');
+            resetLockState();
+        }
+    }
+
+    function resetLockState() {
+        enteredPin = '';
+        updatePinDots();
+        if (scannerFill) scannerFill.style.width = '0%';
+        if (scannerRing) scannerRing.classList.remove('scanning');
+        if (lockStatusIcon) lockStatusIcon.textContent = '🔒';
+        if (lockStatusWrap) lockStatusWrap.classList.remove('granted');
+        if (lockStatusText) lockStatusText.textContent = 'Authenticate to unlock our anniversary card 💕';
+        if (scannerPrompt) scannerPrompt.textContent = 'Touch & Hold to Scan Fingerprint';
+        if (pinFeedback) pinFeedback.textContent = 'Enter Anniversary PIN (MMDD)';
+    }
+
+    function unlockApp(method) {
+        initAudio();
+        playCelebrateFanfare();
+        if (navigator.vibrate) {
+            try { navigator.vibrate([100, 60, 150]); } catch (e) {}
+        }
+
+        isUnlocked = true;
+        sessionStorage.setItem('appUnlocked', 'true');
+
+        if (lockStatusIcon) lockStatusIcon.textContent = '🔓';
+        if (lockStatusWrap) lockStatusWrap.classList.add('granted');
+        if (lockStatusText) lockStatusText.textContent = 'Access Granted! Welcome My Love 💕';
+        if (scannerPrompt) scannerPrompt.textContent = 'Identity Verified ✔';
+        if (pinFeedback) pinFeedback.textContent = 'Passcode Verified ✔';
+
+        launchCelebration(60);
+
+        setTimeout(() => {
+            if (lockScreen) {
+                lockScreen.classList.add('unlocked');
+            }
+        }, 500);
+    }
+
+    // Switch between Fingerprint and PIN
+    function switchLockTab(tab) {
+        initAudio();
+        playKeyClick();
+        if (tab === 'bio') {
+            if (btnTabBio) btnTabBio.classList.add('active');
+            if (btnTabPin) btnTabPin.classList.remove('active');
+            if (viewBio) viewBio.classList.add('active');
+            if (viewPin) viewPin.classList.remove('active');
+        } else {
+            if (btnTabPin) btnTabPin.classList.add('active');
+            if (btnTabBio) btnTabBio.classList.remove('active');
+            if (viewPin) viewPin.classList.add('active');
+            if (viewBio) viewBio.classList.remove('active');
+        }
+    }
+
+    if (btnTabBio) btnTabBio.addEventListener('click', () => switchLockTab('bio'));
+    if (btnTabPin) btnTabPin.addEventListener('click', () => switchLockTab('pin'));
+    if (btnSwitchPin) btnSwitchPin.addEventListener('click', () => switchLockTab('pin'));
+
+    // Manual Lock Button in Header
+    if (btnLockHeader) {
+        btnLockHeader.addEventListener('click', () => {
+            initAudio();
+            playKeyClick();
+            isUnlocked = false;
+            sessionStorage.removeItem('appUnlocked');
+            updateLockUI();
+            printLine('🔒 App Locked for privacy.', 'text-dim');
+        });
+    }
+
+    // --- BIOMETRIC SCANNER (Touch & Hold) ---
+    let scanProgress = 0;
+    let scanInterval = null;
+
+    function startBiometricScan() {
+        if (isUnlocked) return;
+        initAudio();
+        playBeep(700, 'sine', 0.08);
+        if (scannerRing) scannerRing.classList.add('scanning');
+        if (scannerPrompt) scannerPrompt.textContent = 'Scanning Fingerprint...';
+
+        scanProgress = 0;
+        if (scanInterval) clearInterval(scanInterval);
+
+        scanInterval = setInterval(() => {
+            scanProgress += 8;
+            if (scannerFill) scannerFill.style.width = Math.min(100, scanProgress) + '%';
+
+            // Haptic ticks and sound chirps while scanning
+            if (scanProgress % 24 === 0) {
+                playBeep(650 + scanProgress * 3, 'sine', 0.04);
+                if (navigator.vibrate) {
+                    try { navigator.vibrate(25); } catch (e) {}
+                }
+            }
+
+            if (scanProgress >= 100) {
+                clearInterval(scanInterval);
+                scanInterval = null;
+                unlockApp('biometric');
+            }
+        }, 75);
+    }
+
+    function cancelBiometricScan() {
+        if (isUnlocked) return;
+        if (scanInterval) {
+            clearInterval(scanInterval);
+            scanInterval = null;
+        }
+        if (scannerRing) scannerRing.classList.remove('scanning');
+        if (scannerFill) scannerFill.style.width = '0%';
+        if (scannerPrompt) scannerPrompt.textContent = 'Hold longer to authenticate!';
+    }
+
+    if (scannerRing) {
+        scannerRing.addEventListener('mousedown', startBiometricScan);
+        scannerRing.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            startBiometricScan();
+        }, { passive: false });
+
+        window.addEventListener('mouseup', cancelBiometricScan);
+        window.addEventListener('touchend', cancelBiometricScan);
+        window.addEventListener('touchcancel', cancelBiometricScan);
+    }
+
+    // --- PIN KEYPAD ---
+    function updatePinDots() {
+        for (let i = 0; i < 4; i++) {
+            const dot = document.getElementById('dot-' + i);
+            if (dot) {
+                if (i < enteredPin.length) dot.classList.add('filled');
+                else dot.classList.remove('filled', 'error');
+            }
+        }
+    }
+
+    document.addEventListener('click', (e) => {
+        const keyBtn = e.target.closest('.key-btn[data-key]');
+        if (!keyBtn || isUnlocked) return;
+        const digit = keyBtn.getAttribute('data-key');
+        if (enteredPin.length < 4) {
+            initAudio();
+            playBeep(600 + enteredPin.length * 80, 'sine', 0.06);
+            enteredPin += digit;
+            updatePinDots();
+
+            if (enteredPin.length === 4) {
+                checkPin();
+            }
+        }
+    });
+
+    const btnPinDel = document.getElementById('btn-pin-del');
+    if (btnPinDel) {
+        btnPinDel.addEventListener('click', () => {
+            if (isUnlocked || enteredPin.length === 0) return;
+            initAudio();
+            playKeyClick();
+            enteredPin = enteredPin.slice(0, -1);
+            updatePinDots();
+        });
+    }
+
+    const btnPinHint = document.getElementById('btn-pin-hint');
+    if (btnPinHint) {
+        btnPinHint.addEventListener('click', () => {
+            initAudio();
+            playKeyClick();
+            if (pinFeedback) pinFeedback.textContent = '💡 Hint: August 31 (0831) 💕';
+        });
+    }
+
+    function checkPin() {
+        if (enteredPin === CORRECT_PIN) {
+            unlockApp('pin');
+        } else {
+            initAudio();
+            playBeep(240, 'sawtooth', 0.25);
+            if (navigator.vibrate) {
+                try { navigator.vibrate([100, 50, 100]); } catch (e) {}
+            }
+
+            for (let i = 0; i < 4; i++) {
+                const dot = document.getElementById('dot-' + i);
+                if (dot) dot.classList.add('error');
+            }
+
+            const lockCard = document.querySelector('.lock-card');
+            if (lockCard) {
+                lockCard.classList.add('shake-anim');
+                setTimeout(() => lockCard.classList.remove('shake-anim'), 450);
+            }
+
+            if (pinFeedback) pinFeedback.textContent = '❌ Incorrect PIN. Hint: 0831 (Aug 31)';
+
+            setTimeout(() => {
+                enteredPin = '';
+                updatePinDots();
+            }, 600);
+        }
+    }
+
+    // Initialize lock state
+    updateLockUI();
+
     // Initial Print
     printWelcomeBanner();
 

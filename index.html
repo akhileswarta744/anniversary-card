@@ -28,7 +28,7 @@
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
     <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 
-    <link rel="stylesheet" href="styles.css?v=16.0">
+    <link rel="stylesheet" href="styles.css?v=17.0">
 </head>
 <body class="theme-minimal-romantic">
 
@@ -38,7 +38,85 @@
     <!-- Fullscreen Kiss & Hug Animations -->
     <div id="kiss-overlay" class="kiss-overlay"></div>
     <div id="hug-overlay" class="hug-overlay"></div>
-    <div id="slap-overlay" class="slap-overlay"></div>
+    <!-- Biometric & Passcode App Lock Screen -->
+    <div id="app-lock-screen" class="app-lock-screen">
+        <div class="lock-card">
+            <!-- App Branding & Padlock -->
+            <div class="lock-header">
+                <div class="lock-icon-wrap" id="lock-icon-wrap">
+                    <span id="lock-status-icon">🔒</span>
+                </div>
+                <div class="lock-avatar-preview">
+                    <img src="icons/icon-192.png" alt="A ❤️ M" class="lock-app-logo">
+                </div>
+                <h2 class="lock-title">A &hearts; M Private Vault</h2>
+                <p class="lock-sub" id="lock-status-text">Authenticate to unlock our anniversary card 💕</p>
+            </div>
+
+            <!-- Mode Switcher: Fingerprint or PIN -->
+            <div class="lock-mode-toggle">
+                <button class="lock-tab-btn active" id="btn-tab-bio">👆 Fingerprint</button>
+                <button class="lock-tab-btn" id="btn-tab-pin">🔢 Passcode</button>
+            </div>
+
+            <!-- 1. Interactive Biometric Fingerprint Scanner View -->
+            <div class="lock-view active" id="view-biometric">
+                <div class="scanner-container">
+                    <div class="scanner-ring" id="scanner-ring">
+                        <!-- Neon laser scan line -->
+                        <div class="scanner-laser" id="scanner-laser"></div>
+                        <!-- High tech romantic fingerprint SVG -->
+                        <svg class="fingerprint-svg" viewBox="0 0 100 120" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M 50,12 C 35,12 22,24 22,40 C 22,52 25,67 30,80 C 34,90 38,100 42,110" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+                            <path d="M 50,22 C 38,22 30,32 30,44 C 30,57 35,72 40,84 C 43,92 46,100 48,107" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+                            <path d="M 50,32 C 44,32 38,38 38,46 C 38,57 42,68 46,80 C 48,86 50,94 51,100" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+                            <path d="M 50,44 C 48,44 46,47 46,50 C 46,57 49,66 52,74 C 54,80 55,86 55,92" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+                            <path d="M 50,12 C 65,12 78,24 78,40 C 78,54 73,70 67,84 C 63,92 58,100 55,108" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+                            <path d="M 50,22 C 62,22 70,32 70,44 C 70,57 64,72 59,84 C 56,92 53,98 51,104" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+                            <path d="M 50,32 C 56,32 62,38 62,46 C 62,57 57,68 53,80 C 51,86 50,92 49,97" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round"/>
+                        </svg>
+                        <span class="scanner-heart">❤️</span>
+                    </div>
+                    <div class="scanner-progress-bar">
+                        <div class="scanner-progress-fill" id="scanner-progress-fill"></div>
+                    </div>
+                </div>
+                <p class="scanner-prompt" id="scanner-prompt">Touch &amp; Hold to Scan Fingerprint</p>
+                <button class="lock-hint-btn" id="btn-switch-to-pin">Or use 4-digit PIN &rarr;</button>
+            </div>
+
+            <!-- 2. 4-Digit Passcode Keypad View -->
+            <div class="lock-view" id="view-pin">
+                <!-- PIN Dots Display -->
+                <div class="pin-dots-row" id="pin-dots-row">
+                    <span class="pin-dot" id="dot-0"></span>
+                    <span class="pin-dot" id="dot-1"></span>
+                    <span class="pin-dot" id="dot-2"></span>
+                    <span class="pin-dot" id="dot-3"></span>
+                </div>
+                <p class="pin-feedback" id="pin-feedback">Enter Anniversary PIN (MMDD)</p>
+
+                <!-- Numeric Keypad -->
+                <div class="pin-keypad">
+                    <button class="key-btn" data-key="1">1</button>
+                    <button class="key-btn" data-key="2">2</button>
+                    <button class="key-btn" data-key="3">3</button>
+                    <button class="key-btn" data-key="4">4</button>
+                    <button class="key-btn" data-key="5">5</button>
+                    <button class="key-btn" data-key="6">6</button>
+                    <button class="key-btn" data-key="7">7</button>
+                    <button class="key-btn" data-key="8">8</button>
+                    <button class="key-btn" data-key="9">9</button>
+                    <button class="key-btn key-hint" id="btn-pin-hint" title="Hint">💡</button>
+                    <button class="key-btn" data-key="0">0</button>
+                    <button class="key-btn key-del" id="btn-pin-del">⌫</button>
+                </div>
+            </div>
+
+            <!-- Bottom Note -->
+            <p class="lock-footer-text">🔒 Couple Protected &bull; Akhil &hearts; Her (4 Years)</p>
+        </div>
+    </div>
 
     <!-- Main Minimalist Romantic App -->
     <div class="app-wrapper">
@@ -53,6 +131,9 @@
                 </div>
             </div>
             <div class="header-controls">
+                <button id="btn-lock-app" class="pill-btn icon-only" title="Lock Screen">
+                    <span>🔒</span>
+                </button>
                 <button id="btn-install-app" class="pill-btn highlight" title="Install App on Phone">
                     <span>📲 App</span>
                 </button>
@@ -711,6 +792,6 @@
         </div>
     </div>
 
-    <script src="terminal.js?v=16.0"></script>
+    <script src="terminal.js?v=17.0"></script>
 </body>
 </html>
