@@ -610,6 +610,18 @@ body.screen-shake,
     animation: slap-flash-anim 0.6s ease-out forwards;
 }
 
+.slap-flash.slap-flash-angry {
+    background: radial-gradient(circle, rgba(255, 0, 0, 0.65) 0%, rgba(180, 0, 0, 0.92) 100%);
+}
+
+.slap-flash.slap-flash-sad {
+    background: radial-gradient(circle, rgba(0, 180, 255, 0.5) 0%, rgba(50, 0, 150, 0.85) 100%);
+}
+
+.slap-flash.slap-flash-happy {
+    background: radial-gradient(circle, rgba(255, 230, 0, 0.55) 0%, rgba(255, 120, 0, 0.8) 100%);
+}
+
 @keyframes slap-flash-anim {
     0% { opacity: 0.95; }
     100% { opacity: 0; }
@@ -732,6 +744,163 @@ body.screen-shake,
     box-shadow: 0 0 25px rgba(255, 0, 85, 0.35);
     position: relative;
     animation: fadeIn 0.2s ease;
+}
+
+/* Mood Variants for Slap Cards */
+.slap-card.slap-angry {
+    border-color: #ff0033;
+    background: rgba(40, 5, 10, 0.95);
+    box-shadow: 0 0 30px rgba(255, 0, 50, 0.5);
+}
+
+.slap-card.slap-angry .slap-card-title {
+    color: #ff3344;
+    border-bottom-color: rgba(255, 50, 50, 0.6);
+}
+
+.slap-card.slap-sad {
+    border-color: #00d4ff;
+    background: rgba(5, 15, 35, 0.95);
+    box-shadow: 0 0 30px rgba(0, 212, 255, 0.45);
+}
+
+.slap-card.slap-sad .slap-card-title {
+    color: #00d4ff;
+    border-bottom-color: rgba(0, 212, 255, 0.6);
+}
+
+.slap-card.slap-happy {
+    border-color: #ffd700;
+    background: rgba(35, 30, 5, 0.95);
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.45);
+}
+
+.slap-card.slap-happy .slap-card-title {
+    color: #ffd700;
+    border-bottom-color: rgba(255, 215, 0, 0.6);
+}
+
+/* Mood-specific Slap Smack Overlay Text */
+.slap-smack-text.text-angry {
+    color: #ff1100 !important;
+    text-shadow: 0 0 25px #ff0000, 0 0 50px #ff0033, 4px 4px 0 #000 !important;
+}
+
+.slap-smack-text.text-sad {
+    color: #00e5ff !important;
+    text-shadow: 0 0 25px #0088ff, 0 0 50px #7b2cbf, 4px 4px 0 #000 !important;
+}
+
+.slap-smack-text.text-happy {
+    color: #ffe600 !important;
+    text-shadow: 0 0 25px #ffaa00, 0 0 50px #05ffa1, 4px 4px 0 #000 !important;
+}
+
+/* Quick Chips for Slap Moods */
+.quick-chip.chip-angry {
+    border-color: #ff0055;
+    color: #ff4477;
+}
+
+.quick-chip.chip-angry:hover {
+    background: #ff0055;
+    color: #fff;
+    box-shadow: 0 0 12px #ff0055;
+}
+
+.quick-chip.chip-sad {
+    border-color: #00d4ff;
+    color: #80d8ff;
+}
+
+.quick-chip.chip-sad:hover {
+    background: #00d4ff;
+    color: #000;
+    box-shadow: 0 0 12px #00d4ff;
+}
+
+.quick-chip.chip-happy {
+    border-color: #ffd700;
+    color: #ffe57f;
+}
+
+.quick-chip.chip-happy:hover {
+    background: #ffd700;
+    color: #000;
+    box-shadow: 0 0 12px #ffd700;
+}
+
+/* Mood Selection Card in Terminal */
+.slap-mood-box {
+    background: rgba(20, 10, 30, 0.92);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    max-width: 520px;
+    margin: 12px 0;
+    box-shadow: 0 0 25px var(--glow-color);
+    animation: fadeIn 0.2s ease;
+}
+
+.slap-mood-title {
+    font-family: var(--font-display);
+    font-size: 15px;
+    color: var(--text-highlight);
+    text-align: center;
+    border-bottom: 1px dashed var(--border-color);
+    padding-bottom: 6px;
+    margin-bottom: 12px;
+}
+
+.slap-mood-btn {
+    width: 100%;
+    margin: 8px 0;
+    padding: 10px 14px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    font-weight: bold;
+    text-align: left;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.slap-mood-btn.mood-angry {
+    background: rgba(255, 0, 50, 0.15);
+    border: 1px solid #ff0055;
+    color: #ff5577;
+}
+
+.slap-mood-btn.mood-angry:hover {
+    background: #ff0055;
+    color: #fff;
+    box-shadow: 0 0 15px #ff0055;
+}
+
+.slap-mood-btn.mood-sad {
+    background: rgba(0, 212, 255, 0.12);
+    border: 1px solid #00d4ff;
+    color: #80d8ff;
+}
+
+.slap-mood-btn.mood-sad:hover {
+    background: #00d4ff;
+    color: #000;
+    box-shadow: 0 0 15px #00d4ff;
+}
+
+.slap-mood-btn.mood-happy {
+    background: rgba(255, 215, 0, 0.15);
+    border: 1px solid #ffd700;
+    color: #ffe57f;
+}
+
+.slap-mood-btn.mood-happy:hover {
+    background: #ffd700;
+    color: #000;
+    box-shadow: 0 0 15px #ffd700;
 }
 
 .slap-card-title {

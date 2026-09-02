@@ -181,13 +181,41 @@
         } catch (e) {}
     }
 
-    function playSlapSound() {
+    function playSlapSound(mood = 'angry') {
         if (!state.sfx) return;
         initAudio();
         if (!audioCtx) return;
         try {
             const now = audioCtx.currentTime;
-            // 1. Noise burst (whip/crack sound)
+            if (mood === 'sad') {
+                // Sad slide: sliding cartoon wobble (480Hz -> 110Hz)
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(480, now);
+                osc.frequency.exponentialRampToValueAtTime(110, now + 0.38);
+                gain.gain.setValueAtTime(0.25, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.4);
+            } else if (mood === 'happy') {
+                // Happy boing: comic upward chirp
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(260, now);
+                osc.frequency.exponentialRampToValueAtTime(780, now + 0.15);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now);
+                osc.stop(now + 0.22);
+            }
+
+            // Slap whip & impact crack
             const bufferSize = Math.floor(audioCtx.sampleRate * 0.09);
             const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
             const data = buffer.getChannelData(0);
@@ -198,39 +226,54 @@
             noise.buffer = buffer;
             const noiseFilter = audioCtx.createBiquadFilter();
             noiseFilter.type = 'bandpass';
-            noiseFilter.frequency.setValueAtTime(1800, now);
+            noiseFilter.frequency.setValueAtTime(mood === 'angry' ? 1300 : 1800, now);
             const noiseGain = audioCtx.createGain();
-            noiseGain.gain.setValueAtTime(0.35, now);
+            noiseGain.gain.setValueAtTime(mood === 'angry' ? 0.45 : 0.3, now);
             noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.09);
             noise.connect(noiseFilter);
             noiseFilter.connect(noiseGain);
             noiseGain.connect(audioCtx.destination);
             noise.start(now);
 
-            // 2. Low comic impact thump
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(280, now);
-            osc.frequency.exponentialRampToValueAtTime(45, now + 0.19);
-            gain.gain.setValueAtTime(0.35, now);
-            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start(now);
-            osc.stop(now + 0.2);
+            // Low impact thump
+            const thump = audioCtx.createOscillator();
+            const thumpGain = audioCtx.createGain();
+            thump.type = 'triangle';
+            thump.frequency.setValueAtTime(mood === 'angry' ? 320 : 250, now);
+            thump.frequency.exponentialRampToValueAtTime(mood === 'angry' ? 35 : 55, now + 0.22);
+            thumpGain.gain.setValueAtTime(mood === 'angry' ? 0.45 : 0.28, now);
+            thumpGain.gain.exponentialRampToValueAtTime(0.001, now + 0.23);
+            thump.connect(thumpGain);
+            thumpGain.connect(audioCtx.destination);
+            thump.start(now);
+            thump.stop(now + 0.23);
         } catch (e) {}
     }
 
-    function triggerSlapAnimation(isIncoming, senderName, reason) {
+    function triggerSlapAnimation(isIncoming, senderName, reason, mood) {
         initAudio();
-        playSlapSound();
 
-        if (navigator.vibrate) {
-            try { navigator.vibrate([120, 50, 140]); } catch (e) {}
+        // Auto-detect mood if not provided
+        if (!mood) {
+            const lower = (reason || '').toLowerCase();
+            if (/poda\s*patti|angry|bad|dog/i.test(lower)) mood = 'angry';
+            else if (/ni\s*poda|happy\s*aa|sad|neutral/i.test(lower)) mood = 'sad';
+            else if (/happy|good|ok/i.test(lower)) mood = 'happy';
+            else mood = 'angry';
         }
 
-        // 1. Shake entire body & terminal wrapper on laptop
+        playSlapSound(mood);
+
+        // Vibration patterns
+        if (navigator.vibrate) {
+            try {
+                if (mood === 'angry') navigator.vibrate([180, 50, 180, 50, 220]);
+                else if (mood === 'sad') navigator.vibrate([120, 80, 120]);
+                else navigator.vibrate([80, 40, 80]);
+            } catch (e) {}
+        }
+
+        // Screen shake
         document.body.classList.remove('screen-shake');
         const wrapper = document.querySelector('.terminal-wrapper');
         if (wrapper) wrapper.classList.remove('screen-shake');
@@ -244,13 +287,13 @@
             if (wrapper) wrapper.classList.remove('screen-shake');
         }, 580);
 
-        // 2. Slap Flash Overlay
+        // Mood-specific Flash
         const flash = document.createElement('div');
-        flash.className = 'slap-flash';
+        flash.className = `slap-flash slap-flash-${mood}`;
         document.body.appendChild(flash);
-        setTimeout(() => flash.remove(), 600);
+        setTimeout(() => flash.remove(), 650);
 
-        // 3. Visual Hand & Comic SMACK!
+        // Visual overlay setup
         let overlay = document.getElementById('slap-overlay');
         if (!overlay) {
             overlay = document.createElement('div');
@@ -259,19 +302,49 @@
             document.body.appendChild(overlay);
         }
 
+        let handIcon = '👋';
+        let impactText = '💥 SMACK! 💥';
+        let moodClass = 'text-angry';
+        let tagBorder = '#ff0033';
+        let tagColor = '#ff5577';
+        let defaultQuote = reason;
+
+        if (mood === 'angry') {
+            handIcon = '😡👋';
+            impactText = '💥 PODA PATTI! 💥';
+            moodClass = 'text-angry';
+            tagBorder = '#ff0033';
+            tagColor = '#ff5577';
+            if (!reason || reason === 'being too cute') defaultQuote = 'Poda patti! 🐕💨';
+        } else if (mood === 'sad') {
+            handIcon = '🥺👋';
+            impactText = '💔 NI PODA, HAPPY AA? 💔';
+            moodClass = 'text-sad';
+            tagBorder = '#00d4ff';
+            tagColor = '#80d8ff';
+            if (!reason || reason === 'being too cute') defaultQuote = 'Ni poda, happy aa? 🥺🌧️';
+        } else if (mood === 'happy') {
+            handIcon = '😄👋';
+            impactText = '✨ OK! HAPPY AA! ✨';
+            moodClass = 'text-happy';
+            tagBorder = '#ffd700';
+            tagColor = '#ffe57f';
+            if (!reason || reason === 'being too cute') defaultQuote = 'Ok! 😄💖';
+        }
+
         overlay.innerHTML = `
             <div class="slap-animation-box">
-                <div class="slap-hand-anim">👋</div>
-                <div class="slap-smack-text">💥 SMACK! 💥</div>
-                <div class="slap-reason-tag">
+                <div class="slap-hand-anim">${handIcon}</div>
+                <div class="slap-smack-text ${moodClass}">${impactText}</div>
+                <div class="slap-reason-tag" style="border-color:${tagBorder}; color:${tagColor};">
                     ${isIncoming ? `FROM ${escapeHTML(senderName).toUpperCase()}: ` : 'SLAP DELIVERED: '}
-                    <em>"${escapeHTML(reason)}"</em>
+                    <em>"${escapeHTML(defaultQuote)}"</em>
                 </div>
             </div>
         `;
         setTimeout(() => {
             if (overlay) overlay.innerHTML = '';
-        }, 1500);
+        }, 1600);
     }
 
     function playKissSound() {
@@ -917,24 +990,46 @@
                 break;
 
             case 'SLAP':
-                triggerSlapAnimation(true, packet.senderName, packet.reason);
+                const incomingMood = packet.mood || (
+                    /poda\s*patti|angry|bad/i.test(packet.reason || '') ? 'angry' :
+                    /ni\s*poda|happy\s*aa|sad|neutral/i.test(packet.reason || '') ? 'sad' : 'happy'
+                );
+
+                triggerSlapAnimation(true, packet.senderName, packet.reason, incomingMood);
+
+                let inCardClass = 'slap-angry';
+                let inTitle = '🔥 😡 INCOMING ANGRY SLAP: PODA PATTI! 😡 🔥';
+                let inAscii = '💥 (╬ಠ益ಠ) 💥 PODA PATTI!';
+                let inMoodLabel = 'BAD / ANGRY 😡';
+
+                if (incomingMood === 'sad') {
+                    inCardClass = 'slap-sad';
+                    inTitle = '🌧️ 🥺 INCOMING SAD SLAP: NI PODA HAPPY AA? 🥺 🌧️';
+                    inAscii = '💔 ( ╥﹏╥ ) 💔 NI PODA, HAPPY AA?';
+                    inMoodLabel = 'NEUTRAL / SAD 🥺';
+                } else if (incomingMood === 'happy') {
+                    inCardClass = 'slap-happy';
+                    inTitle = '✨ 😄 INCOMING HAPPY SLAP: OK! 😄 ✨';
+                    inAscii = '✨ (≧◡≦) ✨ OK! HAPPY AA!';
+                    inMoodLabel = 'GOOD / HAPPY 😄';
+                }
 
                 const slapReceiptHTML = `
-<div class="slap-card">
-    <div class="slap-card-title">⚠️ INCOMING PLAYFUL SLAP RECEIVED ⚠️</div>
-    <div style="font-family: monospace; color:#ff0055; text-align:center; font-size:18px; margin: 6px 0; font-weight:bold;">
-        💥 ( ✖ ╭╮ ✖ ) 💥 OUCCCCHHH!
+<div class="slap-card ${inCardClass}">
+    <div class="slap-card-title">${inTitle}</div>
+    <div style="font-family: monospace; text-align:center; font-size:18px; margin: 6px 0; font-weight:bold;">
+        ${inAscii}
     </div>
     <div style="margin: 6px 0;">
         <p>From: <strong class="text-accent">${escapeHTML(packet.senderName)}</strong></p>
-        <p>Reason: <em class="text-highlight">"${escapeHTML(packet.reason)}"</em></p>
-        <p>Damage Report: <span class="text-gold">100% Cute Emotional Damage 💥</span></p>
-        <p>Defense Protocol: <span class="text-dim">Immediate counter-slap or peace offering required!</span></p>
+        <p>Mood: <strong>${inMoodLabel}</strong></p>
+        <p>Dialogue: <em class="text-highlight">"${escapeHTML(packet.reason || (incomingMood === 'angry' ? 'Poda patti!' : incomingMood === 'sad' ? 'Ni poda, happy aa?' : 'Ok!'))}"</em></p>
     </div>
     <div class="slap-actions">
-        <button class="slap-btn" onclick="window.runTerminalCmd('slap for revenge')">👋 SLAP BACK</button>
-        <button class="slap-btn btn-peace" onclick="window.runTerminalCmd('pay 500 $KISSES to make peace')">💋 APOLOGIZE WITH 500 $KISSES</button>
-        <button class="slap-btn" onclick="window.runTerminalCmd('pay 100 $HUGS for forgiveness')">🤗 SEND BIG HUG</button>
+        <button class="action-btn" onclick="window.runTerminalCmd('slap angry')">😡 PODA PATTI BACK</button>
+        <button class="action-btn" onclick="window.runTerminalCmd('slap sad')">🥺 NI PODA HAPPY AA?</button>
+        <button class="action-btn" onclick="window.runTerminalCmd('slap happy')">😄 OK HAPPY AA!</button>
+        <button class="action-btn" onclick="window.runTerminalCmd('kiss for sweet comfort')">💋 APOLOGIZE WITH KISS</button>
     </div>
 </div>
 `;
@@ -1270,35 +1365,109 @@
         },
 
         slap: {
-            desc: 'Send a playful slap across states with comic sound & screen shake',
+            desc: 'Playful slap with 3 moods: angry (poda patti), sad (ni poda happy aa), happy (ok)',
             exec: (args) => {
-                const rawReason = (args && args.length > 0) ? args.join(' ') : 'being too cute';
-                const reason = rawReason.replace(/^for\s+/i, '').replace(/^["']|["']$/g, '');
-                const senderName = getMyName();
                 const recipientName = getPartnerName();
+
+                // If called with NO args, display the Mood Selector menu in the terminal!
+                if (!args || args.length === 0) {
+                    playBeep(650, 'sine', 0.1);
+                    const pickerHTML = `
+<div class="slap-mood-box">
+    <div class="slap-mood-title">⚡ CHOOSE SLAP MOOD (KA ↔ KL) ⚡</div>
+    <p class="text-dim" style="font-size:12.5px; margin-bottom:12px;">Select a teasing mood to send across to <strong class="text-accent">${escapeHTML(recipientName)}</strong>:</p>
+    
+    <button class="slap-mood-btn mood-angry" onclick="window.runTerminalCmd('slap angry')">
+        <span>😡 <strong>BAD / ANGRY:</strong> <em>"Poda patti!"</em></span>
+        <span style="font-size:18px;">🔥</span>
+    </button>
+    <button class="slap-mood-btn mood-sad" onclick="window.runTerminalCmd('slap sad')">
+        <span>🥺 <strong>NEUTRAL / SAD:</strong> <em>"Ni poda, happy aa?"</em></span>
+        <span style="font-size:18px;">🌧️</span>
+    </button>
+    <button class="slap-mood-btn mood-happy" onclick="window.runTerminalCmd('slap happy')">
+        <span>😄 <strong>GOOD / HAPPY:</strong> <em>"Ok!"</em></span>
+        <span style="font-size:18px;">✨</span>
+    </button>
+</div>
+`;
+                    printRawHTML(pickerHTML);
+                    return;
+                }
+
+                let mood = 'angry';
+                const first = args[0].toLowerCase();
+                let reason = '';
+
+                if (first === 'angry' || first === 'bad' || first === 'poda' || first === 'patti') {
+                    mood = 'angry';
+                    reason = args.length > 1 ? args.slice(1).join(' ') : 'Poda patti!';
+                } else if (first === 'sad' || first === 'neutral' || first === 'ni' || first === 'happy_aa') {
+                    mood = 'sad';
+                    reason = args.length > 1 ? args.slice(1).join(' ') : 'Ni poda, happy aa?';
+                } else if (first === 'happy' || first === 'good' || first === 'ok') {
+                    mood = 'happy';
+                    reason = args.length > 1 ? args.slice(1).join(' ') : 'Ok!';
+                } else {
+                    const fullText = args.join(' ');
+                    if (/poda\s*patti|angry|bad/i.test(fullText)) {
+                        mood = 'angry';
+                        reason = fullText;
+                    } else if (/ni\s*poda|happy\s*aa|sad|neutral/i.test(fullText)) {
+                        mood = 'sad';
+                        reason = fullText;
+                    } else if (/happy|good|ok/i.test(fullText)) {
+                        mood = 'happy';
+                        reason = fullText;
+                    } else {
+                        mood = 'angry';
+                        reason = fullText.replace(/^for\s+/i, '').replace(/^["']|["']$/g, '');
+                    }
+                }
+
+                const senderName = getMyName();
                 const timestamp = new Date().toLocaleTimeString();
 
-                triggerSlapAnimation(false, senderName, reason);
+                triggerSlapAnimation(false, senderName, reason, mood);
 
-                // Send live slap packet over MQTT
+                // Send live packet over MQTT
                 sendPacket({
                     type: 'SLAP',
                     senderName,
                     recipientName,
                     reason,
+                    mood,
                     time: timestamp
                 });
 
+                let cardClass = 'slap-angry';
+                let titleText = '🔥 😡 ANGRY SLAP DISPATCHED: PODA PATTI! 😡 🔥';
+                let asciiFace = '(╬ಠ益ಠ) ︵ 💥 PODA PATTI! 🐕💨';
+                let moodLabel = 'BAD / ANGRY 😡';
+
+                if (mood === 'sad') {
+                    cardClass = 'slap-sad';
+                    titleText = '🌧️ 🥺 SAD SLAP DISPATCHED: NI PODA HAPPY AA? 🥺 🌧️';
+                    asciiFace = '( ╥﹏╥) ︵ 💔 NI PODA, HAPPY AA? 🌧️';
+                    moodLabel = 'NEUTRAL / SAD 🥺';
+                } else if (mood === 'happy') {
+                    cardClass = 'slap-happy';
+                    titleText = '✨ 😄 HAPPY SLAP DISPATCHED: OK! 😄 ✨';
+                    asciiFace = '(≧◡≦) ︵ ✨ OK! HAPPY AA! 💖';
+                    moodLabel = 'GOOD / HAPPY 😄';
+                }
+
                 const html = `
-<div class="slap-card">
-    <div class="slap-card-title">👋 PLAYFUL SLAP DISPATCHED 👋</div>
-    <div style="font-family: monospace; color:#ff0055; text-align:center; font-size:18px; margin: 6px 0; font-weight:bold;">
-        (╯°□°)╯︵ 💥 WHACK! 💥
+<div class="slap-card ${cardClass}">
+    <div class="slap-card-title">${titleText}</div>
+    <div style="font-family: monospace; text-align:center; font-size:17px; margin: 6px 0; font-weight:bold;">
+        ${asciiFace}
     </div>
     <div style="margin: 6px 0;">
         <p>Target: <strong class="text-accent">${escapeHTML(recipientName)}</strong></p>
-        <p>Reason: <em class="text-highlight">"${escapeHTML(reason)}"</em></p>
-        <p>Status: <span class="text-success">Delivered straight to their screen with 100% impact! 💥</span></p>
+        <p>Mood: <strong>${moodLabel}</strong></p>
+        <p>Dialogue: <em class="text-highlight">"${escapeHTML(reason)}"</em></p>
+        <p>Status: <span class="text-success">Delivered straight to their screen! 💥</span></p>
     </div>
 </div>
 `;
