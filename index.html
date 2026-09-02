@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <link rel="stylesheet" href="styles.css?v=12.0">
+    <link rel="stylesheet" href="styles.css?v=13.0">
 </head>
 <body class="theme-minimal-romantic">
 
@@ -102,9 +102,9 @@
                     </div>
                 </div>
 
-                <!-- Playful Bottom Footer Note -->
+                <!-- Sweet Romantic Footer Note -->
                 <div class="card-footer-note" id="date-footer-note">
-                    ♡ One wrong choice, and I hope karma fucks you up.
+                    ♡ Every choice with you is my favorite choice.
                 </div>
             </div>
         </section>
@@ -299,6 +299,61 @@
         </div>
     </div>
 
+    <!-- Choose a Date Calendar Popup Modal -->
+    <div id="calendar-modal" class="modal-overlay hidden">
+        <div class="modal-card calendar-modal-card">
+            <div class="modal-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:22px;">🗓️</span>
+                    <h3 style="margin:0;">Choose Our Date</h3>
+                </div>
+                <button class="modal-close" data-close="calendar-modal">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align:center;">
+                <p style="font-size:13px; color:var(--text-muted); margin-bottom:14px;">
+                    Pick any day for our special date, my love 💕
+                </p>
+
+                <!-- Month Navigation -->
+                <div class="calendar-nav-bar">
+                    <button id="cal-prev-month" class="cal-nav-btn" aria-label="Previous Month">&lsaquo;</button>
+                    <span id="cal-month-year-label" class="cal-month-title">September 2026</span>
+                    <button id="cal-next-month" class="cal-nav-btn" aria-label="Next Month">&rsaquo;</button>
+                </div>
+
+                <!-- Weekday Labels -->
+                <div class="calendar-weekdays-row">
+                    <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span>
+                </div>
+
+                <!-- Dynamic Day Grid -->
+                <div id="calendar-days-grid" class="calendar-grid">
+                    <!-- Days dynamically rendered by terminal.js -->
+                </div>
+
+                <!-- Selected Date Indicator Banner -->
+                <div class="calendar-selected-banner" id="cal-selected-banner">
+                    Selected: <strong id="cal-selected-text">Saturday, Sep 5, 2026</strong> ✨
+                </div>
+
+                <!-- Action Confirmation -->
+                <div style="display:flex; flex-direction:column; gap:10px; margin-top:14px;">
+                    <button id="cal-confirm-btn" class="modal-btn-primary" style="width:100%; justify-content:center; padding:13px; font-size:14.5px;">
+                        <span>💖 Lock In This Date</span>
+                    </button>
+                    <div style="display:flex; gap:8px; justify-content:center;">
+                        <button id="cal-shortcut-weekend" class="pill-btn" style="padding:7px 14px; font-size:12px; background:#fff0f6; border-color:#fbcfe8; color:#ec4899; cursor:pointer;">
+                            ✨ This Weekend
+                        </button>
+                        <button id="cal-shortcut-anniversary" class="pill-btn" style="padding:7px 14px; font-size:12px; background:#fff0f6; border-color:#fbcfe8; color:#ec4899; cursor:pointer;">
+                            💍 Our Anniversary
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 2. Romantic Love Letter Modal -->
     <div id="letter-modal" class="modal-overlay hidden">
         <div class="modal-card modal-letter-card">
@@ -486,6 +541,6 @@
         </div>
     </div>
 
-    <script src="terminal.js?v=12.0"></script>
+    <script src="terminal.js?v=13.0"></script>
 </body>
 </html>

@@ -2315,7 +2315,7 @@ Happy 4th Anniversary, my love! ❤️
                 { text: "Yes", type: "pink", icon: "↗" },
                 { text: "Yes, Of course", type: "white", icon: "→" }
             ],
-            note: "♡ One wrong choice, and I hope karma fucks you up."
+            note: "♡ Every choice with you is my favorite choice."
         },
         {
             num: "02 / 08",
@@ -2326,8 +2326,9 @@ Happy 4th Anniversary, my love! ❤️
             sub: "Don't say you're busy, I'm already clearing my schedule for you.",
             florkType: "calendar",
             options: [
-                { text: "This Weekend", type: "pink", icon: "📅" },
-                { text: "Whenever you say", type: "white", icon: "✨" }
+                { text: "Choose a Date 🗓️", type: "pink", icon: "📅", action: "open-calendar" },
+                { text: "This Weekend", type: "white", icon: "✨" },
+                { text: "Whenever you say", type: "white", icon: "💖" }
             ],
             note: "♡ Any day with you is my favorite day."
         },
@@ -2566,7 +2567,15 @@ Happy 4th Anniversary, my love! ❤️
 
         const choiceIndex = parseInt(btn.getAttribute('data-choice-index') || '0', 10);
         const step = dateSteps[currentStepIndex];
-        const chosen = step.options[choiceIndex] ? step.options[choiceIndex].text : 'Yes';
+        const option = step.options[choiceIndex];
+
+        if (option && option.action === 'open-calendar') {
+            openModal('calendar-modal');
+            renderCalendar();
+            return;
+        }
+
+        const chosen = option ? option.text : 'Yes';
         selectedDateAnswers.push({ step: step.label, answer: chosen });
 
         if (currentStepIndex < dateSteps.length - 1) {
@@ -2596,6 +2605,176 @@ Happy 4th Anniversary, my love! ❤️
                     </div>
                 `;
             }
+        }
+    });
+
+    // =========================================================
+    // POPUP CALENDAR CONTROLLER
+    // =========================================================
+    let calDate = new Date();
+    let calYear = calDate.getFullYear();
+    let calMonth = calDate.getMonth();
+    let calSelectedDay = calDate.getDate();
+
+    const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+    function getFormattedSelectedDate() {
+        const d = new Date(calYear, calMonth, calSelectedDay);
+        const dayName = dayNames[d.getDay()];
+        const monthName = monthNames[calMonth];
+        return `${dayName}, ${monthName} ${calSelectedDay}, ${calYear}`;
+    }
+
+    function updateCalBanner() {
+        const banner = document.getElementById('cal-selected-text');
+        if (banner) {
+            banner.textContent = getFormattedSelectedDate();
+        }
+    }
+
+    function renderCalendar() {
+        const monthLabel = document.getElementById('cal-month-year-label');
+        const grid = document.getElementById('calendar-days-grid');
+        if (!grid) return;
+
+        if (monthLabel) {
+            monthLabel.textContent = `${monthNames[calMonth]} ${calYear}`;
+        }
+
+        const firstDayIndex = new Date(calYear, calMonth, 1).getDay();
+        const totalDays = new Date(calYear, calMonth + 1, 0).getDate();
+
+        const today = new Date();
+        const isCurrentMonth = today.getFullYear() === calYear && today.getMonth() === calMonth;
+        const todayDate = today.getDate();
+
+        let html = '';
+
+        // Empty padding cells
+        for (let i = 0; i < firstDayIndex; i++) {
+            html += '<div class="cal-day-cell empty"></div>';
+        }
+
+        // Day cells
+        for (let day = 1; day <= totalDays; day++) {
+            const isSelected = (day === calSelectedDay);
+            const isToday = isCurrentMonth && (day === todayDate);
+            const classes = ['cal-day-cell'];
+            if (isSelected) classes.push('selected');
+            if (isToday) classes.push('today');
+
+            html += `<div class="${classes.join(' ')}" data-day="${day}">${day}</div>`;
+        }
+
+        grid.innerHTML = html;
+        updateCalBanner();
+    }
+
+    // Calendar grid click listener
+    document.addEventListener('click', (e) => {
+        const cell = e.target.closest('.cal-day-cell:not(.empty)');
+        if (!cell) return;
+        const day = parseInt(cell.getAttribute('data-day'), 10);
+        if (day) {
+            calSelectedDay = day;
+            initAudio();
+            playBeep(820, 'sine', 0.08);
+            renderCalendar();
+        }
+    });
+
+    // Calendar month nav listeners
+    const btnPrevMonth = document.getElementById('cal-prev-month');
+    if (btnPrevMonth) {
+        btnPrevMonth.addEventListener('click', () => {
+            initAudio();
+            playKeyClick();
+            calMonth--;
+            if (calMonth < 0) {
+                calMonth = 11;
+                calYear--;
+            }
+            const maxDays = new Date(calYear, calMonth + 1, 0).getDate();
+            if (calSelectedDay > maxDays) calSelectedDay = maxDays;
+            renderCalendar();
+        });
+    }
+
+    const btnNextMonth = document.getElementById('cal-next-month');
+    if (btnNextMonth) {
+        btnNextMonth.addEventListener('click', () => {
+            initAudio();
+            playKeyClick();
+            calMonth++;
+            if (calMonth > 11) {
+                calMonth = 0;
+                calYear++;
+            }
+            const maxDays = new Date(calYear, calMonth + 1, 0).getDate();
+            if (calSelectedDay > maxDays) calSelectedDay = maxDays;
+            renderCalendar();
+        });
+    }
+
+    // Calendar Shortcuts
+    const btnShortcutWeekend = document.getElementById('cal-shortcut-weekend');
+    if (btnShortcutWeekend) {
+        btnShortcutWeekend.addEventListener('click', () => {
+            initAudio();
+            playBeep(880, 'sine', 0.1);
+            const now = new Date();
+            const daysUntilSaturday = (6 - now.getDay() + 7) % 7 || 7;
+            const saturday = new Date(now);
+            saturday.setDate(now.getDate() + daysUntilSaturday);
+            calYear = saturday.getFullYear();
+            calMonth = saturday.getMonth();
+            calSelectedDay = saturday.getDate();
+            renderCalendar();
+        });
+    }
+
+    const btnShortcutAnniv = document.getElementById('cal-shortcut-anniversary');
+    if (btnShortcutAnniv) {
+        btnShortcutAnniv.addEventListener('click', () => {
+            initAudio();
+            playBeep(880, 'sine', 0.1);
+            calMonth = 7; // August
+            calSelectedDay = 31;
+            renderCalendar();
+        });
+    }
+
+    // Confirm Date Button
+    const btnCalConfirm = document.getElementById('cal-confirm-btn');
+    if (btnCalConfirm) {
+        btnCalConfirm.addEventListener('click', () => {
+            initAudio();
+            playCelebrateFanfare();
+            const formatted = getFormattedSelectedDate();
+            selectedDateAnswers.push({ step: 'PICK A DAY', answer: `🗓️ ${formatted}` });
+
+            closeModal('calendar-modal');
+            launchCelebration(60);
+
+            // If currently on Step 2 (index 1), advance!
+            if (currentStepIndex === 1) {
+                currentStepIndex++;
+                renderDateStep();
+            }
+        });
+    }
+
+    // Tapping calendar Flork container also opens calendar on Step 2
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('#flork-container') && currentStepIndex === 1) {
+            initAudio();
+            playBeep(880, 'sine', 0.1);
+            openModal('calendar-modal');
+            renderCalendar();
         }
     });
 
