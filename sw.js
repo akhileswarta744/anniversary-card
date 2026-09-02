@@ -1,5 +1,5 @@
 // Service Worker for Akhil & Her Progressive Web App
-const CACHE_NAME = 'akhil-her-app-v6';
+const CACHE_NAME = 'akhil-her-app-v7';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',
@@ -9,7 +9,11 @@ const ASSETS_TO_CACHE = [
     './icons/icon-192.png',
     './icons/icon-512.png',
     './icons/apple-touch-icon.png',
-    './icons/icon.svg'
+    './icons/icon.svg',
+    './audio/track1_bombay_theme.mp3',
+    './audio/track2_pehla_nasha.mp3',
+    './audio/track3_ennavale.mp3',
+    './audio/track4_jiya_jale.mp3'
 ];
 
 self.addEventListener('install', (event) => {

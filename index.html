@@ -28,7 +28,7 @@
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
     <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 
-    <link rel="stylesheet" href="styles.css?v=18.0">
+    <link rel="stylesheet" href="styles.css?v=19.0">
 </head>
 <body class="theme-minimal-romantic">
 
@@ -204,15 +204,16 @@
             </div>
         </section>
 
-        <!-- Aesthetic Vinyl Record Music Player Widget -->
+        <!-- Aesthetic 90s Romantic Vinyl Record Music Player Widget -->
         <div class="vinyl-player-widget" id="vinyl-player-widget">
+            <audio id="vinyl-real-audio" preload="metadata"></audio>
             <div class="vinyl-record-wrap" id="vinyl-record-wrap">
                 <div class="vinyl-disc" id="vinyl-disc">
                     <div class="vinyl-groove groove-1"></div>
                     <div class="vinyl-groove groove-2"></div>
                     <div class="vinyl-center-label">
                         <span class="vinyl-heart">❤️</span>
-                        <small>4 YEARS</small>
+                        <small id="vinyl-center-label-text">90s LOVE</small>
                     </div>
                 </div>
                 <div class="vinyl-tonearm" id="vinyl-tonearm">
@@ -223,26 +224,40 @@
             </div>
             <div class="vinyl-info-wrap">
                 <div class="vinyl-title-row">
-                    <span class="vinyl-song-title" id="vinyl-song-title">Can't Help Falling in Love</span>
-                    <span class="vinyl-live-badge" id="vinyl-live-badge">♪ PLAYING</span>
+                    <span class="vinyl-song-title" id="vinyl-song-title">Bombay Theme (1995)</span>
+                    <span class="vinyl-live-badge" id="vinyl-live-badge">90s CLASSIC</span>
                 </div>
-                <div class="vinyl-artist-sub">Akhil &hearts; Her &bull; Romantic Melody</div>
+                <div class="vinyl-artist-sub" id="vinyl-artist-sub">A.R. Rahman &bull; Evergreen Love Melody</div>
                 <div class="vinyl-progress-bar-wrap">
-                    <div class="vinyl-progress-track" id="vinyl-progress-track">
+                    <div class="vinyl-progress-track" id="vinyl-progress-track" title="Click to jump">
                         <div class="vinyl-progress-fill" id="vinyl-progress-fill"></div>
                     </div>
                     <div class="vinyl-time-row">
                         <span id="vinyl-current-time">0:00</span>
-                        <span id="vinyl-total-time">3:20</span>
+                        <span id="vinyl-total-time">5:18</span>
                     </div>
                 </div>
             </div>
             <div class="vinyl-controls">
-                <button class="vinyl-btn-play" id="btn-vinyl-play" title="Play / Pause Romantic Song">
+                <button class="vinyl-btn-nav" id="btn-vinyl-prev" title="Previous 90s Song">⏮</button>
+                <button class="vinyl-btn-play" id="btn-vinyl-play" title="Play / Pause 90s Song">
                     <span id="vinyl-play-icon">▶</span>
                 </button>
+                <button class="vinyl-btn-nav" id="btn-vinyl-next" title="Next 90s Song">⏭</button>
+                <button class="vinyl-btn-list" id="btn-vinyl-list-toggle" title="90s Nostalgia Tracklist">🎵</button>
             </div>
             <div class="floating-music-notes" id="floating-music-notes"></div>
+        </div>
+
+        <!-- 90s Nostalgia Tracklist Drawer -->
+        <div class="vinyl-playlist-drawer hidden" id="vinyl-playlist-drawer">
+            <div class="playlist-header">
+                <span class="playlist-badge">📼 90S GOLDEN ROMANCE PLAYLIST</span>
+                <button class="playlist-close" id="btn-close-playlist">&times;</button>
+            </div>
+            <div class="playlist-items-list" id="playlist-items-list">
+                <!-- Dynamically populated 90s songs -->
+            </div>
         </div>
 
         <!-- Feature Switcher Dock (Clean Minimalist Pills) -->
@@ -792,6 +807,6 @@
         </div>
     </div>
 
-    <script src="terminal.js?v=18.0"></script>
+    <script src="terminal.js?v=19.0"></script>
 </body>
 </html>

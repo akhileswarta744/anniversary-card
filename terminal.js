@@ -540,28 +540,60 @@
         });
     }
 
-    // 8-bit Synthwave Lo-fi Engine
-    let bgmInterval = null;
-    let bgmStep = 0;
-    let bgmSeconds = 0;
-    let notesInterval = null;
-    const totalSongSeconds = 200; // 3:20
-
-    const synthChords = [
-        [261.63, 329.63, 392.00, 523.25], // C major
-        [196.00, 246.94, 293.66, 392.00], // G major
-        [220.00, 261.63, 329.63, 440.00], // A minor
-        [174.61, 220.00, 261.63, 349.23], // F major
-        [261.63, 329.63, 392.00, 659.25], // C/E
-        [174.61, 220.00, 261.63, 440.00], // F
-        [196.00, 246.94, 293.66, 493.88], // G
-        [261.63, 392.00, 523.25, 659.25]  // C maj
+    // =========================================================
+    // 90s ROMANTIC VINYL AUDIO ENGINE & PLAYLIST
+    // =========================================================
+    const RETRO_90S_PLAYLIST = [
+        {
+            id: 'bombay-theme',
+            title: 'Bombay Theme (1995)',
+            movie: 'Bombay',
+            artist: 'A.R. Rahman',
+            year: '1995',
+            sub: 'A.R. Rahman &bull; Evergreen Love Symphony',
+            src: 'audio/track1_bombay_theme.mp3',
+            tag: 'A.R. Rahman'
+        },
+        {
+            id: 'pehla-nasha',
+            title: 'Pehla Nasha',
+            movie: 'Jo Jeeta Wohi Sikandar',
+            artist: 'Udit Narayan & Sadhana Sargam',
+            year: '1992',
+            sub: 'Udit Narayan & Sadhana Sargam &bull; 1992',
+            src: 'audio/track2_pehla_nasha.mp3',
+            tag: '90s Classic'
+        },
+        {
+            id: 'ennavale',
+            title: 'Ennavale Adi Ennavale',
+            movie: 'Kadhalan',
+            artist: 'P. Unnikrishnan & A.R. Rahman',
+            year: '1994',
+            sub: 'P. Unnikrishnan & A.R. Rahman &bull; 1994',
+            src: 'audio/track3_ennavale.mp3',
+            tag: '90s South Melody'
+        },
+        {
+            id: 'jiya-jale',
+            title: 'Jiya Jale (Punjiri Thanji)',
+            movie: 'Dil Se',
+            artist: 'Lata Mangeshkar, Preetha & A.R. Rahman',
+            year: '1998',
+            sub: 'Lata Mangeshkar & A.R. Rahman &bull; 1998',
+            src: 'audio/track4_jiya_jale.mp3',
+            tag: 'KA ↔ KL Anthem'
+        }
     ];
+
+    let currentTrackIndex = 0;
+    const realAudioEl = document.getElementById('vinyl-real-audio');
+    let notesInterval = null;
 
     function spawnFloatingMusicNote() {
         const container = document.getElementById('floating-music-notes');
         if (!container) return;
-        const notes = ['♪', '♫', '♩', '♬', '💕', '✨', '💖'];
+        const notes = ['♪', '♫', '♩', '♬', '💕', '✨', '💖', '🌸'];
         const note = document.createElement('span');
         note.className = 'floating-note';
         note.textContent = notes[Math.floor(Math.random() * notes.length)];
@@ -570,55 +602,53 @@
         setTimeout(() => note.remove(), 2600);
     }
 
+    function initTrack(idx, autoPlay = false) {
+        currentTrackIndex = (idx + RETRO_90S_PLAYLIST.length) % RETRO_90S_PLAYLIST.length;
+        const track = RETRO_90S_PLAYLIST[currentTrackIndex];
+        if (!track) return;
+
+        if (realAudioEl) {
+            realAudioEl.src = track.src;
+            realAudioEl.load();
+        }
+
+        const titleEl = document.getElementById('vinyl-song-title');
+        const artistEl = document.getElementById('vinyl-artist-sub');
+        const labelText = document.getElementById('vinyl-center-label-text');
+        if (titleEl) titleEl.textContent = track.title;
+        if (artistEl) artistEl.innerHTML = track.sub;
+        if (labelText) labelText.textContent = track.year;
+
+        renderPlaylistDrawer();
+
+        if (autoPlay) {
+            startMusic();
+        }
+    }
+
     function startMusic() {
         initAudio();
-        if (!audioCtx) return;
-        stopMusic();
-        state.music = true;
-        updateMusicButton();
-        bgmStep = 0;
-
-        bgmInterval = setInterval(() => {
-            if (!state.music || !audioCtx) return;
-            const chordIndex = Math.floor(bgmStep / 4) % synthChords.length;
-            const noteIndex = bgmStep % 4;
-            const freq = synthChords[chordIndex][noteIndex];
-
-            const now = audioCtx.currentTime;
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(freq, now);
-            gain.gain.setValueAtTime(0.04, now);
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.42);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start(now);
-            osc.stop(now + 0.42);
-
-            bgmStep++;
-
-            // Progress bar and timer tick
-            if (bgmStep % 3 === 0) {
-                bgmSeconds = (bgmSeconds + 1) % totalSongSeconds;
-                const curM = Math.floor(bgmSeconds / 60);
-                const curS = (bgmSeconds % 60).toString().padStart(2, '0');
-                const curTimeEl = document.getElementById('vinyl-current-time');
-                const fillEl = document.getElementById('vinyl-progress-fill');
-                if (curTimeEl) curTimeEl.textContent = `${curM}:${curS}`;
-                if (fillEl) fillEl.style.width = `${(bgmSeconds / totalSongSeconds) * 100}%`;
+        const track = RETRO_90S_PLAYLIST[currentTrackIndex];
+        if (realAudioEl) {
+            if (!realAudioEl.src || !realAudioEl.src.includes(track.src)) {
+                realAudioEl.src = track.src;
             }
-        }, 330);
-
-        notesInterval = setInterval(() => {
-            if (state.music) spawnFloatingMusicNote();
-        }, 650);
+            realAudioEl.play().then(() => {
+                state.music = true;
+                updateMusicButton();
+                if (!notesInterval) {
+                    notesInterval = setInterval(spawnFloatingMusicNote, 650);
+                }
+                printLine(`🎵 Playing 90s Classic: ${track.title} (${track.artist})`, 'text-accent');
+            }).catch(err => {
+                console.log('Audio playback waiting for user click:', err);
+            });
+        }
     }
 
     function stopMusic() {
-        if (bgmInterval) {
-            clearInterval(bgmInterval);
-            bgmInterval = null;
+        if (realAudioEl) {
+            realAudioEl.pause();
         }
         if (notesInterval) {
             clearInterval(notesInterval);
@@ -631,11 +661,22 @@
     function toggleMusic() {
         if (state.music) {
             stopMusic();
-            printLine('🎵 Romantic BGM paused.', 'text-dim');
+            printLine('🎵 90s Vinyl Music paused.', 'text-dim');
         } else {
             startMusic();
-            printLine('🎵 Romantic Couple Melody playing on Vinyl.', 'text-accent');
         }
+    }
+
+    function playNextTrack() {
+        initAudio();
+        playKeyClick();
+        initTrack(currentTrackIndex + 1, true);
+    }
+
+    function playPrevTrack() {
+        initAudio();
+        playKeyClick();
+        initTrack(currentTrackIndex - 1, true);
     }
 
     function updateMusicButton() {
@@ -2878,31 +2919,109 @@ Happy 4th Anniversary, my love! ❤️
     renderDateStep();
 
     // =========================================================
-    // 16. AESTHETIC VINYL PLAYER CONTROLS
+    // 16. AESTHETIC 90s VINYL PLAYER CONTROLS & PLAYLIST
     // =========================================================
     const btnVinylPlay = document.getElementById('btn-vinyl-play');
     if (btnVinylPlay) {
-        btnVinylPlay.addEventListener('click', () => {
-            toggleMusic();
+        btnVinylPlay.addEventListener('click', toggleMusic);
+    }
+
+    const btnVinylPrev = document.getElementById('btn-vinyl-prev');
+    if (btnVinylPrev) {
+        btnVinylPrev.addEventListener('click', playPrevTrack);
+    }
+
+    const btnVinylNext = document.getElementById('btn-vinyl-next');
+    if (btnVinylNext) {
+        btnVinylNext.addEventListener('click', playNextTrack);
+    }
+
+    const btnVinylListToggle = document.getElementById('btn-vinyl-list-toggle');
+    const playlistDrawer = document.getElementById('vinyl-playlist-drawer');
+    const btnClosePlaylist = document.getElementById('btn-close-playlist');
+
+    if (btnVinylListToggle) {
+        btnVinylListToggle.addEventListener('click', () => {
+            initAudio();
+            playKeyClick();
+            if (playlistDrawer) playlistDrawer.classList.toggle('hidden');
         });
     }
 
+    if (btnClosePlaylist) {
+        btnClosePlaylist.addEventListener('click', () => {
+            if (playlistDrawer) playlistDrawer.classList.add('hidden');
+        });
+    }
+
+    // Audio element real time updates
+    if (realAudioEl) {
+        realAudioEl.addEventListener('timeupdate', () => {
+            if (!realAudioEl.duration) return;
+            const cur = realAudioEl.currentTime;
+            const dur = realAudioEl.duration;
+            const curM = Math.floor(cur / 60);
+            const curS = Math.floor(cur % 60).toString().padStart(2, '0');
+            const durM = Math.floor(dur / 60);
+            const durS = Math.floor(dur % 60).toString().padStart(2, '0');
+
+            const curTimeEl = document.getElementById('vinyl-current-time');
+            const totalTimeEl = document.getElementById('vinyl-total-time');
+            const fillEl = document.getElementById('vinyl-progress-fill');
+
+            if (curTimeEl) curTimeEl.textContent = `${curM}:${curS}`;
+            if (totalTimeEl) totalTimeEl.textContent = `${durM}:${durS}`;
+            if (fillEl) fillEl.style.width = `${(cur / dur) * 100}%`;
+        });
+
+        realAudioEl.addEventListener('ended', () => {
+            playNextTrack();
+        });
+    }
+
+    // Scrub on progress track
     const vinylTrack = document.getElementById('vinyl-progress-track');
     if (vinylTrack) {
         vinylTrack.addEventListener('click', (e) => {
+            if (!realAudioEl || !realAudioEl.duration) return;
             const rect = vinylTrack.getBoundingClientRect();
             const clickX = e.clientX - rect.left;
             const fraction = Math.max(0, Math.min(1, clickX / rect.width));
-            bgmSeconds = Math.floor(fraction * totalSongSeconds);
-            const curM = Math.floor(bgmSeconds / 60);
-            const curS = (bgmSeconds % 60).toString().padStart(2, '0');
-            const curTimeEl = document.getElementById('vinyl-current-time');
-            const fillEl = document.getElementById('vinyl-progress-fill');
-            if (curTimeEl) curTimeEl.textContent = `${curM}:${curS}`;
-            if (fillEl) fillEl.style.width = `${fraction * 100}%`;
+            realAudioEl.currentTime = fraction * realAudioEl.duration;
             if (!state.music) startMusic();
         });
     }
+
+    function renderPlaylistDrawer() {
+        const listContainer = document.getElementById('playlist-items-list');
+        if (!listContainer) return;
+        let html = '';
+        RETRO_90S_PLAYLIST.forEach((t, i) => {
+            const isActive = (i === currentTrackIndex);
+            html += `
+                <div class="playlist-item ${isActive ? 'active' : ''}" onclick="window.select90sTrack(${i})">
+                    <div class="playlist-item-left">
+                        <span class="playlist-disc-icon">${isActive && state.music ? '💿' : '📻'}</span>
+                        <div class="playlist-song-meta">
+                            <span class="playlist-song-name">${escapeHTML(t.title)}</span>
+                            <span class="playlist-song-artist">${escapeHTML(t.artist)} &bull; ${escapeHTML(t.movie)}</span>
+                        </div>
+                    </div>
+                    <div class="playlist-item-right">
+                        <span class="playlist-tag">${escapeHTML(t.tag)}</span>
+                    </div>
+                </div>
+            `;
+        });
+        listContainer.innerHTML = html;
+    }
+
+    window.select90sTrack = function(idx) {
+        initTrack(idx, true);
+    };
+
+    // Initialize first track
+    initTrack(0, false);
 
     // =========================================================
     // 17. POLAROID MEMORY SCRAPBOOK CONTROLLER
