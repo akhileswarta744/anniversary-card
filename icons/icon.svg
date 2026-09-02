@@ -1,11 +1,76 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" width="512" height="512">
   <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#ec4899" />
-      <stop offset="100%" stop-color="#c026d3" />
+    <radialGradient id="bgGrad" cx="50%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#fff5f9" />
+      <stop offset="60%" stop-color="#fed7e8" />
+      <stop offset="100%" stop-color="#fbcfe8" />
+    </radialGradient>
+    <linearGradient id="heartGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff4b8b" />
+      <stop offset="100%" stop-color="#e11d48" />
     </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#ec4899" flood-opacity="0.35" />
+    </filter>
+    <filter id="florkShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000000" flood-opacity="0.08" />
+    </filter>
   </defs>
-  <rect width="512" height="512" rx="120" fill="url(#grad)" />
-  <path d="M 256 405 C 256 405, 120 300, 120 195 C 120 135, 165 95, 220 95 C 250 95, 278 115, 256 148 C 234 115, 262 95, 292 95 C 347 95, 392 135, 392 195 C 392 300, 256 405, 256 405 Z" fill="#ffffff" />
-  <text x="256" y="470" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="34" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="4">AKHIL &amp; HER</text>
+
+  <rect width="512" height="512" rx="110" fill="url(#bgGrad)" />
+  <rect x="16" y="16" width="480" height="480" rx="98" fill="none" stroke="rgba(244, 114, 182, 0.45)" stroke-width="3" />
+
+  <!-- Floating Sparkles & Hearts -->
+  <text x="256" y="88" font-size="28" text-anchor="middle">💖</text>
+  <text x="110" y="140" font-size="24" text-anchor="middle">✨</text>
+  <text x="400" y="140" font-size="24" text-anchor="middle">✨</text>
+  <text x="80" y="270" font-size="20" text-anchor="middle">🌸</text>
+  <text x="430" y="270" font-size="20" text-anchor="middle">💕</text>
+
+  <!-- Left Flork Body -->
+  <path d="M 130 350 C 115 270, 110 160, 185 135 C 240 115, 245 190, 235 350 Z" 
+        fill="#ffffff" stroke="#1e1b26" stroke-width="7" stroke-linejoin="round" filter="url(#florkShadow)" />
+
+  <!-- Left Flork Eyes (Happy curves) -->
+  <path d="M 158 175 Q 168 163 178 175" fill="none" stroke="#1e1b26" stroke-width="5.5" stroke-linecap="round" />
+  <path d="M 194 175 Q 204 163 214 175" fill="none" stroke="#1e1b26" stroke-width="5.5" stroke-linecap="round" />
+
+  <!-- Left Flork Blush -->
+  <ellipse cx="152" cy="190" rx="10" ry="6.5" fill="#f472b6" opacity="0.65" />
+  <ellipse cx="220" cy="190" rx="10" ry="6.5" fill="#f472b6" opacity="0.65" />
+
+  <!-- Left Flork Sweet Smile -->
+  <path d="M 178 194 Q 186 206 195 194" fill="none" stroke="#1e1b26" stroke-width="4.5" stroke-linecap="round" />
+
+  <!-- Right Flork Body -->
+  <path d="M 275 350 C 265 190, 270 115, 325 135 C 400 160, 395 270, 380 350 Z" 
+        fill="#ffffff" stroke="#1e1b26" stroke-width="7" stroke-linejoin="round" filter="url(#florkShadow)" />
+
+  <!-- Right Flork Eyes (Happy curves) -->
+  <path d="M 298 175 Q 308 163 318 175" fill="none" stroke="#1e1b26" stroke-width="5.5" stroke-linecap="round" />
+  <path d="M 334 175 Q 344 163 354 175" fill="none" stroke="#1e1b26" stroke-width="5.5" stroke-linecap="round" />
+
+  <!-- Right Flork Blush -->
+  <ellipse cx="292" cy="190" rx="10" ry="6.5" fill="#f472b6" opacity="0.65" />
+  <ellipse cx="360" cy="190" rx="10" ry="6.5" fill="#f472b6" opacity="0.65" />
+
+  <!-- Right Flork Smile -->
+  <path d="M 318 194 Q 326 206 335 194" fill="none" stroke="#1e1b26" stroke-width="4.5" stroke-linecap="round" />
+
+  <!-- Big Vibrant Center Heart Hugged Together -->
+  <path d="M 256 325 C 256 325, 175 255, 175 198 C 175 158, 208 132, 256 168 C 304 132, 337 158, 337 198 C 337 255, 256 325, 256 325 Z" 
+        fill="url(#heartGrad)" filter="url(#shadow)" />
+  
+  <!-- Heart Specular Reflection -->
+  <path d="M 200 185 C 196 172, 205 160, 218 160 C 224 160, 222 170, 212 182 Z" fill="#ffffff" opacity="0.45" />
+
+  <!-- Arms Hugging Heart -->
+  <path d="M 160 255 Q 205 282 235 260" fill="none" stroke="#1e1b26" stroke-width="7" stroke-linecap="round" />
+  <path d="M 350 255 Q 305 282 277 260" fill="none" stroke="#1e1b26" stroke-width="7" stroke-linecap="round" />
+
+  <!-- Bottom Pill Badge: A ❤️ M -->
+  <g filter="url(#shadow)">
+    <rect x="146" y="380" width="220" height="60" rx="30" fill="#ffffff" stroke="#f472b6" stroke-width="3.5" />
+    <text x="256" y="420" font-family="-apple-system, BlinkMacSystemFont, 'Plus Jakarta Sans', sans-serif" font-size="27" font-weight="900" fill="#ec4899" text-anchor="middle" letter-spacing="1">A ❤️ M</text>
+  </g>
 </svg>
