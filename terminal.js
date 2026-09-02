@@ -1169,7 +1169,7 @@
         <div class="help-desc">View & redeem romantic anniversary coupons.</div>
     </div>
     <div class="help-card">
-        <span class="help-cmd" onclick="window.runTerminalCmd('sudo marry-again')">💍 sudo marry-again</span>
+        <span class="help-cmd" onclick="window.runTerminalCmd('marry')">💍 marry</span>
         <div class="help-desc">Renew 4-year vows with synchronized fireworks!</div>
     </div>
     <div class="help-card">
@@ -1177,16 +1177,16 @@
         <div class="help-desc">Set names & anniversary date.</div>
     </div>
     <div class="help-card">
-        <span class="help-cmd" onclick="window.runTerminalCmd('theme')">🎨 theme [cyberpunk|matrix|amber|vaporwave]</span>
-        <div class="help-desc">Change terminal visual theme.</div>
+        <span class="help-cmd" onclick="window.runTerminalCmd('theme')">🎨 theme [romantic|lavender|cotton-candy|champagne|midnight]</span>
+        <div class="help-desc">Switch romantic color theme.</div>
     </div>
     <div class="help-card">
         <span class="help-cmd" onclick="window.runTerminalCmd('music')">🎵 music</span>
-        <div class="help-desc">Toggle 8-bit romantic synthwave BGM.</div>
+        <div class="help-desc">Toggle sweet romantic background music.</div>
     </div>
     <div class="help-card">
         <span class="help-cmd" onclick="window.runTerminalCmd('clear')">🧹 clear</span>
-        <div class="help-desc">Clear terminal screen buffer.</div>
+        <div class="help-desc">Clear the message screen.</div>
     </div>
 </div>
 `;
