@@ -13,7 +13,7 @@
     <!-- Lightweight QR Code Generator -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
-    <link rel="stylesheet" href="styles.css?v=7.0">
+    <link rel="stylesheet" href="styles.css?v=8.0">
 </head>
 <body class="theme-minimal-romantic">
 
@@ -110,16 +110,72 @@
             </div>
         </section>
 
-        <!-- Live Love Notes Chat Stream -->
+        <!-- Live Location & Distance Radar -->
+        <section class="live-location-section">
+            <div class="location-card">
+                <div class="location-header">
+                    <div class="loc-title-group">
+                        <span class="loc-pulse-dot"></span>
+                        <h3 class="section-heading" style="margin:0; padding:0;">📍 Live Couple Radar</h3>
+                    </div>
+                    <button id="btn-share-loc" class="loc-share-btn" title="Share My Real GPS Location">
+                        <span>📡 Share Location</span>
+                    </button>
+                </div>
+                
+                <div class="radar-visual">
+                    <div class="partner-pin partner-pin-left">
+                        <div class="pin-avatar">❤️</div>
+                        <strong class="pin-name">Akhil</strong>
+                        <span class="pin-place" id="loc-p1-place">Karnataka (KA)</span>
+                    </div>
+                    
+                    <div class="radar-route">
+                        <div class="radar-track"></div>
+                        <div class="radar-flight">✈️</div>
+                        <div class="radar-distance-badge" id="loc-distance-badge">~365 km apart</div>
+                        <div class="radar-heart-badge">0 km at heart 💕</div>
+                    </div>
+
+                    <div class="partner-pin partner-pin-right">
+                        <div class="pin-avatar">💕</div>
+                        <strong class="pin-name" id="loc-p2-name">Her</strong>
+                        <span class="pin-place" id="loc-p2-place">Kerala (KL)</span>
+                    </div>
+                </div>
+                <div class="loc-status-footer" id="loc-status-footer">
+                    <span>✨ Connected live across Karnataka &amp; Kerala &bull; Long distance mastered!</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dedicated Couple Chatting Section -->
         <section class="love-notes-section">
             <div class="notes-header">
-                <h3 class="section-heading">💌 Live Love Notes</h3>
-                <span class="notes-badge">Real-time KA &harr; KL</span>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:18px;">💬</span>
+                    <h3 class="section-heading" style="margin:0; padding:0;">Our Private Chat Space</h3>
+                </div>
+                <span class="notes-badge">🟢 Live KA &harr; KL</span>
             </div>
 
             <!-- Scrollable Message Stream -->
             <div class="messages-container" id="terminal-body" role="log" aria-live="polite">
                 <div id="output"></div>
+            </div>
+
+            <!-- Quick 1-Tap Reaction Emojis -->
+            <div class="quick-emojis-row" id="quick-emojis-row">
+                <button class="quick-emoji-btn" data-emoji="❤️" title="Love">❤️</button>
+                <button class="quick-emoji-btn" data-emoji="💋" title="Kiss">💋</button>
+                <button class="quick-emoji-btn" data-emoji="🤗" title="Hug">🤗</button>
+                <button class="quick-emoji-btn" data-emoji="🥰" title="Adore">🥰</button>
+                <button class="quick-emoji-btn" data-emoji="😘" title="Blow Kiss">😘</button>
+                <button class="quick-emoji-btn" data-emoji="💍" title="Marry">💍</button>
+                <button class="quick-emoji-btn" data-emoji="🥺" title="Plead">🥺</button>
+                <button class="quick-emoji-btn" data-emoji="✨" title="Sparkle">✨</button>
+                <button class="quick-emoji-btn" data-emoji="💐" title="Flowers">💐</button>
+                <button class="quick-emoji-btn" data-emoji="🧸" title="Cuddle">🧸</button>
             </div>
 
             <!-- Clean Minimalist Chat Bar -->
@@ -128,7 +184,7 @@
                     type="text" 
                     id="cli-input" 
                     class="love-input" 
-                    placeholder="Write a sweet note to your love..." 
+                    placeholder="Write a sweet message to your love..." 
                     autocomplete="off"
                 >
                 <button id="btn-send" class="love-send-btn" aria-label="Send">
@@ -355,6 +411,6 @@
         </div>
     </div>
 
-    <script src="terminal.js?v=7.0"></script>
+    <script src="terminal.js?v=8.0"></script>
 </body>
 </html>

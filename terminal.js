@@ -926,6 +926,24 @@
                 printRawHTML(chatBubbleHTML);
                 break;
 
+            case 'LOCATION_UPDATE':
+                playBeep(920, 'sine', 0.1);
+                if (packet.lat && packet.lng) {
+                    const place = packet.place || `${packet.lat.toFixed(2)}°, ${packet.lng.toFixed(2)}°`;
+                    if (myRole === 'partner1') {
+                        p2Coords = { lat: packet.lat, lng: packet.lng, place };
+                    } else {
+                        p1Coords = { lat: packet.lat, lng: packet.lng, place };
+                    }
+                    if (typeof updateLiveDistanceUI === 'function') updateLiveDistanceUI();
+                    const locFooter = document.getElementById('loc-status-footer');
+                    if (locFooter) {
+                        locFooter.innerHTML = `📍 ${escapeHTML(packet.senderName)} shared their live location!`;
+                    }
+                    launchCelebration(40);
+                }
+                break;
+
             case 'PAY':
                 playCoinSound();
                 launchCelebration(70);
@@ -2061,9 +2079,9 @@ Happy 4th Anniversary, my love! ❤️
         });
     }
 
-    // Global Button Ripple & Cyber Sound Animation for EVERY button
+    // Global Button Ripple & Animation for EVERY button
     document.addEventListener('click', (e) => {
-        const btn = e.target.closest('button, .hud-btn, .quick-chip, .btn-send, .modal-close, .slap-btn, .action-btn');
+        const btn = e.target.closest('button, .action-tile, .pill-btn, .love-send-btn, .quick-emoji-btn, .modal-close, .love-card-btn, .slap-choice-card, .voucher-claim-btn');
         if (!btn) return;
         initAudio();
         playKeyClick();
@@ -2077,12 +2095,101 @@ Happy 4th Anniversary, my love! ❤️
         circle.style.top = `${e.clientY - rect.top - radius}px`;
         circle.className = 'btn-ripple';
         btn.appendChild(circle);
-        setTimeout(() => circle.remove(), 600);
+        setTimeout(() => circle.remove(), 550);
+    });
+
+    // 14. LIVE LOCATION & DISTANCE RADAR (Karnataka ↔ Kerala)
+    const btnShareLoc = document.getElementById('btn-share-loc');
+    const locDistanceBadge = document.getElementById('loc-distance-badge');
+    const locStatusFooter = document.getElementById('loc-status-footer');
+    const locP1Place = document.getElementById('loc-p1-place');
+    const locP2Place = document.getElementById('loc-p2-place');
+
+    let p1Coords = { lat: 12.9716, lng: 77.5946, place: 'Karnataka (KA)' }; // Bangalore
+    let p2Coords = { lat: 9.9312, lng: 76.2673, place: 'Kerala (KL)' };     // Kochi
+
+    function calculateDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // km
+        const dLat = (lat2 - lat1) * Math.PI / 180;
+        const dLon = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return Math.round(R * c);
+    }
+
+    function updateLiveDistanceUI() {
+        const dist = calculateDistance(p1Coords.lat, p1Coords.lng, p2Coords.lat, p2Coords.lng);
+        if (locDistanceBadge) {
+            locDistanceBadge.textContent = `${dist.toLocaleString()} km apart`;
+        }
+        if (locP1Place) locP1Place.textContent = p1Coords.place || 'Karnataka (KA)';
+        if (locP2Place) locP2Place.textContent = p2Coords.place || 'Kerala (KL)';
+    }
+
+    if (btnShareLoc) {
+        btnShareLoc.addEventListener('click', () => {
+            initAudio();
+            playBeep(880, 'sine', 0.1);
+            if (!navigator.geolocation) {
+                if (locStatusFooter) locStatusFooter.innerHTML = '📍 Geolocation not supported on this browser. Default KA ↔ KL active!';
+                return;
+            }
+            btnShareLoc.textContent = '📡 Locating...';
+            navigator.geolocation.getCurrentPosition(
+                (pos) => {
+                    const lat = pos.coords.latitude;
+                    const lng = pos.coords.longitude;
+                    const myPlace = `${lat.toFixed(2)}°N, ${lng.toFixed(2)}°E`;
+                    if (myRole === 'partner1') {
+                        p1Coords = { lat, lng, place: myPlace };
+                    } else {
+                        p2Coords = { lat, lng, place: myPlace };
+                    }
+                    updateLiveDistanceUI();
+                    btnShareLoc.textContent = '✔ Shared!';
+                    setTimeout(() => { btnShareLoc.textContent = '📡 Share Location'; }, 3000);
+
+                    sendPacket({
+                        type: 'LOCATION_UPDATE',
+                        senderName: getMyName(),
+                        lat,
+                        lng,
+                        place: myPlace
+                    });
+                    if (locStatusFooter) {
+                        locStatusFooter.innerHTML = `📍 Live location shared! Distance updated in real time 💕`;
+                    }
+                    launchCelebration(40);
+                },
+                (err) => {
+                    console.warn('Geolocation error:', err);
+                    btnShareLoc.textContent = '📡 Share Location';
+                    if (locStatusFooter) {
+                        locStatusFooter.innerHTML = '📍 Default Karnataka ↔ Kerala connection active! Distance is only physical 💕';
+                    }
+                },
+                { enableHighAccuracy: false, timeout: 8000 }
+            );
+        });
+    }
+    updateLiveDistanceUI();
+
+    // 15. QUICK 1-TAP CHAT REACTION EMOJIS
+    document.addEventListener('click', (e) => {
+        const emojiBtn = e.target.closest('.quick-emoji-btn');
+        if (!emojiBtn) return;
+        const emoji = emojiBtn.getAttribute('data-emoji');
+        if (emoji) {
+            initAudio();
+            commands.chat.exec([emoji]);
+        }
     });
 
     document.addEventListener('click', (e) => {
         if (!window.getSelection().toString() && !e.target.closest('button, select, input, .help-cmd, .modal-card')) {
-            inputEl.focus();
+            if (inputEl) inputEl.focus();
         }
     });
 
