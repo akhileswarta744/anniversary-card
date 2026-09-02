@@ -19,7 +19,7 @@
 
     const defaultState = {
         partner1: 'Akhil',
-        partner2: 'My Sweetheart',
+        partner2: 'Her',
         anniversaryDate: '2022-08-31T00:00:00',
         wallet: {
             '$KISSES': 9999,
@@ -62,6 +62,11 @@
                 if (!loaded.theme || loaded.theme === 'theme-cyberpunk') {
                     loaded.theme = 'theme-romantic';
                 }
+                // Ensure pair is always Akhil & Her, never Akhil & Akhil
+                loaded.partner1 = 'Akhil';
+                if (!loaded.partner2 || loaded.partner2.toLowerCase() === 'akhil' || loaded.partner2.toLowerCase() === 'my sweetheart') {
+                    loaded.partner2 = 'Her';
+                }
                 return loaded;
             }
         } catch (e) {}
@@ -75,11 +80,11 @@
     }
 
     function getMyName() {
-        return myRole === 'partner1' ? state.partner1 : state.partner2;
+        return myRole === 'partner1' ? 'Akhil' : (state.partner2 || 'Her');
     }
 
     function getPartnerName() {
-        return myRole === 'partner1' ? state.partner2 : state.partner1;
+        return myRole === 'partner1' ? (state.partner2 || 'Her') : 'Akhil';
     }
 
     // 2. DOM ELEMENTS
@@ -772,7 +777,9 @@
             hudWallet.textContent = `${state.wallet['$KISSES'].toLocaleString()} Kisses`;
         }
         if (hudPartners) {
-            hudPartners.innerHTML = `${escapeHTML(state.partner1)} &amp; ${escapeHTML(state.partner2)}`;
+            const p1 = 'Akhil';
+            const p2 = (state.partner2 && state.partner2.toLowerCase() !== 'akhil' && state.partner2.toLowerCase() !== 'my sweetheart') ? state.partner2 : 'Her';
+            hudPartners.innerHTML = `${escapeHTML(p1)} &amp; ${escapeHTML(p2)}`;
         }
         if (promptUser) promptUser.textContent = `💌`;
         if (hudRoomBadge) hudRoomBadge.textContent = `KA ↔ KL LIVE`;
@@ -927,13 +934,16 @@
         switch (packet.type) {
             case 'PRESENCE_JOIN':
                 partnerOnline = true;
-                if (hudActiveUsers) hudActiveUsers.textContent = `${state.partner1.toUpperCase()} + ${state.partner2.toUpperCase()} 🟢`;
+                if (hudActiveUsers) hudActiveUsers.textContent = `AKHIL + HER 🟢`;
                 playCelebrateFanfare();
                 launchCelebration(80);
 
                 if (packet.senderName) {
-                    if (myRole === 'partner1') state.partner2 = packet.senderName;
-                    else state.partner1 = packet.senderName;
+                    if (myRole === 'partner1') {
+                        state.partner2 = (packet.senderName.toLowerCase() !== 'akhil') ? packet.senderName : 'Her';
+                    } else {
+                        state.partner1 = 'Akhil';
+                    }
                     saveState();
                     updateHUD();
                 }
@@ -945,8 +955,8 @@
                     sendPacket({
                         type: 'STATE_SYNC',
                         wallet: state.wallet,
-                        partner1: state.partner1,
-                        partner2: state.partner2,
+                        partner1: 'Akhil',
+                        partner2: (state.partner2 && state.partner2.toLowerCase() !== 'akhil') ? state.partner2 : 'Her',
                         anniversaryDate: state.anniversaryDate,
                         coupons: state.coupons
                     });
@@ -955,13 +965,14 @@
 
             case 'HEARTBEAT':
                 partnerOnline = true;
-                if (hudActiveUsers) hudActiveUsers.textContent = `${state.partner1.toUpperCase()} + ${state.partner2.toUpperCase()} 🟢`;
+                if (hudActiveUsers) hudActiveUsers.textContent = `AKHIL + HER 🟢`;
                 break;
 
             case 'STATE_SYNC':
                 if (packet.wallet) state.wallet = Object.assign({}, state.wallet, packet.wallet);
                 if (packet.coupons) state.coupons = packet.coupons;
-                if (packet.partner1) state.partner1 = packet.partner1;
+                state.partner1 = 'Akhil';
+                state.partner2 = (packet.partner2 && packet.partner2.toLowerCase() !== 'akhil') ? packet.partner2 : 'Her';
                 if (packet.anniversaryDate) state.anniversaryDate = packet.anniversaryDate;
                 saveState();
                 updateHUD();
