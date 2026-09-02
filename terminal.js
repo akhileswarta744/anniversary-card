@@ -227,41 +227,51 @@
         playSlapSound();
 
         if (navigator.vibrate) {
-            try { navigator.vibrate([100, 40, 120]); } catch (e) {}
+            try { navigator.vibrate([120, 50, 140]); } catch (e) {}
         }
 
-        // Screen shake
+        // 1. Shake entire body & terminal wrapper on laptop
+        document.body.classList.remove('screen-shake');
         const wrapper = document.querySelector('.terminal-wrapper');
-        if (wrapper) {
-            wrapper.classList.remove('screen-shake');
-            void wrapper.offsetWidth;
-            wrapper.classList.add('screen-shake');
-            setTimeout(() => wrapper.classList.remove('screen-shake'), 460);
-        }
+        if (wrapper) wrapper.classList.remove('screen-shake');
+        
+        void document.body.offsetWidth; // force reflow
 
-        // Slap Flash
+        document.body.classList.add('screen-shake');
+        if (wrapper) wrapper.classList.add('screen-shake');
+        setTimeout(() => {
+            document.body.classList.remove('screen-shake');
+            if (wrapper) wrapper.classList.remove('screen-shake');
+        }, 580);
+
+        // 2. Slap Flash Overlay
         const flash = document.createElement('div');
         flash.className = 'slap-flash';
         document.body.appendChild(flash);
-        setTimeout(() => flash.remove(), 460);
+        setTimeout(() => flash.remove(), 600);
 
-        // Visual overlay
-        const overlay = document.getElementById('slap-overlay');
-        if (overlay) {
-            overlay.innerHTML = `
-                <div class="slap-animation-box">
-                    <div class="slap-hand-anim">👋</div>
-                    <div class="slap-smack-text">💥 SMACK! 💥</div>
-                    <div class="slap-reason-tag">
-                        ${isIncoming ? `FROM ${escapeHTML(senderName).toUpperCase()}: ` : 'SLAP DELIVERED: '}
-                        <em>"${escapeHTML(reason)}"</em>
-                    </div>
-                </div>
-            `;
-            setTimeout(() => {
-                overlay.innerHTML = '';
-            }, 850);
+        // 3. Visual Hand & Comic SMACK!
+        let overlay = document.getElementById('slap-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'slap-overlay';
+            overlay.className = 'slap-overlay';
+            document.body.appendChild(overlay);
         }
+
+        overlay.innerHTML = `
+            <div class="slap-animation-box">
+                <div class="slap-hand-anim">👋</div>
+                <div class="slap-smack-text">💥 SMACK! 💥</div>
+                <div class="slap-reason-tag">
+                    ${isIncoming ? `FROM ${escapeHTML(senderName).toUpperCase()}: ` : 'SLAP DELIVERED: '}
+                    <em>"${escapeHTML(reason)}"</em>
+                </div>
+            </div>
+        `;
+        setTimeout(() => {
+            if (overlay) overlay.innerHTML = '';
+        }, 1500);
     }
 
     function playCelebrateFanfare() {
@@ -751,6 +761,9 @@
                 const slapReceiptHTML = `
 <div class="slap-card">
     <div class="slap-card-title">⚠️ INCOMING PLAYFUL SLAP RECEIVED ⚠️</div>
+    <div style="font-family: monospace; color:#ff0055; text-align:center; font-size:18px; margin: 6px 0; font-weight:bold;">
+        💥 ( ✖ ╭╮ ✖ ) 💥 OUCCCCHHH!
+    </div>
     <div style="margin: 6px 0;">
         <p>From: <strong class="text-accent">${escapeHTML(packet.senderName)}</strong></p>
         <p>Reason: <em class="text-highlight">"${escapeHTML(packet.reason)}"</em></p>
@@ -988,6 +1001,9 @@
                 const html = `
 <div class="slap-card">
     <div class="slap-card-title">👋 PLAYFUL SLAP DISPATCHED 👋</div>
+    <div style="font-family: monospace; color:#ff0055; text-align:center; font-size:18px; margin: 6px 0; font-weight:bold;">
+        (╯°□°)╯︵ 💥 WHACK! 💥
+    </div>
     <div style="margin: 6px 0;">
         <p>Target: <strong class="text-accent">${escapeHTML(recipientName)}</strong></p>
         <p>Reason: <em class="text-highlight">"${escapeHTML(reason)}"</em></p>

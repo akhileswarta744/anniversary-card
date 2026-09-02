@@ -582,17 +582,18 @@ body {
 /* Screen Shake Effect */
 @keyframes screen-shake {
     0% { transform: translate(0, 0) rotate(0deg); }
-    10% { transform: translate(-18px, 12px) rotate(-4deg); }
-    20% { transform: translate(16px, -14px) rotate(4deg); }
-    35% { transform: translate(-12px, 8px) rotate(-3deg); }
-    50% { transform: translate(10px, -8px) rotate(2deg); }
-    65% { transform: translate(-6px, 4px) rotate(-1deg); }
-    80% { transform: translate(4px, -2px) rotate(1deg); }
+    10% { transform: translate(-22px, 14px) rotate(-4deg); }
+    20% { transform: translate(20px, -18px) rotate(4deg); }
+    35% { transform: translate(-16px, 10px) rotate(-3deg); }
+    50% { transform: translate(14px, -10px) rotate(2deg); }
+    65% { transform: translate(-8px, 6px) rotate(-1deg); }
+    80% { transform: translate(6px, -3px) rotate(1deg); }
     100% { transform: translate(0, 0) rotate(0deg); }
 }
 
-.screen-shake {
-    animation: screen-shake 0.45s ease-in-out !important;
+body.screen-shake,
+.terminal-wrapper.screen-shake {
+    animation: screen-shake 0.55s ease-in-out !important;
 }
 
 /* Slap Flash Red/Pink Overlay */
@@ -603,14 +604,14 @@ body {
     width: 100vw;
     height: 100vh;
     height: 100dvh;
-    background: radial-gradient(circle, rgba(255, 0, 80, 0.4) 0%, rgba(255, 0, 80, 0.75) 100%);
+    background: radial-gradient(circle, rgba(255, 0, 80, 0.45) 0%, rgba(255, 0, 80, 0.85) 100%);
     pointer-events: none;
-    z-index: 99;
-    animation: slap-flash-anim 0.45s ease-out forwards;
+    z-index: 999998 !important;
+    animation: slap-flash-anim 0.6s ease-out forwards;
 }
 
 @keyframes slap-flash-anim {
-    0% { opacity: 0.9; }
+    0% { opacity: 0.95; }
     100% { opacity: 0; }
 }
 
@@ -623,7 +624,7 @@ body {
     height: 100vh;
     height: 100dvh;
     pointer-events: none;
-    z-index: 150;
+    z-index: 999999 !important;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -640,49 +641,23 @@ body {
 }
 
 .slap-hand-anim {
-    font-size: 130px;
-    filter: drop-shadow(0 0 25px rgba(255, 0, 128, 0.85));
-    animation: slap-swing 0.45s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
+    font-size: clamp(140px, 16vw, 220px);
+    filter: drop-shadow(0 0 35px rgba(255, 0, 128, 0.95));
+    animation: slap-swing 1.2s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
     transform-origin: bottom center;
 }
 
 @keyframes slap-swing {
     0% {
-        transform: scale(0.3) rotate(60deg) translateX(250px);
+        transform: scale(0.4) rotate(70deg) translate(350px, -80px);
         opacity: 0;
     }
-    60% {
-        transform: scale(1.4) rotate(-25deg) translateX(-20px);
+    20% {
+        transform: scale(1.4) rotate(-20deg) translate(-20px, 10px);
         opacity: 1;
     }
-    85% {
-        transform: scale(1.1) rotate(0deg) translateX(0);
-        opacity: 1;
-    }
-    100% {
-        transform: scale(0.9) rotate(-10deg);
-        opacity: 0;
-    }
-}
-
-.slap-smack-text {
-    font-family: var(--font-display);
-    font-weight: 900;
-    font-size: clamp(34px, 8vw, 60px);
-    color: #ffe600;
-    text-shadow: 0 0 20px #ff007f, 0 0 40px #ff007f, 3px 3px 0 #000;
-    animation: slap-pop 0.65s ease-out forwards;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-}
-
-@keyframes slap-pop {
-    0% {
-        transform: scale(0.2) rotate(-15deg);
-        opacity: 0;
-    }
-    50% {
-        transform: scale(1.25) rotate(5deg);
+    40% {
+        transform: scale(1.15) rotate(5deg) translate(0, 0);
         opacity: 1;
     }
     75% {
@@ -690,7 +665,45 @@ body {
         opacity: 1;
     }
     100% {
-        transform: scale(0.95);
+        transform: scale(0.7) rotate(25deg) translate(100px, 50px);
+        opacity: 0;
+    }
+}
+
+.slap-smack-text {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-size: clamp(42px, 9vw, 84px);
+    color: #ffe600;
+    text-shadow: 0 0 25px #ff007f, 0 0 50px #ff007f, 4px 4px 0 #000;
+    animation: slap-pop 1.4s ease-out forwards;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+}
+
+@keyframes slap-pop {
+    0% {
+        transform: scale(0.1) rotate(-20deg);
+        opacity: 0;
+    }
+    18% {
+        transform: scale(1.35) rotate(8deg);
+        opacity: 1;
+    }
+    35% {
+        transform: scale(1.05) rotate(-5deg);
+        opacity: 1;
+    }
+    75% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+    90% {
+        transform: scale(1.05) rotate(2deg);
+        opacity: 0.85;
+    }
+    100% {
+        transform: scale(0.75) translateY(-30px);
         opacity: 0;
     }
 }
