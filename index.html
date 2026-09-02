@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <link rel="stylesheet" href="styles.css?v=9.0">
+    <link rel="stylesheet" href="styles.css?v=10.0">
 </head>
 <body class="theme-minimal-romantic">
 
@@ -217,6 +217,36 @@
         </div>
     </div>
 
+    <!-- Location Permission Modal Popup -->
+    <div id="location-modal" class="modal-overlay hidden">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:22px;">📍</span>
+                    <h3 style="margin:0;">Live Location Access</h3>
+                </div>
+                <button class="modal-close" data-close="location-modal">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align:center;">
+                <div style="font-size:48px; margin: 12px 0;">🗺️✨</div>
+                <h4 style="font-family: var(--font-serif); font-size:18px; color:var(--text-main); margin-bottom:8px;">
+                    Track Live Distance on Couple Map
+                </h4>
+                <p style="font-size:13px; color:var(--text-muted); line-height:1.5; margin-bottom:18px;">
+                    Allow location access to show both your real-time pins and calculate the exact kilometers between Karnataka &amp; Kerala live! 💕
+                </p>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <button id="btn-allow-location" class="modal-btn-primary" style="width:100%; padding:14px; font-size:15px; font-weight:800; cursor:pointer;">
+                        <span>📍 Allow &amp; Share Live Location</span>
+                    </button>
+                    <button class="pill-btn" style="background:#f5f5f5; color:#777; width:100%; justify-content:center; padding:10px; cursor:pointer;" data-close="location-modal">
+                        <span>Keep Default (KA ↔ KL)</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- 2. Romantic Love Letter Modal -->
     <div id="letter-modal" class="modal-overlay hidden">
         <div class="modal-card modal-letter-card">
@@ -404,6 +434,6 @@
         </div>
     </div>
 
-    <script src="terminal.js?v=9.0"></script>
+    <script src="terminal.js?v=10.0"></script>
 </body>
 </html>

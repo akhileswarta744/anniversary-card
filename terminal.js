@@ -111,6 +111,10 @@
     const modalRoomName = document.getElementById('modal-room-name');
     const qrContainer = document.getElementById('qrcode');
 
+    // Network State
+    let isCloudConnected = false;
+    let partnerOnline = false;
+
     // History
     let commandHistory = [];
     let historyIndex = -1;
@@ -757,8 +761,6 @@
     const myClientId = `love_os_${myRole}_${Math.random().toString(36).substring(2, 8)}`;
     const topic = `love-os/5th-anniversary/room/${roomId}`;
     let mqttClient = null;
-    let isCloudConnected = false;
-    let partnerOnline = false;
 
     // Cross-tab broadcast backup
     let broadcast = null;
@@ -768,8 +770,8 @@
     } catch (e) {}
 
     function initCloudRelay() {
-        cloudStatusLight.className = 'status-indicator waiting';
-        hudRelayStatus.textContent = 'CONNECTING...';
+        if (cloudStatusLight) cloudStatusLight.className = 'status-indicator waiting';
+        if (hudRelayStatus) hudRelayStatus.innerHTML = '🟡 Connecting...';
 
         // Connect to HiveMQ Public WebSocket Broker over TLS 8884 (port 443 compliant)
         const brokerUrl = 'wss://broker.hivemq.com:8884/mqtt';
@@ -2193,61 +2195,80 @@ Happy 4th Anniversary, my love! ❤️
         }
 
         if (coupleMap && markerP1 && markerP2 && polylineRoute) {
-            markerP1.setLatLng([p1Coords.lat, p1Coords.lng]);
-            markerP1.setPopupContent(`<strong>❤️ ${escapeHTML(state.partner1)}</strong><br>${p1Coords.place || 'Karnataka'}`);
+            if (typeof markerP1.setLatLng === 'function') markerP1.setLatLng([p1Coords.lat, p1Coords.lng]);
+            if (typeof markerP1.setPopupContent === 'function') markerP1.setPopupContent(`<strong>❤️ ${escapeHTML(state.partner1)}</strong><br>${p1Coords.place || 'Karnataka'}`);
 
-            markerP2.setLatLng([p2Coords.lat, p2Coords.lng]);
-            markerP2.setPopupContent(`<strong>💕 ${escapeHTML(state.partner2)}</strong><br>${p2Coords.place || 'Kerala'}`);
+            if (typeof markerP2.setLatLng === 'function') markerP2.setLatLng([p2Coords.lat, p2Coords.lng]);
+            if (typeof markerP2.setPopupContent === 'function') markerP2.setPopupContent(`<strong>💕 ${escapeHTML(state.partner2)}</strong><br>${p2Coords.place || 'Kerala'}`);
 
-            polylineRoute.setLatLngs([[p1Coords.lat, p1Coords.lng], [p2Coords.lat, p2Coords.lng]]);
-            coupleMap.fitBounds(polylineRoute.getBounds(), { padding: [40, 40], maxZoom: 10 });
+            if (typeof polylineRoute.setLatLngs === 'function') polylineRoute.setLatLngs([[p1Coords.lat, p1Coords.lng], [p2Coords.lat, p2Coords.lng]]);
+            if (typeof coupleMap.fitBounds === 'function' && typeof polylineRoute.getBounds === 'function') {
+                coupleMap.fitBounds(polylineRoute.getBounds(), { padding: [40, 40], maxZoom: 10 });
+            }
         }
+    }
+
+    function requestLiveLocation() {
+        initAudio();
+        playBeep(880, 'sine', 0.1);
+        closeModal('location-modal');
+
+        if (!navigator.geolocation) {
+            if (locStatusFooter) locStatusFooter.innerHTML = '📍 Geolocation not supported on this browser. Default KA ↔ KL active!';
+            return;
+        }
+
+        if (btnShareLoc) btnShareLoc.textContent = '📡 Locating...';
+
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+                const myPlace = `${lat.toFixed(2)}°N, ${lng.toFixed(2)}°E`;
+                if (myRole === 'partner1') {
+                    p1Coords = { lat, lng, place: myPlace };
+                } else {
+                    p2Coords = { lat, lng, place: myPlace };
+                }
+                updateLiveDistanceUI();
+                if (btnShareLoc) {
+                    btnShareLoc.textContent = '✔ Shared!';
+                    setTimeout(() => { btnShareLoc.textContent = '📡 Share Location'; }, 3500);
+                }
+
+                sendPacket({
+                    type: 'LOCATION_UPDATE',
+                    senderName: getMyName(),
+                    lat,
+                    lng,
+                    place: myPlace
+                });
+                if (locStatusFooter) {
+                    locStatusFooter.innerHTML = `📍 Live location updated on the map! Distance: ${calculateDistance(p1Coords.lat, p1Coords.lng, p2Coords.lat, p2Coords.lng)} km 💕`;
+                }
+                launchCelebration(60);
+            },
+            (err) => {
+                console.warn('Geolocation error:', err);
+                if (btnShareLoc) btnShareLoc.textContent = '📡 Share Location';
+                if (locStatusFooter) {
+                    locStatusFooter.innerHTML = '📍 Default Karnataka ↔ Kerala connection active! Distance is only physical 💕';
+                }
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+        );
     }
 
     if (btnShareLoc) {
         btnShareLoc.addEventListener('click', () => {
-            initAudio();
-            playBeep(880, 'sine', 0.1);
-            if (!navigator.geolocation) {
-                if (locStatusFooter) locStatusFooter.innerHTML = '📍 Geolocation not supported on this browser. Default KA ↔ KL active!';
-                return;
-            }
-            btnShareLoc.textContent = '📡 Locating...';
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    const lat = pos.coords.latitude;
-                    const lng = pos.coords.longitude;
-                    const myPlace = `${lat.toFixed(2)}°N, ${lng.toFixed(2)}°E`;
-                    if (myRole === 'partner1') {
-                        p1Coords = { lat, lng, place: myPlace };
-                    } else {
-                        p2Coords = { lat, lng, place: myPlace };
-                    }
-                    updateLiveDistanceUI();
-                    btnShareLoc.textContent = '✔ Shared!';
-                    setTimeout(() => { btnShareLoc.textContent = '📡 Share Location'; }, 3000);
+            openModal('location-modal');
+        });
+    }
 
-                    sendPacket({
-                        type: 'LOCATION_UPDATE',
-                        senderName: getMyName(),
-                        lat,
-                        lng,
-                        place: myPlace
-                    });
-                    if (locStatusFooter) {
-                        locStatusFooter.innerHTML = `📍 Live location updated on the map! Distance: ${calculateDistance(p1Coords.lat, p1Coords.lng, p2Coords.lat, p2Coords.lng)} km 💕`;
-                    }
-                    launchCelebration(40);
-                },
-                (err) => {
-                    console.warn('Geolocation error:', err);
-                    btnShareLoc.textContent = '📡 Share Location';
-                    if (locStatusFooter) {
-                        locStatusFooter.innerHTML = '📍 Default Karnataka ↔ Kerala connection active! Distance is only physical 💕';
-                    }
-                },
-                { enableHighAccuracy: true, timeout: 10000 }
-            );
+    const btnAllowLoc = document.getElementById('btn-allow-location');
+    if (btnAllowLoc) {
+        btnAllowLoc.addEventListener('click', () => {
+            requestLiveLocation();
         });
     }
 
