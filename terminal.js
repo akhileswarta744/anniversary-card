@@ -597,50 +597,74 @@
         btnSound.querySelector('.label').textContent = state.sfx ? 'SFX: ON' : 'SFX: OFF';
     }
 
-    // 4. MATRIX BACKGROUND ANIMATION
+    // 4. DREAMY FLOATING HEARTS & BOKEH CANVAS (Romantic Aesthetic)
     const matrixCanvas = document.getElementById('matrix-canvas');
     const matrixCtx = matrixCanvas.getContext('2d');
-    let matrixCols, matrixDrops;
-    const matrixChars = '01♥♡<3AKHIL5YEARSLOVEFOREVER0123456789ABCDEF!@#$%&*';
+    let floatingParticles = [];
 
-    function initMatrix() {
+    function initFloatingCanvas() {
         matrixCanvas.width = window.innerWidth;
         matrixCanvas.height = window.innerHeight;
-        const fontSize = 14;
-        matrixCols = Math.floor(matrixCanvas.width / fontSize);
-        matrixDrops = Array.from({ length: matrixCols }, () => Math.floor(Math.random() * -50));
-    }
-
-    function drawMatrix() {
-        const isRomantic = state.theme === 'theme-romantic';
-        matrixCtx.fillStyle = isRomantic ? 'rgba(17, 4, 22, 0.12)' : 'rgba(0, 0, 0, 0.08)';
-        matrixCtx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
-
-        const romanticChars = '♥♡💖💗💕✨🌸💝AKHIL4YEARSFOREVER';
-        const activeChars = isRomantic ? romanticChars : matrixChars;
-
-        const themeColor = getComputedStyle(document.body).getPropertyValue('--matrix-char').trim() || '#ff007f';
-        matrixCtx.fillStyle = themeColor;
-        matrixCtx.font = isRomantic ? '15px "Plus Jakarta Sans", monospace' : '14px monospace';
-
-        for (let i = 0; i < matrixDrops.length; i++) {
-            const text = activeChars.charAt(Math.floor(Math.random() * activeChars.length));
-            const x = i * 14;
-            const y = matrixDrops[i] * 14;
-
-            matrixCtx.fillText(text, x, y);
-
-            if (y > matrixCanvas.height && Math.random() > 0.975) {
-                matrixDrops[i] = 0;
-            }
-            matrixDrops[i]++;
+        floatingParticles = [];
+        const count = Math.max(25, Math.floor((matrixCanvas.width * matrixCanvas.height) / 24000));
+        const heartIcons = ['💖', '💕', '💗', '✨', '🌸', '💝', '♥'];
+        for (let i = 0; i < count; i++) {
+            floatingParticles.push({
+                x: Math.random() * matrixCanvas.width,
+                y: Math.random() * matrixCanvas.height,
+                size: Math.random() * 12 + 12,
+                speedY: Math.random() * 0.5 + 0.25,
+                speedX: (Math.random() - 0.5) * 0.35,
+                icon: heartIcons[Math.floor(Math.random() * heartIcons.length)],
+                alpha: Math.random() * 0.5 + 0.2,
+                twinkleSpeed: Math.random() * 0.02 + 0.01,
+                isBokeh: Math.random() > 0.45
+            });
         }
-        requestAnimationFrame(drawMatrix);
     }
 
-    window.addEventListener('resize', initMatrix);
-    initMatrix();
-    requestAnimationFrame(drawMatrix);
+    function drawFloatingCanvas() {
+        matrixCtx.clearRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+
+        for (let i = 0; i < floatingParticles.length; i++) {
+            const p = floatingParticles[i];
+            p.y -= p.speedY;
+            p.x += p.speedX;
+            p.alpha += Math.sin(Date.now() * p.twinkleSpeed) * 0.005;
+
+            if (p.y < -30) {
+                p.y = matrixCanvas.height + 30;
+                p.x = Math.random() * matrixCanvas.width;
+            }
+            if (p.x < -30) p.x = matrixCanvas.width + 30;
+            if (p.x > matrixCanvas.width + 30) p.x = -30;
+
+            matrixCtx.save();
+            const currentAlpha = Math.max(0.12, Math.min(0.7, p.alpha));
+            matrixCtx.globalAlpha = currentAlpha;
+
+            if (p.isBokeh) {
+                const grad = matrixCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 1.5);
+                grad.addColorStop(0, 'rgba(255, 105, 180, 0.45)');
+                grad.addColorStop(1, 'rgba(255, 105, 180, 0)');
+                matrixCtx.fillStyle = grad;
+                matrixCtx.beginPath();
+                matrixCtx.arc(p.x, p.y, p.size * 1.5, 0, Math.PI * 2);
+                matrixCtx.fill();
+            } else {
+                matrixCtx.font = `${p.size}px "Plus Jakarta Sans", sans-serif`;
+                matrixCtx.textAlign = 'center';
+                matrixCtx.fillText(p.icon, p.x, p.y);
+            }
+            matrixCtx.restore();
+        }
+
+        requestAnimationFrame(drawFloatingCanvas);
+    }
+
+    window.addEventListener('resize', initFloatingCanvas);
+    initFloatingCanvas();
+    requestAnimationFrame(drawFloatingCanvas);
 
     // 5. CELEBRATION CONFETTI & HEARTS
     const celebCanvas = document.getElementById('celebration-canvas');
@@ -735,12 +759,12 @@
         const remDays = Math.floor(days % 365.25);
 
         const pad = (n) => String(n).padStart(2, '0');
-        hudUptime.textContent = `UPTIME: ${years}Y ${remDays}D ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        hudUptime.textContent = `TOGETHER: ${years}Y ${remDays}D ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
 
-        hudWallet.textContent = `${state.wallet['$KISSES'].toLocaleString()} $KISSES`;
-        hudPartners.innerHTML = `${state.partner1.toUpperCase()} &hearts; ${state.partner2.toUpperCase()}`;
-        promptUser.textContent = `${getMyName().toLowerCase()}@love-os`;
-        hudRoomBadge.textContent = `ROOM: ${roomId.toUpperCase()}`;
+        hudWallet.textContent = `${state.wallet['$KISSES'].toLocaleString()} Kisses`;
+        hudPartners.innerHTML = `${escapeHTML(state.partner1)} &hearts; ${escapeHTML(state.partner2)}`;
+        if (promptUser) promptUser.textContent = `💌`;
+        if (hudRoomBadge) hudRoomBadge.textContent = `KA ↔ KL LIVE`;
     }
     setInterval(updateHUD, 1000);
     updateHUD();
@@ -769,11 +793,14 @@
     }
 
     function printEcho(cmd) {
-        const div = document.createElement('div');
-        div.className = 'term-cmd-echo';
-        div.innerHTML = `<span class="prefix">${getMyName().toLowerCase()}@love-os:~$</span> <span class="cmd-text">${escapeHTML(cmd)}</span>`;
-        outputEl.appendChild(div);
-        scrollToBottom();
+        const cmdName = cmd.trim().split(/\s+/)[0].toLowerCase();
+        if (commands[cmdName]) {
+            const div = document.createElement('div');
+            div.className = 'term-cmd-echo';
+            div.innerHTML = `<span class="prefix">⚡ ${getMyName()}:</span> <span class="cmd-text">${escapeHTML(cmd)}</span>`;
+            outputEl.appendChild(div);
+            scrollToBottom();
+        }
     }
 
     function escapeHTML(str) {
@@ -1737,22 +1764,24 @@ Happy 4th Anniversary, my love! ❤️
         },
 
         theme: {
-            desc: 'Switch color theme: cyberpunk, matrix, amber, vaporwave',
+            desc: 'Switch romantic aesthetic theme (romantic, lavender, cotton-candy, champagne, midnight)',
             exec: (args) => {
+                const valid = ['romantic', 'lavender', 'cotton-candy', 'champagne', 'midnight'];
                 if (!args || args.length === 0) {
-                    printLine('Available themes: cyberpunk, matrix, amber, vaporwave', 'text-highlight');
+                    printLine(`Available styles: ${valid.join(', ')}`, 'text-highlight');
                     return;
                 }
-                const themeName = 'theme-' + args[0].toLowerCase().replace('theme-', '');
-                if (['theme-cyberpunk', 'theme-matrix', 'theme-amber', 'theme-vaporwave'].includes(themeName)) {
+                const choice = args[0].toLowerCase().replace('theme-', '');
+                if (valid.includes(choice)) {
+                    const themeName = 'theme-' + choice;
                     document.body.className = themeName;
                     state.theme = themeName;
                     themeSelect.value = themeName;
                     saveState();
                     playBeep(700, 'sine', 0.1);
-                    printLine(`✔ Theme switched to '${themeName.replace('theme-', '')}'`, 'text-success');
+                    printLine(`✔ Theme updated to '${choice}'!`, 'text-success');
                 } else {
-                    printLine(`❌ Invalid theme. Choose from: cyberpunk, matrix, amber, vaporwave`, 'text-accent');
+                    printLine(`Choose from: ${valid.join(', ')}`, 'text-accent');
                 }
             }
         },
@@ -1868,22 +1897,26 @@ Happy 4th Anniversary, my love! ❤️
 
     // 12. WELCOME BANNER
     function printWelcomeBanner() {
-        const asciiArt = `
-  ██╗  ██╗    ██╗   ██╗███████╗ █████╗ ██████╗ ███████╗
-  ██║  ██║    ╚██╗ ██╔╝██╔════╝██╔══██╗██╔══██╗██╔════╝
-  ███████║     ╚████╔╝ █████╗  ███████║██████╔╝███████╗
-  ╚════██║      ╚██╔╝  ██╔══╝  ██╔══██║██╔══██╗╚════██║
-       ██║       ██║   ███████╗██║  ██║██║  ██║███████║
-       ╚═╝       ╚═╝   ╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝
-   ⚡ LOVE-OS // 4 YEARS COMPLETED (SINCE 31-AUG-2022) ⚡
-`;
-        printRawHTML(`<div class="ascii-banner">${asciiArt}</div>`);
-        printLine(`🎉 Logged in as [${getMyName()}] in Secure Room [${roomId.toUpperCase()}]!`, 'text-highlight');
-        if (isGuest) {
-            printLine(`💖 Connected from Kerala! Type 'chat <msg>' or 'pay' to interact live with Akhil!`, 'text-success');
-        } else {
-            printLine(`💡 Click 'INVITE HER' or type 'invite' to share the live room link with her in Kerala!`, 'text-accent');
+        const welcomeCardHTML = `
+<div class="welcome-hero-card">
+    <div class="welcome-heart-badge">💖</div>
+    <div class="welcome-hero-tag">✨ HAPPY 4TH ANNIVERSARY ✨</div>
+    <h1 class="welcome-hero-heading">${escapeHTML(state.partner1)} &amp; ${escapeHTML(state.partner2)}</h1>
+    <p class="welcome-hero-sub">4 Beautiful Years Together (August 31, 2022 — Forever)</p>
+    <div class="welcome-pills-row">
+        <span class="welcome-pill">📍 Karnataka ↔ Kerala</span>
+        <span class="welcome-pill">⏳ 4 Years Completed</span>
+        <span class="welcome-pill">💕 100% Love Guaranteed</span>
+    </div>
+    <p class="welcome-greeting-msg">
+        ${isGuest 
+            ? `Welcome my love! Tap any button on the Love Dock above to send kisses, hugs, or playful teasing, or write a love note below!` 
+            : `Welcome back! Tap 'INVITE HER' to connect her phone live, or tap any reaction above to share sweet moments across states!`
         }
+    </p>
+</div>
+`;
+        printRawHTML(welcomeCardHTML);
     }
 
     // 13. EVENT LISTENERS

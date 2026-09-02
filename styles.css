@@ -1,99 +1,88 @@
 /* =========================================================
-   LOVE-OS v5.0 // Cyberpunk Terminal Styles + Live P2P
+   AKHIL & HER // Modern Romantic Couple Web App
    ========================================================= */
 
 :root {
-    --font-mono: 'Fira Code', 'Courier New', monospace;
-    --font-display: 'Orbitron', 'VT323', monospace;
-    --font-retro: 'VT323', monospace;
     --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-cursive: 'Dancing Script', cursive, sans-serif;
+    --font-display: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'Plus Jakarta Sans', sans-serif;
 }
 
-/* 1. THEMES DEFINITION */
+/* 1. ROMANTIC AESTHETIC THEMES */
 body.theme-romantic {
-    --bg-color: #110416;
-    --terminal-bg: rgba(26, 8, 36, 0.88);
-    --border-color: #ff69b4;
+    --bg-color: #120317;
+    --terminal-bg: rgba(26, 8, 36, 0.85);
+    --border-color: rgba(255, 105, 180, 0.45);
     --text-main: #fff0f6;
     --text-dim: #c48ba4;
-    --text-accent: #ff1493;
+    --text-accent: #ff2d7b;
     --text-highlight: #ff85c0;
     --text-success: #00f0ff;
-    --scanline-color: rgba(255, 105, 180, 0.02);
-    --glow-color: rgba(255, 20, 147, 0.4);
+    --glow-color: rgba(255, 45, 123, 0.35);
     --input-bg: rgba(45, 12, 58, 0.7);
     --chip-bg: rgba(255, 105, 180, 0.16);
-    --chip-border: #ff69b4;
-    --matrix-char: #ff85c0;
+    --chip-border: rgba(255, 105, 180, 0.5);
 }
 
-body.theme-cyberpunk {
-    --bg-color: #0d021a;
-    --terminal-bg: rgba(18, 5, 34, 0.88);
-    --border-color: #ff007f;
-    --text-main: #00f0ff;
-    --text-dim: #7968a5;
-    --text-accent: #ff007f;
-    --text-highlight: #ffe600;
-    --text-success: #05ffa1;
-    --scanline-color: rgba(255, 0, 127, 0.05);
-    --glow-color: rgba(255, 0, 127, 0.35);
-    --input-bg: rgba(30, 10, 50, 0.6);
-    --chip-bg: rgba(255, 0, 127, 0.15);
-    --chip-border: #ff007f;
-    --matrix-char: #ff007f;
+body.theme-lavender {
+    --bg-color: #0d061c;
+    --terminal-bg: rgba(26, 14, 52, 0.85);
+    --border-color: rgba(186, 147, 255, 0.45);
+    --text-main: #f3edff;
+    --text-dim: #9c84c4;
+    --text-accent: #b070ff;
+    --text-highlight: #d8b8ff;
+    --text-success: #70d6ff;
+    --glow-color: rgba(176, 112, 255, 0.35);
+    --input-bg: rgba(38, 18, 75, 0.7);
+    --chip-bg: rgba(176, 112, 255, 0.16);
+    --chip-border: rgba(186, 147, 255, 0.5);
 }
 
-body.theme-matrix {
-    --bg-color: #020b05;
-    --terminal-bg: rgba(3, 18, 8, 0.9);
-    --border-color: #00ff41;
-    --text-main: #00ff41;
-    --text-dim: #008f11;
-    --text-accent: #39ff14;
-    --text-highlight: #a6ff00;
-    --text-success: #00ff66;
-    --scanline-color: rgba(0, 255, 65, 0.06);
-    --glow-color: rgba(0, 255, 65, 0.35);
-    --input-bg: rgba(0, 30, 10, 0.6);
-    --chip-bg: rgba(0, 255, 65, 0.12);
-    --chip-border: #00ff41;
-    --matrix-char: #00ff41;
+body.theme-cotton-candy {
+    --bg-color: #080d1e;
+    --terminal-bg: rgba(18, 24, 50, 0.85);
+    --border-color: rgba(120, 200, 255, 0.45);
+    --text-main: #ffffff;
+    --text-dim: #8ba2c4;
+    --text-accent: #ff7ebb;
+    --text-highlight: #70d6ff;
+    --text-success: #69f0ae;
+    --glow-color: rgba(255, 126, 187, 0.35);
+    --input-bg: rgba(20, 32, 68, 0.7);
+    --chip-bg: rgba(120, 200, 255, 0.16);
+    --chip-border: rgba(120, 200, 255, 0.5);
 }
 
-body.theme-amber {
-    --bg-color: #120900;
-    --terminal-bg: rgba(24, 12, 0, 0.9);
-    --border-color: #ffb000;
-    --text-main: #ffb000;
-    --text-dim: #996900;
-    --text-accent: #ff8000;
-    --text-highlight: #ffe066;
-    --text-success: #ffd000;
-    --scanline-color: rgba(255, 176, 0, 0.06);
-    --glow-color: rgba(255, 176, 0, 0.35);
-    --input-bg: rgba(40, 20, 0, 0.6);
-    --chip-bg: rgba(255, 176, 0, 0.15);
-    --chip-border: #ffb000;
-    --matrix-char: #ffb000;
+body.theme-champagne {
+    --bg-color: #160c04;
+    --terminal-bg: rgba(38, 20, 10, 0.85);
+    --border-color: rgba(255, 195, 120, 0.45);
+    --text-main: #fffdf5;
+    --text-dim: #c4a482;
+    --text-accent: #ff9f43;
+    --text-highlight: #fed330;
+    --text-success: #2ed573;
+    --glow-color: rgba(255, 159, 67, 0.35);
+    --input-bg: rgba(55, 30, 14, 0.7);
+    --chip-bg: rgba(255, 195, 120, 0.16);
+    --chip-border: rgba(255, 195, 120, 0.5);
 }
 
-body.theme-vaporwave {
-    --bg-color: #08011f;
-    --terminal-bg: rgba(15, 8, 45, 0.9);
-    --border-color: #00ffff;
-    --text-main: #ff71ce;
-    --text-dim: #8b609c;
-    --text-accent: #01cdfe;
-    --text-highlight: #fffb96;
-    --text-success: #05ffa1;
-    --scanline-color: rgba(0, 255, 255, 0.05);
-    --glow-color: rgba(1, 205, 254, 0.35);
-    --input-bg: rgba(30, 15, 70, 0.6);
-    --chip-bg: rgba(1, 205, 254, 0.15);
-    --chip-border: #01cdfe;
-    --matrix-char: #ff71ce;
+body.theme-midnight {
+    --bg-color: #050814;
+    --terminal-bg: rgba(10, 16, 40, 0.85);
+    --border-color: rgba(100, 150, 255, 0.45);
+    --text-main: #f0f4ff;
+    --text-dim: #7f95c4;
+    --text-accent: #4a90e2;
+    --text-highlight: #82b1ff;
+    --text-success: #00e5ff;
+    --glow-color: rgba(74, 144, 226, 0.35);
+    --input-bg: rgba(14, 22, 58, 0.7);
+    --chip-bg: rgba(100, 150, 255, 0.16);
+    --chip-border: rgba(100, 150, 255, 0.5);
 }
 
 /* 2. BASE & RESET */
@@ -104,12 +93,14 @@ body.theme-vaporwave {
 }
 
 body {
-    background-color: var(--bg-color);
+    background: var(--bg-color);
+    background-attachment: fixed;
     color: var(--text-main);
-    font-family: var(--font-mono);
-    font-size: 14px;
-    line-height: 1.5;
+    font-family: var(--font-sans);
+    font-size: 14.5px;
+    line-height: 1.55;
     height: 100vh;
+    height: 100dvh;
     width: 100vw;
     overflow: hidden;
     display: flex;
@@ -117,7 +108,7 @@ body {
     align-items: center;
     position: relative;
     user-select: text;
-    transition: background-color 0.4s ease, color 0.4s ease;
+    transition: background 0.4s ease, color 0.4s ease;
 }
 
 /* Background Canvas */
@@ -128,7 +119,6 @@ body {
     width: 100%;
     height: 100%;
     z-index: 1;
-    opacity: 0.35;
     pointer-events: none;
 }
 
@@ -140,35 +130,6 @@ body {
     height: 100%;
     z-index: 100;
     pointer-events: none;
-}
-
-/* CRT Screen Scanlines and Vignette */
-.crt-scanlines {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: repeating-linear-gradient(
-        0deg,
-        var(--scanline-color),
-        var(--scanline-color) 1px,
-        transparent 1px,
-        transparent 3px
-    );
-    pointer-events: none;
-    z-index: 20;
-}
-
-.crt-vignette {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle, transparent 65%, rgba(0, 0, 0, 0.75) 100%);
-    pointer-events: none;
-    z-index: 21;
 }
 
 /* 3. TERMINAL WINDOW CONTAINER */
@@ -502,38 +463,136 @@ body {
     border-radius: 4px;
 }
 
+/* Welcome Anniversary Hero Card */
+.welcome-hero-card {
+    background: linear-gradient(135deg, rgba(255, 45, 123, 0.14), rgba(255, 105, 180, 0.06));
+    border: 1.5px solid var(--border-color);
+    border-radius: 20px;
+    padding: 24px 20px;
+    text-align: center;
+    margin: 8px 0 16px 0;
+    backdrop-filter: blur(14px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 0 0 25px var(--glow-color);
+    animation: fadeIn 0.4s ease-out;
+}
+
+.welcome-heart-badge {
+    font-size: 38px;
+    line-height: 1;
+    margin-bottom: 8px;
+    filter: drop-shadow(0 0 12px var(--glow-color));
+    animation: heartbeat 1.8s infinite ease-in-out;
+}
+
+@keyframes heartbeat {
+    0%, 100% { transform: scale(1); }
+    15% { transform: scale(1.18); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.12); }
+}
+
+.welcome-hero-tag {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--text-highlight);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+}
+
+.welcome-hero-heading {
+    font-family: var(--font-cursive);
+    font-size: 34px;
+    color: #fff;
+    margin-bottom: 4px;
+    text-shadow: 0 0 16px var(--glow-color);
+}
+
+.welcome-hero-sub {
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+}
+
+.welcome-pills-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.welcome-pill {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 4px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.welcome-greeting-msg {
+    font-size: 13.5px;
+    color: #ffe6f0;
+    line-height: 1.6;
+    max-width: 520px;
+    margin: 0 auto;
+}
+
 /* Chat Messages */
 .chat-thread {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    margin: 12px 0;
-    max-width: 650px;
+    gap: 8px;
+    margin: 10px 0;
+    width: 100%;
 }
 
 .chat-bubble {
-    background: rgba(255, 255, 255, 0.05);
-    border-left: 3px solid var(--text-main);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
     padding: 10px 14px;
-    border-radius: 6px;
+    border-radius: 16px 16px 16px 4px;
+    max-width: 82%;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+    align-self: flex-start;
+}
+
+.chat-bubble.from-me {
+    background: linear-gradient(135deg, var(--text-accent), #ff69b4);
+    color: #ffffff;
+    border: none;
+    border-radius: 16px 16px 4px 16px;
+    align-self: flex-end;
+    box-shadow: 0 4px 18px var(--glow-color);
 }
 
 .chat-bubble.from-partner {
-    border-left-color: var(--text-accent);
-    background: rgba(255, 0, 127, 0.08);
+    background: rgba(255, 255, 255, 0.1);
+    border: 1.5px solid var(--border-color);
+    border-radius: 16px 16px 16px 4px;
+    align-self: flex-start;
 }
 
 .chat-bubble-header {
     display: flex;
     justify-content: space-between;
-    font-size: 11px;
-    color: var(--text-dim);
+    font-size: 10.5px;
+    opacity: 0.85;
     margin-bottom: 4px;
+    gap: 12px;
 }
 
 .chat-bubble-author {
-    font-weight: bold;
-    color: var(--text-highlight);
+    font-weight: 700;
+}
+
+.chat-bubble-body {
+    font-size: 14px;
+    line-height: 1.45;
+    word-break: break-word;
 }
 
 /* Decrypted Love Letter */
@@ -1285,23 +1344,24 @@ button:active,
 .prompt-line {
     display: flex;
     align-items: center;
-    gap: 8px;
-    background: var(--input-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 8px 12px;
-    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5);
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1.5px solid var(--border-color);
+    border-radius: 30px;
+    padding: 6px 8px 6px 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25), inset 0 0 10px rgba(255, 105, 180, 0.08);
+    backdrop-filter: blur(12px);
+    transition: all 0.25s ease;
 }
 
-.prompt-user {
-    color: var(--text-accent);
-    font-weight: bold;
-    white-space: nowrap;
+.prompt-line:focus-within {
+    border-color: #fff;
+    box-shadow: 0 6px 25px var(--glow-color);
 }
 
-.prompt-symbol {
-    color: var(--text-main);
-    font-weight: bold;
+.chat-input-avatar {
+    font-size: 18px;
+    flex-shrink: 0;
 }
 
 .cli-input {
@@ -1310,29 +1370,32 @@ button:active,
     border: none;
     outline: none;
     color: var(--text-main);
-    font-family: var(--font-mono);
-    font-size: 14px;
-    caret-color: var(--text-highlight);
+    font-family: var(--font-sans);
+    font-size: 14.5px;
+    font-weight: 500;
+    caret-color: var(--text-accent);
 }
 
 .cli-input::placeholder {
     color: var(--text-dim);
-    font-size: 13px;
+    font-size: 13.5px;
 }
 
 .btn-send {
-    background: var(--text-accent);
+    background: linear-gradient(135deg, var(--text-accent), #ff1493);
     border: none;
     color: #fff;
-    font-size: 14px;
-    width: 34px;
-    height: 34px;
-    border-radius: 6px;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 700;
+    height: 38px;
+    padding: 0 18px;
+    border-radius: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    box-shadow: 0 0 10px var(--text-accent);
+    box-shadow: 0 3px 12px var(--glow-color);
     transition: all 0.2s ease;
     flex-shrink: 0;
 }
@@ -1340,7 +1403,7 @@ button:active,
 .btn-send:hover, .btn-send:active {
     background: #fff;
     color: #000;
-    transform: scale(1.05);
+    transform: scale(1.04);
 }
 
 /* =========================================================

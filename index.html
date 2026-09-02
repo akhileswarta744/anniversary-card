@@ -3,84 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LOVE-OS // 4th Anniversary</title>
+    <title>💖 Akhil &amp; Her // 4th Anniversary</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Fira+Code:wght@300;400;500;600&family=Orbitron:wght@400;700;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=VT323&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- MQTT.js over Secure WebSockets (100% Reliable across Cellular 4G/5G and all Telecoms in India) -->
+    <!-- MQTT.js over Secure WebSockets (100% Reliable across Cellular 4G/5G in India) -->
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <!-- Lightweight QR Code Generator -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
-    <link rel="stylesheet" href="styles.css?v=5.0">
+    <link rel="stylesheet" href="styles.css?v=6.0">
 </head>
 <body class="theme-romantic">
-    <!-- Matrix Heart Canvas Background -->
+    <!-- Ambient Canvas (Dreamy Floating Hearts & Bokeh Starlight) -->
     <canvas id="matrix-canvas"></canvas>
 
-    <!-- CRT Overlay Effects -->
-    <div class="crt-scanlines"></div>
-    <div class="crt-vignette"></div>
-
-    <!-- Main Terminal Container -->
+    <!-- Main Love App Container -->
     <div class="terminal-wrapper">
-        <!-- Top Cyber HUD Header -->
+        <!-- Top Romantic Header -->
         <header class="terminal-header">
             <div class="header-left">
                 <span class="status-indicator" id="cloud-status-light"></span>
-                <span class="system-title">LOVE-OS <span class="badge">v4.0-LIVE</span></span>
-                <span class="p2p-badge" id="hud-room-badge">ROOM: AKHIL-4Y</span>
-                <span class="uptime-badge" id="hud-uptime">UPTIME: 4Y 2D 00:00:00</span>
+                <span class="system-title">💖 AKHIL &amp; HER <span class="badge">4 YEARS ✨</span></span>
+                <span class="p2p-badge" id="hud-room-badge">KA ↔ KL LIVE</span>
+                <span class="uptime-badge" id="hud-uptime">TOGETHER: 4Y 2D</span>
             </div>
             <div class="header-right">
-                <button id="btn-invite" class="hud-btn highlight-btn" title="Share Link or QR Code with Her">
+                <button id="btn-invite" class="hud-btn highlight-btn" title="Share with Her">
                     <span class="icon">🔗</span> <span class="label">INVITE HER</span>
                 </button>
-                <button id="btn-sound-toggle" class="hud-btn" title="Toggle Sound FX">
+                <button id="btn-sound-toggle" class="hud-btn" title="Toggle Sound">
                     <span class="icon">🔊</span> <span class="label">SFX: ON</span>
                 </button>
-                <button id="btn-music-toggle" class="hud-btn" title="Toggle Romantic Synthwave Music">
-                    <span class="icon">🎵</span> <span class="label">BGM: OFF</span>
+                <button id="btn-music-toggle" class="hud-btn" title="Toggle Romantic Music">
+                    <span class="icon">🎵</span> <span class="label">MUSIC: OFF</span>
                 </button>
                 <select id="theme-selector" class="hud-select" title="Switch Theme">
                     <option value="theme-romantic" selected>💖 Romantic Rose</option>
-                    <option value="theme-cyberpunk">Neon Cyberpunk</option>
-                    <option value="theme-matrix">Matrix Green</option>
-                    <option value="theme-amber">Retro Amber</option>
-                    <option value="theme-vaporwave">Vaporwave Glow</option>
+                    <option value="theme-lavender">💜 Lavender Dream</option>
+                    <option value="theme-cotton-candy">☁️ Cotton Candy</option>
+                    <option value="theme-champagne">✨ Golden Sunset</option>
+                    <option value="theme-midnight">🌙 Starlight Romance</option>
                 </select>
             </div>
         </header>
 
-        <!-- Live Metrics Bar -->
+        <!-- Couple Status Bar -->
         <div class="metrics-bar">
             <div class="metric-item">
-                <span class="metric-label">CLOUD_RELAY:</span>
+                <span class="metric-label">STATUS:</span>
                 <span class="metric-val text-success" id="hud-relay-status">CONNECTING...</span>
             </div>
             <div class="metric-item">
-                <span class="metric-label">ACTIVE_USERS:</span>
+                <span class="metric-label">IN ROOM:</span>
                 <span class="metric-val text-accent" id="hud-active-users">YOU</span>
             </div>
             <div class="metric-item">
-                <span class="metric-label">LOVE_WALLET:</span>
-                <span class="metric-val text-gold" id="hud-wallet-balance">9,999 $KISSES</span>
+                <span class="metric-label">LOVE BANK:</span>
+                <span class="metric-val text-gold" id="hud-wallet-balance">9,999 Kisses</span>
             </div>
             <div class="metric-item">
-                <span class="metric-label">AUTH_PAIR:</span>
+                <span class="metric-label">COUPLE:</span>
                 <span class="metric-val text-highlight" id="hud-partner-names">AKHIL &hearts; HER</span>
             </div>
         </div>
 
-        <!-- Terminal Output Screen -->
+        <!-- Live Love Message Stream Screen -->
         <main class="terminal-body" id="terminal-body" role="log" aria-live="polite">
             <div id="output"></div>
         </main>
 
-        <!-- Command Input Line -->
+        <!-- Interactive Love Controls & Chat Input -->
         <footer class="terminal-footer">
-            <!-- Pretty Touch-Friendly Love Dock (Easily Accessible for Mobile & Laptop) -->
+            <!-- Pretty Touch-Friendly Love Dock -->
             <div class="love-dock" id="love-dock">
                 <button class="dock-btn dock-kiss" data-action="kiss" title="Send Sweet Kiss">
                     <span class="dock-icon">💋</span>
@@ -116,9 +112,9 @@
                 </button>
             </div>
 
+            <!-- Modern Love Chat Line -->
             <div class="prompt-line">
-                <span class="prompt-user" id="prompt-user">akhil@love-os</span>
-                <span class="prompt-symbol">:~$</span>
+                <span class="chat-input-avatar" id="prompt-user">💌</span>
                 <input 
                     type="text" 
                     id="cli-input" 
@@ -127,29 +123,22 @@
                     autocorrect="off" 
                     autocapitalize="off" 
                     spellcheck="false" 
-                    placeholder="Type anything (e.g. 'I miss you') or tap above..." 
+                    placeholder="Write a sweet message to your love..." 
                     autofocus
                 >
-                <button id="btn-send" class="btn-send" aria-label="Send" title="Send Message">➤</button>
+                <button id="btn-send" class="btn-send" aria-label="Send" title="Send Message">Send 💖</button>
             </div>
             
-            <!-- Quick Command Action Bar -->
+            <!-- Quick Reaction Chips -->
             <div class="quick-bar" id="quick-bar">
-                <button class="quick-chip" data-cmd="invite">🔗 invite her</button>
-                <button class="quick-chip" data-cmd="kiss for being the love of my life">💋 kiss</button>
-                <button class="quick-chip" data-cmd="hug for always supporting me">🤗 hug</button>
-                <button class="quick-chip chip-angry" data-cmd="slap angry">😡 poda patti</button>
-                <button class="quick-chip chip-sad" data-cmd="slap sad">🥺 ni poda</button>
-                <button class="quick-chip chip-happy" data-cmd="slap happy">😄 aa ok</button>
-                <button class="quick-chip" data-cmd="pay 500 $KISSES for endless joy">💸 pay $KISSES</button>
-                <button class="quick-chip" data-cmd="pay 100 $HUGS for warm hugs">🤗 pay $HUGS</button>
-                <button class="quick-chip" data-cmd="uptime">⏳ uptime</button>
-                <button class="quick-chip" data-cmd="decrypt">🔓 decrypt letter</button>
-                <button class="quick-chip" data-cmd="coupons">🎟️ coupons</button>
-                <button class="quick-chip" data-cmd="sudo marry-again">💍 marry-again</button>
-                <button class="quick-chip" data-cmd="customize">⚙️ set names</button>
-                <button class="quick-chip" data-cmd="help">📜 help</button>
-                <button class="quick-chip" data-cmd="clear">🧹 clear</button>
+                <button class="quick-chip" data-cmd="kiss for being the love of my life">💋 Send Kisses</button>
+                <button class="quick-chip" data-cmd="hug for always supporting me">🤗 Big Hug</button>
+                <button class="quick-chip chip-angry" data-cmd="slap angry">😡 Poda Patti</button>
+                <button class="quick-chip chip-sad" data-cmd="slap sad">🥺 Ni Poda</button>
+                <button class="quick-chip chip-happy" data-cmd="slap happy">😄 Aa Ok</button>
+                <button class="quick-chip" data-cmd="pay 500 $KISSES for endless joy">💖 Send 500 Kisses</button>
+                <button class="quick-chip" data-cmd="pay 100 $HUGS for warm hugs">🧸 Send 100 Hugs</button>
+                <button class="quick-chip" data-cmd="invite">🔗 Share Link</button>
             </div>
         </footer>
     </div>
