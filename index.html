@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <link rel="stylesheet" href="styles.css?v=11.0">
+    <link rel="stylesheet" href="styles.css?v=12.0">
 </head>
 <body class="theme-minimal-romantic">
 
@@ -54,68 +54,120 @@
             </div>
         </header>
 
-        <!-- Minimalist Hero Card -->
-        <section class="romantic-hero">
-            <div class="hero-sparkle">💖</div>
-            <h1 class="hero-title">Happy 4th Anniversary</h1>
-            <p class="hero-dates">August 31, 2022 &mdash; Forever &amp; Always</p>
-            
-            <div class="hero-badge-row">
-                <span class="hero-pill">📍 Karnataka &harr; Kerala</span>
-                <span class="hero-pill" id="hud-uptime">1,463 Days Together</span>
-                <span class="hero-pill status-pill" id="hud-relay-status">🟢 Connected</span>
+        <!-- 1. The Viral "Let's schedule a date!" Master Card (Exact match to reference image) -->
+        <section class="date-scheduler-section tab-panel active" id="panel-date-card">
+            <div class="date-card" id="date-card">
+                <!-- Top Progress Bar -->
+                <div class="card-progress-wrap">
+                    <div class="card-progress-labels">
+                        <span class="card-step-label" id="date-step-label">A TINY QUESTION</span>
+                        <span class="card-step-count" id="date-step-count">01 / 08</span>
+                    </div>
+                    <div class="card-progress-track">
+                        <div class="card-progress-fill" id="date-progress-fill" style="width: 12.5%;"></div>
+                    </div>
+                </div>
+
+                <!-- Main Two-Column Grid -->
+                <div class="card-main-grid">
+                    <!-- Left: Dreamy Squircle with Flork Doodle -->
+                    <div class="card-art-box">
+                        <div class="art-glow"></div>
+                        <div id="flork-container" class="flork-svg-wrap"></div>
+                    </div>
+
+                    <!-- Right: Invitation Content -->
+                    <div class="card-content-box">
+                        <div class="badge-invitation" id="date-badge">
+                            <span>+ YOUR INVITATION</span>
+                        </div>
+                        <h1 class="date-heading" id="date-heading">
+                            Let's<br>schedule<br>a date!
+                        </h1>
+                        <p class="date-sub" id="date-sub">
+                            Be a good girl &amp; answer all the questions. I'll worry about the rest.
+                        </p>
+                        
+                        <!-- Dynamic Pill Options (Matching Image) -->
+                        <div class="date-options-row" id="date-options-row">
+                            <button class="pill-btn-pink" data-choice="0">
+                                <span>Yes</span>
+                                <div class="btn-circle-icon">↗</div>
+                            </button>
+                            <button class="pill-btn-white" data-choice="1">
+                                <span>Yes, Of course</span>
+                                <div class="btn-circle-icon">→</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Playful Bottom Footer Note -->
+                <div class="card-footer-note" id="date-footer-note">
+                    ♡ One wrong choice, and I hope karma fucks you up.
+                </div>
             </div>
         </section>
 
-        <!-- Easily Accessible 1-Tap Love Actions -->
-        <section class="love-actions-section">
-            <h3 class="section-heading">Quick Romantic Actions</h3>
-            <div class="actions-grid">
-                <button class="action-tile tile-kiss" data-action="kiss">
-                    <span class="tile-icon">💋</span>
-                    <strong class="tile-label">Send Kiss</strong>
-                    <span class="tile-hint">Sweet smooch</span>
-                </button>
-                <button class="action-tile tile-hug" data-action="hug">
-                    <span class="tile-icon">🤗</span>
-                    <strong class="tile-label">Send Hug</strong>
-                    <span class="tile-hint">Warm tight embrace</span>
-                </button>
-                <button class="action-tile tile-tease" data-action="slap-modal">
-                    <span class="tile-icon">👋</span>
-                    <strong class="tile-label">Tease</strong>
-                    <span class="tile-hint">Poda patti / Ni poda</span>
-                </button>
-                <button class="action-tile tile-letter" data-action="letter-modal">
-                    <span class="tile-icon">💌</span>
-                    <strong class="tile-label">Love Letter</strong>
-                    <span class="tile-hint">Our 4-year note</span>
-                </button>
-                <button class="action-tile tile-coupons" data-action="coupons-modal">
-                    <span class="tile-icon">🎟️</span>
-                    <strong class="tile-label">Coupons</strong>
-                    <span class="tile-hint">5 free vouchers</span>
-                </button>
-                <button class="action-tile tile-story" data-action="story-modal">
-                    <span class="tile-icon">⏳</span>
-                    <strong class="tile-label">Our Story</strong>
-                    <span class="tile-hint">2022 &rarr; 2026</span>
-                </button>
-                <button class="action-tile tile-send-love" data-action="send-love-modal">
-                    <span class="tile-icon">💸</span>
-                    <strong class="tile-label">Send Love</strong>
-                    <span class="tile-hint">Kisses &amp; hugs pass</span>
-                </button>
-                <button class="action-tile tile-marry" data-action="marry">
-                    <span class="tile-icon">💍</span>
-                    <strong class="tile-label">Marry</strong>
-                    <span class="tile-hint">Renew vows</span>
-                </button>
+        <!-- Feature Switcher Dock (Clean Minimalist Pills) -->
+        <nav class="feature-nav-bar" aria-label="Feature Navigation">
+            <button class="feature-tab active" data-target="panel-date-card">💌 Date Invite</button>
+            <button class="feature-tab" data-target="panel-love-actions">💋 Love Actions</button>
+            <button class="feature-tab" data-target="panel-live-map">🗺️ Couple Map</button>
+            <button class="feature-tab" data-target="panel-live-chat">💬 Live Chat</button>
+        </nav>
+
+        <!-- 2. Easily Accessible 1-Tap Love Actions -->
+        <section class="love-actions-section tab-panel" id="panel-love-actions">
+            <div class="actions-card-wrapper">
+                <h3 class="section-heading">Quick Romantic Actions</h3>
+                <div class="actions-grid">
+                    <button class="action-tile tile-kiss" data-action="kiss">
+                        <span class="tile-icon">💋</span>
+                        <strong class="tile-label">Send Kiss</strong>
+                        <span class="tile-hint">Sweet smooch</span>
+                    </button>
+                    <button class="action-tile tile-hug" data-action="hug">
+                        <span class="tile-icon">🤗</span>
+                        <strong class="tile-label">Send Hug</strong>
+                        <span class="tile-hint">Warm tight embrace</span>
+                    </button>
+                    <button class="action-tile tile-tease" data-action="slap-modal">
+                        <span class="tile-icon">👋</span>
+                        <strong class="tile-label">Tease</strong>
+                        <span class="tile-hint">Poda patti / Ni poda</span>
+                    </button>
+                    <button class="action-tile tile-letter" data-action="letter-modal">
+                        <span class="tile-icon">💌</span>
+                        <strong class="tile-label">Love Letter</strong>
+                        <span class="tile-hint">Our 4-year note</span>
+                    </button>
+                    <button class="action-tile tile-coupons" data-action="coupons-modal">
+                        <span class="tile-icon">🎟️</span>
+                        <strong class="tile-label">Coupons</strong>
+                        <span class="tile-hint">5 free vouchers</span>
+                    </button>
+                    <button class="action-tile tile-story" data-action="story-modal">
+                        <span class="tile-icon">⏳</span>
+                        <strong class="tile-label">Our Story</strong>
+                        <span class="tile-hint">2022 &rarr; 2026</span>
+                    </button>
+                    <button class="action-tile tile-send-love" data-action="send-love-modal">
+                        <span class="tile-icon">💸</span>
+                        <strong class="tile-label">Send Love</strong>
+                        <span class="tile-hint">Kisses &amp; hugs pass</span>
+                    </button>
+                    <button class="action-tile tile-marry" data-action="marry">
+                        <span class="tile-icon">💍</span>
+                        <strong class="tile-label">Marry</strong>
+                        <span class="tile-hint">Renew vows</span>
+                    </button>
+                </div>
             </div>
         </section>
 
-        <!-- Live Couple Map & Distance Radar -->
-        <section class="live-location-section">
+        <!-- 3. Live Couple Map & Distance Radar -->
+        <section class="live-location-section tab-panel" id="panel-live-map">
             <div class="location-card">
                 <div class="location-header">
                     <div class="loc-title-group">
@@ -142,8 +194,8 @@
             </div>
         </section>
 
-        <!-- Dedicated Couple Chatting Section -->
-        <section class="love-notes-section">
+        <!-- 4. Dedicated Couple Chatting Section -->
+        <section class="love-notes-section tab-panel" id="panel-live-chat">
             <div class="notes-header">
                 <div style="display:flex; align-items:center; gap:8px;">
                     <span style="font-size:18px;">💬</span>
@@ -434,6 +486,6 @@
         </div>
     </div>
 
-    <script src="terminal.js?v=11.0"></script>
+    <script src="terminal.js?v=12.0"></script>
 </body>
 </html>

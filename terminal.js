@@ -1033,6 +1033,32 @@
                 printRawHTML(slapReceiptHTML);
                 break;
 
+            case 'DATE_PLAN_CONFIRMED':
+                launchCelebration(180);
+                playCelebrateFanfare();
+                let answersList = '';
+                if (Array.isArray(packet.answers)) {
+                    answersList = packet.answers.map(a => `<li style="margin-bottom:4px;"><strong>${escapeHTML(a.step)}:</strong> <span class="text-accent">${escapeHTML(a.answer)}</span></li>`).join('');
+                }
+                const datePlanHTML = `
+<div class="letter-card" style="border: 2px solid #ec4899; background: #fff0f6; border-radius: 20px; padding: 16px; margin: 10px 0;">
+    <div style="font-family: var(--font-serif); font-size: 20px; font-weight: bold; color: #d946ef; text-align: center; margin-bottom: 8px;">
+        💌 DATE OFFICIALLY SCHEDULED! 💌
+    </div>
+    <p style="text-align: center; font-size: 13px; color: #6b7280; margin-bottom: 12px;">
+        <strong>${escapeHTML(packet.senderName)}</strong> completed the date questionnaire!
+    </p>
+    <ul style="list-style: none; padding: 0; font-size: 13.5px; color: #2d1e2e;">
+        ${answersList}
+    </ul>
+    <div style="text-align: center; margin-top: 14px;">
+        <button class="action-btn" onclick="window.runTerminalCmd('kiss for endless love')">💋 SEAL WITH 1,000 KISSES</button>
+    </div>
+</div>
+`;
+                printRawHTML(datePlanHTML);
+                break;
+
             case 'KISS':
                 triggerKissAnimation(true, packet.senderName, packet.reason);
 
@@ -2275,7 +2301,331 @@ Happy 4th Anniversary, my love! ❤️
     initCoupleMap();
     updateLiveDistanceUI();
 
-    // 15. QUICK 1-TAP CHAT REACTION EMOJIS
+    // 15. DATE SCHEDULER (VIRAL REFERENCE DESIGN)
+    const dateSteps = [
+        {
+            num: "01 / 08",
+            label: "A TINY QUESTION",
+            percent: 12.5,
+            badge: "+ YOUR INVITATION",
+            title: "Let's\nschedule\na date!",
+            sub: "Be a good girl & answer all the questions. I'll worry about the rest.",
+            florkType: "finger-guns",
+            options: [
+                { text: "Yes", type: "pink", icon: "↗" },
+                { text: "Yes, Of course", type: "white", icon: "→" }
+            ],
+            note: "♡ One wrong choice, and I hope karma fucks you up."
+        },
+        {
+            num: "02 / 08",
+            label: "PICK A DAY",
+            percent: 25,
+            badge: "+ DATE NIGHT",
+            title: "When are\nyou free?",
+            sub: "Don't say you're busy, I'm already clearing my schedule for you.",
+            florkType: "calendar",
+            options: [
+                { text: "This Weekend", type: "pink", icon: "📅" },
+                { text: "Whenever you say", type: "white", icon: "✨" }
+            ],
+            note: "♡ Any day with you is my favorite day."
+        },
+        {
+            num: "03 / 08",
+            label: "FOOD FIRST",
+            percent: 37.5,
+            badge: "+ OUR FAVORITE",
+            title: "What are we\neating?",
+            sub: "Whatever you pick, I'm still stealing bites from your plate.",
+            florkType: "food",
+            options: [
+                { text: "Candlelight Dinner 🍝", type: "pink", icon: "✨" },
+                { text: "Street Food & Shakes 🍦", type: "white", icon: "🍨" }
+            ],
+            note: "♡ Dessert is 100% mandatory."
+        },
+        {
+            num: "04 / 08",
+            label: "THE VIBE",
+            percent: 50,
+            badge: "+ AFTER DINNER",
+            title: "What's the\nplan after?",
+            sub: "Pick wisely, I have very romantic plans in mind.",
+            florkType: "vibe",
+            options: [
+                { text: "Cozy Movie & Cuddles 🍿", type: "pink", icon: "🤗" },
+                { text: "Long Drive & Music 🚗", type: "white", icon: "🎵" }
+            ],
+            note: "♡ Cuddles are non-negotiable."
+        },
+        {
+            num: "05 / 08",
+            label: "AFFECTION CHECK",
+            percent: 62.5,
+            badge: "+ KISS POLICY",
+            title: "Who gets\nmore kisses?",
+            sub: "Be honest, or face an immediate cuddle assault.",
+            florkType: "kisses",
+            options: [
+                { text: "Me obviously 💋", type: "pink", icon: "👑" },
+                { text: "Akhil gets them all 🥰", type: "white", icon: "💖" }
+            ],
+            note: "♡ Minimum 1,000 kisses guaranteed."
+        },
+        {
+            num: "06 / 08",
+            label: "TEASING CHECK",
+            percent: 75,
+            badge: "+ PLAYFUL BANTER",
+            title: "If you show\nup late?",
+            sub: "The Kerala ↔ Karnataka penalty system is active.",
+            florkType: "banter",
+            options: [
+                { text: "Poda patti! 😡👋", type: "pink", icon: "💥" },
+                { text: "Ni poda... Aa ok! 🥺", type: "white", icon: "✨" }
+            ],
+            note: "♡ Being late earns an extra tight hug."
+        },
+        {
+            num: "07 / 08",
+            label: "ANNIVERSARY VOW",
+            percent: 87.5,
+            badge: "+ 4 YEARS & BEYOND",
+            title: "One promise\nfor year 5?",
+            sub: "4 beautiful years together, forever more to go.",
+            florkType: "vow",
+            options: [
+                { text: "Never stop holding my hand 💍", type: "pink", icon: "❤️" },
+                { text: "Stay my favorite person 💕", type: "white", icon: "✨" }
+            ],
+            note: "♡ August 31, 2022 — Forever & Always."
+        },
+        {
+            num: "08 / 08",
+            label: "IT'S OFFICIAL",
+            percent: 100,
+            badge: "+ DATE LOCKED IN",
+            title: "It's a\ndate! 💕",
+            sub: "You answered perfectly. Now sit back and look pretty — I'm taking care of everything!",
+            florkType: "celebrate",
+            options: [
+                { text: "Lock In & Send to Akhil 💌", type: "pink", icon: "🚀" }
+            ],
+            note: "♡ Can't wait for our date with you!"
+        }
+    ];
+
+    let currentStepIndex = 0;
+    const selectedDateAnswers = [];
+
+    function getFlorkSVG(type) {
+        switch (type) {
+            case 'finger-guns':
+            default:
+                return `<svg viewBox="0 0 200 200" width="160" height="160" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 68 180 L 68 120 C 68 65, 75 42, 105 42 C 135 42, 142 65, 142 120 L 142 180" stroke="#1c1917" stroke-width="4.5" stroke-linecap="round" fill="#ffffff" />
+    <path d="M 82 62 Q 91 56 99 62" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <circle cx="118" cy="62" r="4.5" fill="#1c1917" />
+    <path d="M 90 78 Q 104 88 118 78" stroke="#1c1917" stroke-width="4" stroke-linecap="round" fill="#ffffff" />
+    <path d="M 68 125 L 42 100 L 78 88" stroke="#1c1917" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 78 88 L 88 88" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <path d="M 142 125 L 168 100 L 132 88" stroke="#1c1917" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 132 88 L 122 88" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+</svg>`;
+
+            case 'calendar':
+                return `<svg viewBox="0 0 200 200" width="160" height="160" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 68 180 L 68 120 C 68 65, 75 42, 105 42 C 135 42, 142 65, 142 120 L 142 180" stroke="#1c1917" stroke-width="4.5" stroke-linecap="round" fill="#ffffff" />
+    <circle cx="88" cy="62" r="4.5" fill="#1c1917" />
+    <circle cx="122" cy="62" r="4.5" fill="#1c1917" />
+    <path d="M 94 76 Q 105 88 116 76" stroke="#1c1917" stroke-width="4" stroke-linecap="round" fill="#ffffff" />
+    <rect x="72" y="98" width="56" height="48" rx="8" fill="#ffffff" stroke="#1c1917" stroke-width="4" />
+    <rect x="72" y="98" width="56" height="14" rx="4" fill="#ec4899" />
+    <text x="100" y="132" font-size="16" text-anchor="middle">❤️</text>
+    <path d="M 68 125 L 74 125" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <path d="M 142 125 L 128 125" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+</svg>`;
+
+            case 'food':
+                return `<svg viewBox="0 0 200 200" width="160" height="160" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 68 180 L 68 120 C 68 65, 75 42, 105 42 C 135 42, 142 65, 142 120 L 142 180" stroke="#1c1917" stroke-width="4.5" stroke-linecap="round" fill="#ffffff" />
+    <path d="M 80 58 Q 88 52 96 58" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <path d="M 114 58 Q 122 52 130 58" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <ellipse cx="105" cy="80" rx="12" ry="8" fill="#ec4899" stroke="#1c1917" stroke-width="3.5" />
+    <polygon points="100,105 70,145 130,145" fill="#fbbf24" stroke="#1c1917" stroke-width="4" stroke-linejoin="round" />
+    <circle cx="95" cy="130" r="4" fill="#ef4444" />
+    <circle cx="108" cy="135" r="3.5" fill="#ef4444" />
+    <path d="M 68 120 L 80 135" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <path d="M 142 120 L 125 135" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+</svg>`;
+
+            case 'vibe':
+                return `<svg viewBox="0 0 200 200" width="160" height="160" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 68 180 L 68 120 C 68 65, 75 42, 105 42 C 135 42, 142 65, 142 120 L 142 180" stroke="#1c1917" stroke-width="4.5" stroke-linecap="round" fill="#ffffff" />
+    <rect x="74" y="55" width="24" height="16" rx="4" fill="#1c1917" />
+    <rect x="108" y="55" width="24" height="16" rx="4" fill="#1c1917" />
+    <line x1="98" y1="62" x2="108" y2="62" stroke="#1c1917" stroke-width="3.5" />
+    <path d="M 94 82 Q 105 90 120 78" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <path d="M 68 125 L 45 95 L 42 75" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <path d="M 45 95 L 56 75" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <path d="M 142 125 L 165 95 L 168 75" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <path d="M 165 95 L 154 75" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+</svg>`;
+
+            case 'kisses':
+                return `<svg viewBox="0 0 200 200" width="160" height="160" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 68 180 L 68 120 C 68 65, 75 42, 105 42 C 135 42, 142 65, 142 120 L 142 180" stroke="#1c1917" stroke-width="4.5" stroke-linecap="round" fill="#ffffff" />
+    <path d="M 80 62 Q 88 54 96 62" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <path d="M 114 62 Q 122 54 130 62" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <path d="M 98 78 Q 90 83 98 88" stroke="#1c1917" stroke-width="3.5" stroke-linecap="round" />
+    <text x="145" y="65" font-size="20">💖</text>
+    <text x="135" y="40" font-size="14">💋</text>
+    <path d="M 68 125 L 45 105 L 85 105" stroke="#1c1917" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+    <path d="M 142 125 L 165 105 L 125 105" stroke="#1c1917" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+</svg>`;
+
+            case 'banter':
+                return `<svg viewBox="0 0 200 200" width="160" height="160" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 68 180 L 68 120 C 68 65, 75 42, 105 42 C 135 42, 142 65, 142 120 L 142 180" stroke="#1c1917" stroke-width="4.5" stroke-linecap="round" fill="#ffffff" />
+    <circle cx="88" cy="62" r="4.5" fill="#1c1917" />
+    <circle cx="122" cy="62" r="4.5" fill="#1c1917" />
+    <path d="M 90 82 Q 105 74 120 82" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <circle cx="45" cy="100" r="14" fill="#ef4444" stroke="#1c1917" stroke-width="4" />
+    <circle cx="160" cy="100" r="14" fill="#ef4444" stroke="#1c1917" stroke-width="4" />
+    <path d="M 68 120 L 52 106" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <path d="M 142 120 L 152 106" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+</svg>`;
+
+            case 'vow':
+                return `<svg viewBox="0 0 200 200" width="160" height="160" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M 68 180 L 68 120 C 68 65, 75 42, 105 42 C 135 42, 142 65, 142 120 L 142 180" stroke="#1c1917" stroke-width="4.5" stroke-linecap="round" fill="#ffffff" />
+    <path d="M 80 62 Q 88 55 96 62" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <path d="M 114 62 Q 122 55 130 62" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <path d="M 94 76 Q 105 86 116 76" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <text x="90" y="130" font-size="24">🌹</text>
+    <path d="M 68 125 L 85 125" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <path d="M 142 125 L 125 125" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+</svg>`;
+
+            case 'celebrate':
+                return `<svg viewBox="0 0 200 200" width="160" height="160" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <polygon points="105,15 90,45 120,45" fill="#ec4899" stroke="#1c1917" stroke-width="3.5" />
+    <circle cx="105" cy="14" r="4" fill="#ffd700" />
+    <path d="M 68 180 L 68 120 C 68 65, 75 42, 105 42 C 135 42, 142 65, 142 120 L 142 180" stroke="#1c1917" stroke-width="4.5" stroke-linecap="round" fill="#ffffff" />
+    <path d="M 80 60 Q 88 52 96 60" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <path d="M 114 60 Q 122 52 130 60" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <path d="M 92 76 Q 105 92 118 76" stroke="#1c1917" stroke-width="4" stroke-linecap="round" fill="#ec4899" />
+    <path d="M 68 120 L 45 80 L 38 60" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <path d="M 142 120 L 165 80 L 172 60" stroke="#1c1917" stroke-width="4" stroke-linecap="round" />
+    <text x="30" y="55" font-size="16">✨</text>
+    <text x="165" y="55" font-size="16">🎉</text>
+</svg>`;
+        }
+    }
+
+    function renderDateStep() {
+        const step = dateSteps[currentStepIndex];
+        if (!step) return;
+
+        const lblStep = document.getElementById('date-step-label');
+        const countStep = document.getElementById('date-step-count');
+        const fillProgress = document.getElementById('date-progress-fill');
+        const florkBox = document.getElementById('flork-container');
+        const badgeEl = document.getElementById('date-badge');
+        const headingEl = document.getElementById('date-heading');
+        const subEl = document.getElementById('date-sub');
+        const optionsRow = document.getElementById('date-options-row');
+        const noteEl = document.getElementById('date-footer-note');
+
+        if (lblStep) lblStep.textContent = step.label;
+        if (countStep) countStep.textContent = step.num;
+        if (fillProgress) fillProgress.style.width = `${step.percent}%`;
+        if (florkBox) florkBox.innerHTML = getFlorkSVG(step.florkType);
+        if (badgeEl) badgeEl.innerHTML = `<span>${escapeHTML(step.badge)}</span>`;
+        if (headingEl) headingEl.innerHTML = step.title.replace(/\n/g, '<br>');
+        if (subEl) subEl.textContent = step.sub;
+        if (noteEl) noteEl.textContent = step.note;
+
+        if (optionsRow) {
+            optionsRow.innerHTML = step.options.map((opt, idx) => `
+                <button class="${opt.type === 'pink' ? 'pill-btn-pink' : 'pill-btn-white'}" data-choice-index="${idx}">
+                    <span>${escapeHTML(opt.text)}</span>
+                    <div class="btn-circle-icon">${opt.icon}</div>
+                </button>
+            `).join('');
+        }
+    }
+
+    // Handle date question option clicks
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('#date-options-row button');
+        if (!btn) return;
+        initAudio();
+        playBeep(750, 'sine', 0.08);
+
+        const choiceIndex = parseInt(btn.getAttribute('data-choice-index') || '0', 10);
+        const step = dateSteps[currentStepIndex];
+        const chosen = step.options[choiceIndex] ? step.options[choiceIndex].text : 'Yes';
+        selectedDateAnswers.push({ step: step.label, answer: chosen });
+
+        if (currentStepIndex < dateSteps.length - 1) {
+            currentStepIndex++;
+            renderDateStep();
+            launchCelebration(35);
+        } else {
+            // Step 8 completed: Grand Celebration & Date Confirmation!
+            launchCelebration(180);
+            playCelebrateFanfare();
+
+            // Send packet to partner over MQTT
+            sendPacket({
+                type: 'DATE_PLAN_CONFIRMED',
+                senderName: getMyName(),
+                answers: selectedDateAnswers,
+                time: new Date().toLocaleTimeString()
+            });
+
+            printLine(`💌 [DATE OFFICIALLY LOCKED IN]: ${escapeHTML(getMyName())} confirmed the date plan!`, 'text-gold');
+            
+            const optionsRow = document.getElementById('date-options-row');
+            if (optionsRow) {
+                optionsRow.innerHTML = `
+                    <div style="background: #fff0f6; border: 1.5px solid #ec4899; border-radius: 999px; padding: 12px 24px; font-weight: 800; color: #ec4899; display: flex; align-items: center; gap: 8px;">
+                        <span>✔ Date Confirmed & Sent to ${escapeHTML(getMyPartnerName())}! 💕</span>
+                    </div>
+                `;
+            }
+        }
+    });
+
+    // Handle feature tab switcher
+    document.addEventListener('click', (e) => {
+        const tabBtn = e.target.closest('.feature-tab');
+        if (!tabBtn) return;
+        initAudio();
+        playKeyClick();
+
+        const targetId = tabBtn.getAttribute('data-target');
+        if (!targetId) return;
+
+        document.querySelectorAll('.feature-tab').forEach(b => b.classList.remove('active'));
+        tabBtn.classList.add('active');
+
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        const activePanel = document.getElementById(targetId);
+        if (activePanel) {
+            activePanel.classList.add('active');
+            if (targetId === 'panel-live-map' && coupleMap) {
+                setTimeout(() => coupleMap.invalidateSize(), 150);
+            }
+        }
+    });
+
+    // Initialize the date card
+    renderDateStep();
+
+    // 16. QUICK 1-TAP CHAT REACTION EMOJIS
     document.addEventListener('click', (e) => {
         const emojiBtn = e.target.closest('.quick-emoji-btn');
         if (!emojiBtn) return;
