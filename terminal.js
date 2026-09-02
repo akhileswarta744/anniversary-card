@@ -274,6 +274,167 @@
         }, 1500);
     }
 
+    function playKissSound() {
+        if (!state.sfx) return;
+        initAudio();
+        if (!audioCtx) return;
+        try {
+            const now = audioCtx.currentTime;
+            // 1. Sweet kissing smooch (frequency sweep 360 -> 1100 -> 750 Hz)
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(360, now);
+            osc.frequency.exponentialRampToValueAtTime(1100, now + 0.08);
+            osc.frequency.exponentialRampToValueAtTime(750, now + 0.18);
+            gain.gain.setValueAtTime(0.35, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now);
+            osc.stop(now + 0.22);
+
+            // 2. High sparkle chime
+            const chime = audioCtx.createOscillator();
+            const chimeGain = audioCtx.createGain();
+            chime.type = 'triangle';
+            chime.frequency.setValueAtTime(1567.98, now + 0.08); // G6
+            chime.frequency.setValueAtTime(2093.00, now + 0.15); // C7
+            chimeGain.gain.setValueAtTime(0.12, now + 0.08);
+            chimeGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+            chime.connect(chimeGain);
+            chimeGain.connect(audioCtx.destination);
+            chime.start(now + 0.08);
+            chime.stop(now + 0.35);
+        } catch (e) {}
+    }
+
+    function playHugSound() {
+        if (!state.sfx) return;
+        initAudio();
+        if (!audioCtx) return;
+        try {
+            const now = audioCtx.currentTime;
+            // Warm cuddle chime (gentle ascending chord: C4, E4, G4, C5)
+            const chord = [261.63, 329.63, 392.00, 523.25];
+            chord.forEach((freq, idx) => {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, now + idx * 0.07);
+                gain.gain.setValueAtTime(0.1, now + idx * 0.07);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + idx * 0.07 + 0.45);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start(now + idx * 0.07);
+                osc.stop(now + idx * 0.07 + 0.45);
+            });
+        } catch (e) {}
+    }
+
+    function triggerKissAnimation(isIncoming, senderName, reason) {
+        initAudio();
+        playKissSound();
+
+        if (navigator.vibrate) {
+            try { navigator.vibrate([80, 40, 80, 40, 120]); } catch (e) {}
+        }
+
+        // Slap/Kiss Flash
+        const flash = document.createElement('div');
+        flash.className = 'kiss-flash';
+        document.body.appendChild(flash);
+        setTimeout(() => flash.remove(), 700);
+
+        // Visual overlay
+        let overlay = document.getElementById('slap-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'slap-overlay';
+            overlay.className = 'slap-overlay';
+            document.body.appendChild(overlay);
+        }
+
+        // Generate 16 floating radiating hearts
+        let heartParticlesHTML = '';
+        const heartIcons = ['💕', '💖', '💗', '💓', '💋', '💘', '✨', '💝'];
+        for (let i = 0; i < 16; i++) {
+            const angle = (i / 16) * 2 * Math.PI;
+            const distance = Math.floor(Math.random() * 140 + 160);
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance;
+            const rot = Math.floor(Math.random() * 60 - 30) + 'deg';
+            const icon = heartIcons[i % heartIcons.length];
+            heartParticlesHTML += `<span class="kiss-heart-particle" style="--tx:${tx}px; --ty:${ty}px; --rot:${rot};">${icon}</span>`;
+        }
+
+        overlay.innerHTML = `
+            <div class="slap-animation-box" style="position:relative;">
+                ${heartParticlesHTML}
+                <div class="kiss-lips-anim">💋</div>
+                <div class="kiss-mwah-text">💋 MWAH! 💋</div>
+                <div class="slap-reason-tag" style="border-color:#ff007f; color:#ff66cc;">
+                    ${isIncoming ? `FROM ${escapeHTML(senderName).toUpperCase()}: ` : 'KISS DELIVERED: '}
+                    <em>"${escapeHTML(reason)}"</em>
+                </div>
+            </div>
+        `;
+        setTimeout(() => {
+            if (overlay) overlay.innerHTML = '';
+        }, 1500);
+    }
+
+    function triggerHugAnimation(isIncoming, senderName, reason) {
+        initAudio();
+        playHugSound();
+
+        if (navigator.vibrate) {
+            try { navigator.vibrate([150, 80, 220]); } catch (e) {}
+        }
+
+        // Hug Glow Flash
+        const flash = document.createElement('div');
+        flash.className = 'hug-flash';
+        document.body.appendChild(flash);
+        setTimeout(() => flash.remove(), 800);
+
+        // Visual overlay
+        let overlay = document.getElementById('slap-overlay');
+        if (!overlay) {
+            overlay = document.createElement('div');
+            overlay.id = 'slap-overlay';
+            overlay.className = 'slap-overlay';
+            document.body.appendChild(overlay);
+        }
+
+        let sparkleParticlesHTML = '';
+        const sparkleIcons = ['✨', '🌟', '💖', '💫', '💛', '🌸'];
+        for (let i = 0; i < 14; i++) {
+            const angle = (i / 14) * 2 * Math.PI;
+            const distance = Math.floor(Math.random() * 130 + 140);
+            const tx = Math.cos(angle) * distance;
+            const ty = Math.sin(angle) * distance;
+            const rot = Math.floor(Math.random() * 50 - 25) + 'deg';
+            const icon = sparkleIcons[i % sparkleIcons.length];
+            sparkleParticlesHTML += `<span class="kiss-heart-particle" style="--tx:${tx}px; --ty:${ty}px; --rot:${rot}; font-size:28px;">${icon}</span>`;
+        }
+
+        overlay.innerHTML = `
+            <div class="slap-animation-box" style="position:relative;">
+                ${sparkleParticlesHTML}
+                <div class="hug-bear-anim">🤗</div>
+                <div class="hug-text">🤗 WARM HUG! 🤗</div>
+                <div class="slap-reason-tag" style="border-color:#ffd700; color:#ffd700;">
+                    ${isIncoming ? `FROM ${escapeHTML(senderName).toUpperCase()}: ` : 'HUG DELIVERED: '}
+                    <em>"${escapeHTML(reason)}"</em>
+                </div>
+            </div>
+        `;
+        setTimeout(() => {
+            if (overlay) overlay.innerHTML = '';
+        }, 1500);
+    }
+
     function playCelebrateFanfare() {
         if (!state.sfx) return;
         initAudio();
@@ -779,6 +940,54 @@
 `;
                 printRawHTML(slapReceiptHTML);
                 break;
+
+            case 'KISS':
+                triggerKissAnimation(true, packet.senderName, packet.reason);
+
+                const kissReceiptHTML = `
+<div class="kiss-card">
+    <div class="kiss-card-title">💋 INCOMING SWEET KISS RECEIVED 💋</div>
+    <div style="font-family: monospace; color:#ff007f; text-align:center; font-size:18px; margin: 6px 0; font-weight:bold;">
+        (づ￣ ³￣)づ 💖 MWAHHH!
+    </div>
+    <div style="margin: 6px 0;">
+        <p>From: <strong class="text-highlight">${escapeHTML(packet.senderName)}</strong></p>
+        <p>Reason: <em class="text-accent">"${escapeHTML(packet.reason)}"</em></p>
+        <p>Affection Level: <span class="text-gold">10,000% Pure Romance 💕</span></p>
+    </div>
+    <div class="slap-actions">
+        <button class="action-btn" onclick="window.runTerminalCmd('kiss for endless love')">💋 KISS BACK</button>
+        <button class="action-btn" onclick="window.runTerminalCmd('hug for warm embrace')">🤗 SEND BIG HUG</button>
+        <button class="action-btn" onclick="window.runTerminalCmd('pay 500 $KISSES for joy')">💸 SEND 500 $KISSES</button>
+    </div>
+</div>
+`;
+                printRawHTML(kissReceiptHTML);
+                break;
+
+            case 'HUG':
+                triggerHugAnimation(true, packet.senderName, packet.reason);
+
+                const hugReceiptHTML = `
+<div class="hug-card">
+    <div class="hug-card-title">🤗 INCOMING WARM CUDDLE HUG RECEIVED 🤗</div>
+    <div style="font-family: monospace; color:#ffd700; text-align:center; font-size:18px; margin: 6px 0; font-weight:bold;">
+        (つˆДˆ)つ｡☆ BIG WARM EMBRACE
+    </div>
+    <div style="margin: 6px 0;">
+        <p>From: <strong class="text-highlight">${escapeHTML(packet.senderName)}</strong></p>
+        <p>Reason: <em class="text-gold">"${escapeHTML(packet.reason)}"</em></p>
+        <p>Cozy Level: <span class="text-accent">Warm, safe, and infinite cuddles 💛</span></p>
+    </div>
+    <div class="slap-actions">
+        <button class="action-btn" onclick="window.runTerminalCmd('hug for tight embrace')">🤗 HUG BACK TIGHTER</button>
+        <button class="action-btn" onclick="window.runTerminalCmd('kiss for sweet love')">💋 SEND SWEET KISS</button>
+        <button class="action-btn" onclick="window.runTerminalCmd('pay 100 $HUGS for warmth')">💸 SEND 100 $HUGS</button>
+    </div>
+</div>
+`;
+                printRawHTML(hugReceiptHTML);
+                break;
         }
     }
 
@@ -797,6 +1006,14 @@
     <div class="help-card">
         <span class="help-cmd" onclick="window.runTerminalCmd('chat Happy 4th Anniversary my love!')">💬 chat [message]</span>
         <div class="help-desc">Send live messages across states in real-time.</div>
+    </div>
+    <div class="help-card">
+        <span class="help-cmd" onclick="window.runTerminalCmd('kiss for being the love of my life')">💋 kiss [reason]</span>
+        <div class="help-desc">Send sweet kisses with flying hearts & smooch sound!</div>
+    </div>
+    <div class="help-card">
+        <span class="help-cmd" onclick="window.runTerminalCmd('hug for always supporting me')">🤗 hug [reason]</span>
+        <div class="help-desc">Send warm embrace with cuddle aura & chime!</div>
     </div>
     <div class="help-card">
         <span class="help-cmd" onclick="window.runTerminalCmd('slap for being too cute')">👋 slap [reason]</span>
@@ -972,6 +1189,80 @@
     <div class="receipt-divider"></div>
     <div class="receipt-hash">TX_HASH: ${txHash}</div>
     <div class="receipt-status">✔ LIVE DELIVERED TO HER SCREEN!</div>
+</div>
+`;
+                printRawHTML(html);
+            }
+        },
+
+        kiss: {
+            desc: 'Send sweet romantic kisses with flying hearts & smooch sound',
+            exec: (args) => {
+                const rawReason = (args && args.length > 0) ? args.join(' ') : 'being the love of my life';
+                const reason = rawReason.replace(/^for\s+/i, '').replace(/^["']|["']$/g, '');
+                const senderName = getMyName();
+                const recipientName = getPartnerName();
+                const timestamp = new Date().toLocaleTimeString();
+
+                triggerKissAnimation(false, senderName, reason);
+
+                // Send live kiss packet over MQTT
+                sendPacket({
+                    type: 'KISS',
+                    senderName,
+                    recipientName,
+                    reason,
+                    time: timestamp
+                });
+
+                const html = `
+<div class="kiss-card">
+    <div class="kiss-card-title">💋 SWEET KISS DISPATCHED 💋</div>
+    <div style="font-family: monospace; color:#ff007f; text-align:center; font-size:18px; margin: 6px 0; font-weight:bold;">
+        (づ￣ ³￣)づ 💖 MWAHHH!
+    </div>
+    <div style="margin: 6px 0;">
+        <p>Target: <strong class="text-accent">${escapeHTML(recipientName)}</strong></p>
+        <p>Reason: <em class="text-highlight">"${escapeHTML(reason)}"</em></p>
+        <p>Status: <span class="text-success">Delivered straight to their screen with flying heart burst! 💋</span></p>
+    </div>
+</div>
+`;
+                printRawHTML(html);
+            }
+        },
+
+        hug: {
+            desc: 'Send a big warm cuddle hug with glowing embrace & chime',
+            exec: (args) => {
+                const rawReason = (args && args.length > 0) ? args.join(' ') : 'always supporting me';
+                const reason = rawReason.replace(/^for\s+/i, '').replace(/^["']|["']$/g, '');
+                const senderName = getMyName();
+                const recipientName = getPartnerName();
+                const timestamp = new Date().toLocaleTimeString();
+
+                triggerHugAnimation(false, senderName, reason);
+
+                // Send live hug packet over MQTT
+                sendPacket({
+                    type: 'HUG',
+                    senderName,
+                    recipientName,
+                    reason,
+                    time: timestamp
+                });
+
+                const html = `
+<div class="hug-card">
+    <div class="hug-card-title">🤗 WARM HUG DISPATCHED 🤗</div>
+    <div style="font-family: monospace; color:#ffd700; text-align:center; font-size:18px; margin: 6px 0; font-weight:bold;">
+        (つˆДˆ)つ｡☆ BIG WARM EMBRACE
+    </div>
+    <div style="margin: 6px 0;">
+        <p>Target: <strong class="text-accent">${escapeHTML(recipientName)}</strong></p>
+        <p>Reason: <em class="text-gold">"${escapeHTML(reason)}"</em></p>
+        <p>Status: <span class="text-success">Delivered straight to their screen with warm cozy aura! 💛</span></p>
+    </div>
 </div>
 `;
                 printRawHTML(html);
@@ -1480,6 +1771,25 @@ Happy 4th Anniversary, my love! ❤️
         if (!target) return;
         const cmd = target.getAttribute('data-cmd');
         if (cmd) window.runTerminalCmd(cmd);
+    });
+
+    // Global Button Ripple & Cyber Sound Animation for EVERY button
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('button, .hud-btn, .quick-chip, .btn-send, .modal-close, .slap-btn, .action-btn');
+        if (!btn) return;
+        initAudio();
+        playKeyClick();
+
+        const rect = btn.getBoundingClientRect();
+        const circle = document.createElement('span');
+        const diameter = Math.max(rect.width, rect.height);
+        const radius = diameter / 2;
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${e.clientX - rect.left - radius}px`;
+        circle.style.top = `${e.clientY - rect.top - radius}px`;
+        circle.className = 'btn-ripple';
+        btn.appendChild(circle);
+        setTimeout(() => circle.remove(), 600);
     });
 
     document.addEventListener('click', (e) => {
