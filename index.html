@@ -17,7 +17,18 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <link rel="stylesheet" href="styles.css?v=15.0">
+    <!-- Progressive Web App (PWA) Meta & Icons -->
+    <meta name="theme-color" content="#ec4899">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Akhil &amp; Her">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+
+    <link rel="stylesheet" href="styles.css?v=16.0">
 </head>
 <body class="theme-minimal-romantic">
 
@@ -42,6 +53,9 @@
                 </div>
             </div>
             <div class="header-controls">
+                <button id="btn-install-app" class="pill-btn highlight" title="Install App on Phone">
+                    <span>📲 App</span>
+                </button>
                 <button id="btn-invite" class="pill-btn" title="Share with Her">
                     <span>🔗 Share</span>
                 </button>
@@ -382,6 +396,51 @@
         </div>
     </div>
 
+    <!-- Install Mobile App Modal Popup -->
+    <div id="install-modal" class="modal-overlay hidden">
+        <div class="modal-card" style="max-width: 400px; text-align: center;">
+            <div class="modal-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:22px;">📲</span>
+                    <h3 style="margin:0;">Install Akhil &amp; Her App</h3>
+                </div>
+                <button class="modal-close" data-close="install-modal">&times;</button>
+            </div>
+            <div class="modal-body" style="padding: 10px 4px;">
+                <div style="width: 76px; height: 76px; margin: 6px auto 14px auto; border-radius: 20px; background: linear-gradient(135deg, #ec4899, #c026d3); display:flex; align-items:center; justify-content:center; box-shadow: 0 10px 25px rgba(236,72,153,0.35);">
+                    <span style="font-size: 38px;">❤️</span>
+                </div>
+                <h4 style="font-family: var(--font-serif); font-size: 20px; color: var(--text-main); margin-bottom: 6px;">
+                    Get It on Your Home Screen!
+                </h4>
+                <p style="font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-bottom: 18px;">
+                    Experience our card as a standalone fullscreen app without any browser address bar or tabs! 💕
+                </p>
+
+                <!-- Android / Chrome 1-Tap Install Button -->
+                <div id="android-install-box" style="margin-bottom: 16px;">
+                    <button id="btn-native-install" class="pill-btn-pink" style="width: 100%; padding: 13px; font-size: 14.5px; font-weight: 800; cursor: pointer; justify-content: center; box-shadow: 0 6px 20px rgba(236,72,153,0.4);">
+                        <span>📲 Install App (1-Tap)</span>
+                    </button>
+                </div>
+
+                <!-- iOS / Safari Guide -->
+                <div id="ios-install-guide" style="background: #fff8fb; border: 1.5px dashed #f472b6; border-radius: 18px; padding: 14px 16px; text-align: left; font-size: 12.5px; color: var(--text-main);">
+                    <strong style="color: #ec4899; display: block; margin-bottom: 8px;">🍎 On iPhone / iPad (Safari):</strong>
+                    <ol style="margin: 0; padding-left: 18px; line-height: 1.65;">
+                        <li>Tap the <strong>Share</strong> icon <span style="font-size: 15px;">⎋</span> at the bottom.</li>
+                        <li>Scroll down &amp; tap <strong>"Add to Home Screen"</strong> <span style="font-size: 14px;">➕</span>.</li>
+                        <li>Tap <strong>"Add"</strong> at top right!</li>
+                    </ol>
+                </div>
+
+                <p style="font-size: 11px; color: #9ca3af; margin-top: 14px;">
+                    ✨ Opens directly from her phone home screen alongside WhatsApp &amp; Instagram!
+                </p>
+            </div>
+        </div>
+    </div>
+
     <!-- Location Permission Modal Popup -->
     <div id="location-modal" class="modal-overlay hidden">
         <div class="modal-card">
@@ -654,6 +713,6 @@
         </div>
     </div>
 
-    <script src="terminal.js?v=15.0"></script>
+    <script src="terminal.js?v=16.0"></script>
 </body>
 </html>

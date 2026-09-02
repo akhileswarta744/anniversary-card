@@ -2464,4 +2464,34 @@ button:active, .action-tile:active, .pill-btn:active, .love-send-btn:active, .qu
     }
 }
 
+/* =========================================================
+   16. PROGRESSIVE WEB APP (PWA) STYLING
+   ========================================================= */
+
+.pill-btn.highlight {
+    background: linear-gradient(135deg, #ec4899, #c026d3) !important;
+    color: #ffffff !important;
+    border-color: #ec4899 !important;
+    box-shadow: 0 4px 14px rgba(236, 72, 153, 0.4);
+    animation: gentlePulse 2.2s infinite ease-in-out;
+}
+
+@keyframes gentlePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.06); }
+}
+
+/* Standalone App Fullscreen Optimizations */
+@media all and (display-mode: standalone) {
+    body {
+        padding-top: env(safe-area-inset-top);
+        padding-bottom: env(safe-area-inset-bottom);
+        user-select: none;
+        -webkit-user-select: none;
+    }
+    #btn-install-app {
+        display: none !important;
+    }
+}
+
 

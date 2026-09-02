@@ -3074,6 +3074,76 @@ Happy 4th Anniversary, my love! ❤️
     // Start Cloud Relay
     initCloudRelay();
 
+    // =========================================================
+    // 19. PROGRESSIVE WEB APP (PWA) MOBILE INSTALL CONTROLLER
+    // =========================================================
+    let deferredPrompt = null;
+    const btnInstallHeader = document.getElementById('btn-install-app');
+    const btnNativeInstall = document.getElementById('btn-native-install');
+
+    // Register Service Worker for offline support & standalone app launch
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js')
+                .then((reg) => console.log('PWA Service Worker registered:', reg.scope))
+                .catch((err) => console.warn('Service Worker registration failed:', err));
+        });
+    }
+
+    // Capture Android / Chrome PWA install prompt
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        if (btnInstallHeader) {
+            btnInstallHeader.style.display = 'inline-flex';
+        }
+    });
+
+    if (btnInstallHeader) {
+        btnInstallHeader.addEventListener('click', () => {
+            initAudio();
+            playKeyClick();
+            openModal('install-modal');
+        });
+    }
+
+    if (btnNativeInstall) {
+        btnNativeInstall.addEventListener('click', async () => {
+            initAudio();
+            playCelebrateFanfare();
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    printLine('📲 App successfully installed to your home screen! 💕', 'text-gold');
+                    launchCelebration(60);
+                    closeModal('install-modal');
+                }
+                deferredPrompt = null;
+            } else {
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                if (isIOS) {
+                    alert("On iPhone:\n1. Tap 'Share' ⎋ at bottom of Safari\n2. Scroll down & tap 'Add to Home Screen' ➕\n3. Tap 'Add'!");
+                } else {
+                    alert("To install:\nTap your browser menu (⋮ or ⋯) and select 'Install app' or 'Add to Home Screen'!");
+                }
+            }
+        });
+    }
+
+    window.addEventListener('appinstalled', () => {
+        printLine('🎉 Welcome to the official Akhil & Her Mobile App!', 'text-accent');
+        launchCelebration(100);
+        playCelebrateFanfare();
+        if (btnInstallHeader) btnInstallHeader.style.display = 'none';
+    });
+
+    // Check if running as standalone installed app
+    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
+        if (btnInstallHeader) btnInstallHeader.style.display = 'none';
+        console.log('Running as installed standalone mobile app!');
+    }
+
     // Initial Print
     printWelcomeBanner();
 
