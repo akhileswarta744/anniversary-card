@@ -1861,3 +1861,559 @@ button:active, .action-tile:active, .pill-btn:active, .love-send-btn:active, .qu
     color: var(--text-main);
 }
 
+/* =========================================================
+   14. AESTHETIC VINYL RECORD MUSIC PLAYER
+   ========================================================= */
+
+.vinyl-player-widget {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 20px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(16px);
+    border-radius: 26px;
+    border: 1.5px solid rgba(255, 182, 193, 0.5);
+    box-shadow: 0 10px 30px rgba(233, 30, 99, 0.08);
+    position: relative;
+    overflow: hidden;
+    margin: 4px 0 10px 0;
+}
+
+/* Vinyl Disc & Tonearm */
+.vinyl-record-wrap {
+    position: relative;
+    width: 72px;
+    height: 72px;
+    flex-shrink: 0;
+}
+
+.vinyl-disc {
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: radial-gradient(circle, #2d2630 0%, #161318 70%, #0d0b0e 100%);
+    border: 2px solid #3d3542;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+    transition: transform 0.5s ease;
+}
+
+.vinyl-disc.playing {
+    animation: spinVinyl 4s linear infinite;
+    box-shadow: 0 0 20px rgba(236, 72, 153, 0.35);
+}
+
+@keyframes spinVinyl {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.vinyl-groove {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    pointer-events: none;
+}
+
+.groove-1 { width: 50px; height: 50px; }
+.groove-2 { width: 34px; height: 34px; }
+
+.vinyl-center-label {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ec4899, #d946ef);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    z-index: 2;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.vinyl-heart {
+    font-size: 9px;
+    line-height: 1;
+}
+
+.vinyl-center-label small {
+    font-size: 5px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+}
+
+/* Tonearm */
+.vinyl-tonearm {
+    position: absolute;
+    top: 4px;
+    right: 0px;
+    width: 28px;
+    height: 48px;
+    pointer-events: none;
+    transform-origin: 22px 6px;
+    transform: rotate(0deg);
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 5;
+}
+
+.vinyl-tonearm.playing {
+    transform: rotate(28deg);
+}
+
+.tonearm-base {
+    width: 10px;
+    height: 10px;
+    background: #cbd5e1;
+    border: 1.5px solid #94a3b8;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+}
+
+.tonearm-arm {
+    width: 3px;
+    height: 38px;
+    background: #94a3b8;
+    border-radius: 2px;
+    position: absolute;
+    top: 8px;
+    right: 6px;
+    transform-origin: top center;
+    transform: rotate(-10deg);
+}
+
+.tonearm-head {
+    width: 7px;
+    height: 9px;
+    background: #ec4899;
+    border-radius: 2px;
+    position: absolute;
+    bottom: 2px;
+    right: 1px;
+}
+
+/* Vinyl Info & Track */
+.vinyl-info-wrap {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.vinyl-title-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vinyl-song-title {
+    font-family: var(--font-serif);
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-main);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.vinyl-live-badge {
+    font-size: 9px;
+    font-weight: 800;
+    color: #ec4899;
+    background: #fff0f6;
+    padding: 2px 7px;
+    border-radius: 999px;
+    letter-spacing: 0.5px;
+    display: none;
+}
+
+.vinyl-live-badge.playing {
+    display: inline-block;
+    animation: pulseGlow 1.5s infinite alternate;
+}
+
+.vinyl-artist-sub {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+/* Progress Track */
+.vinyl-progress-bar-wrap {
+    margin-top: 5px;
+}
+
+.vinyl-progress-track {
+    width: 100%;
+    height: 4px;
+    background: #f1ecf5;
+    border-radius: 999px;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.vinyl-progress-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #ec4899, #c026d3);
+    border-radius: 999px;
+    transition: width 0.3s linear;
+}
+
+.vinyl-time-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10.5px;
+    color: #9ca3af;
+    margin-top: 2px;
+    font-family: monospace;
+}
+
+/* Vinyl Play Button */
+.vinyl-btn-play {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ec4899, #c026d3);
+    border: none;
+    color: #ffffff;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 6px 18px rgba(236, 72, 153, 0.4);
+    transition: all 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    flex-shrink: 0;
+}
+
+.vinyl-btn-play:hover {
+    transform: scale(1.1);
+    box-shadow: 0 8px 24px rgba(236, 72, 153, 0.55);
+}
+
+.vinyl-btn-play:active {
+    transform: scale(0.92);
+}
+
+/* Floating Music Notes */
+.floating-music-notes {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.floating-note {
+    position: absolute;
+    bottom: -10px;
+    font-size: 14px;
+    color: #ec4899;
+    opacity: 0.85;
+    animation: floatNote 2.5s ease-out forwards;
+}
+
+@keyframes floatNote {
+    0% { transform: translateY(0) scale(0.6) rotate(0deg); opacity: 1; }
+    50% { transform: translateY(-35px) scale(1.1) rotate(15deg); opacity: 0.9; }
+    100% { transform: translateY(-70px) scale(0.8) rotate(-15deg); opacity: 0; }
+}
+
+/* =========================================================
+   15. POLAROID MEMORY SCRAPBOOK ("OUR 4 YEARS IN PICTURES")
+   ========================================================= */
+
+.scrapbook-section {
+    width: 100%;
+}
+
+.scrapbook-card {
+    background: #ffffff;
+    border-radius: 36px;
+    padding: 34px 30px;
+    box-shadow: 0 25px 80px rgba(233, 30, 99, 0.08);
+    border: 1.5px solid rgba(255, 255, 255, 0.95);
+    text-align: center;
+}
+
+.scrapbook-badge {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #ec4899;
+    background: #fff0f6;
+    border: 1px solid #fbcfe8;
+    padding: 4px 14px;
+    border-radius: 999px;
+    display: inline-block;
+    margin-bottom: 8px;
+}
+
+.scrapbook-title {
+    font-family: var(--font-serif);
+    font-size: clamp(22px, 4vw, 30px);
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 4px;
+}
+
+.scrapbook-sub {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    margin-bottom: 22px;
+}
+
+/* Polaroid Stage */
+.polaroid-stage {
+    position: relative;
+    padding: 18px 0;
+    margin: 0 auto 18px auto;
+    max-width: 340px;
+}
+
+.polaroid-pin {
+    position: absolute;
+    top: 6px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 24px;
+    z-index: 10;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+}
+
+.polaroid-washi-tape {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%) rotate(-2deg);
+    width: 90px;
+    height: 24px;
+    background: rgba(254, 215, 226, 0.7);
+    border: 1px dashed rgba(244, 114, 182, 0.6);
+    border-radius: 2px;
+    z-index: 9;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.polaroid-card {
+    background: #ffffff;
+    padding: 16px 16px 22px 16px;
+    border-radius: 12px;
+    box-shadow: 0 16px 45px rgba(0, 0, 0, 0.12), 0 4px 16px rgba(233, 30, 99, 0.08);
+    border: 1px solid rgba(0, 0, 0, 0.04);
+    transform: rotate(-1.5deg);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.polaroid-card:hover {
+    transform: rotate(0deg) scale(1.02);
+}
+
+.polaroid-photo-box {
+    width: 100%;
+    aspect-ratio: 1/1;
+    border-radius: 8px;
+    background: radial-gradient(circle at 30% 25%, #ffe4f0 0%, #f1e6ff 55%, #e0f2fe 100%);
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.polaroid-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.polaroid-img.hidden {
+    display: none;
+}
+
+.polaroid-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.placeholder-emoji {
+    font-size: 64px;
+    filter: drop-shadow(0 6px 12px rgba(233, 30, 99, 0.2));
+    animation: gentleWobble 3s ease-in-out infinite alternate;
+}
+
+@keyframes gentleWobble {
+    from { transform: rotate(-6deg) scale(1); }
+    to { transform: rotate(6deg) scale(1.05); }
+}
+
+.placeholder-tag {
+    font-size: 11px;
+    font-weight: 800;
+    color: #ec4899;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 3px 12px;
+    border-radius: 999px;
+    border: 1px solid #fbcfe8;
+}
+
+.polaroid-caption-wrap {
+    margin-top: 14px;
+    text-align: center;
+}
+
+.polaroid-year-badge {
+    font-size: 12px;
+    font-weight: 800;
+    color: #ec4899;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.polaroid-caption {
+    font-family: var(--font-cursive);
+    font-size: 22px;
+    color: #3b2839;
+    line-height: 1.35;
+    margin-bottom: 6px;
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.polaroid-location {
+    font-size: 11px;
+    color: #9ca3af;
+    font-weight: 600;
+}
+
+/* Scrapbook Controls */
+.scrapbook-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.scrapbook-nav-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1px solid rgba(236, 72, 153, 0.25);
+    color: #ec4899;
+    font-size: 20px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.scrapbook-nav-btn:hover {
+    background: #ec4899;
+    color: #ffffff;
+    transform: scale(1.1);
+}
+
+.scrapbook-dots {
+    display: flex;
+    gap: 6px;
+}
+
+.scrap-dot {
+    background: #f3f0f5;
+    border: 1px solid transparent;
+    border-radius: 999px;
+    padding: 5px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.scrap-dot:hover {
+    border-color: #fbcfe8;
+    color: #ec4899;
+}
+
+.scrap-dot.active {
+    background: linear-gradient(135deg, #ec4899, #c026d3);
+    color: #ffffff !important;
+    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.35);
+}
+
+/* Upload & Like Row */
+.scrapbook-action-row {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.polaroid-upload-btn {
+    background: #ffffff;
+    border: 1.5px dashed #f472b6;
+    color: #ec4899;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 10px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+
+.polaroid-upload-btn:hover {
+    background: #fff0f6;
+    transform: translateY(-2px);
+}
+
+@media (max-width: 640px) {
+    .vinyl-player-widget {
+        padding: 12px 14px;
+        gap: 12px;
+    }
+
+    .vinyl-record-wrap {
+        width: 58px;
+        height: 58px;
+    }
+
+    .vinyl-disc {
+        width: 56px;
+        height: 56px;
+    }
+
+    .polaroid-stage {
+        max-width: 290px;
+    }
+
+    .polaroid-caption {
+        font-size: 19px;
+        min-height: 50px;
+    }
+}
+
+

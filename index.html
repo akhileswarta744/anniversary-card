@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-    <link rel="stylesheet" href="styles.css?v=13.0">
+    <link rel="stylesheet" href="styles.css?v=14.0">
 </head>
 <body class="theme-minimal-romantic">
 
@@ -109,13 +109,111 @@
             </div>
         </section>
 
+        <!-- Aesthetic Vinyl Record Music Player Widget -->
+        <div class="vinyl-player-widget" id="vinyl-player-widget">
+            <div class="vinyl-record-wrap" id="vinyl-record-wrap">
+                <div class="vinyl-disc" id="vinyl-disc">
+                    <div class="vinyl-groove groove-1"></div>
+                    <div class="vinyl-groove groove-2"></div>
+                    <div class="vinyl-center-label">
+                        <span class="vinyl-heart">❤️</span>
+                        <small>4 YEARS</small>
+                    </div>
+                </div>
+                <div class="vinyl-tonearm" id="vinyl-tonearm">
+                    <div class="tonearm-base"></div>
+                    <div class="tonearm-arm"></div>
+                    <div class="tonearm-head"></div>
+                </div>
+            </div>
+            <div class="vinyl-info-wrap">
+                <div class="vinyl-title-row">
+                    <span class="vinyl-song-title" id="vinyl-song-title">Can't Help Falling in Love</span>
+                    <span class="vinyl-live-badge" id="vinyl-live-badge">♪ PLAYING</span>
+                </div>
+                <div class="vinyl-artist-sub">Akhil &hearts; Her &bull; Romantic Melody</div>
+                <div class="vinyl-progress-bar-wrap">
+                    <div class="vinyl-progress-track" id="vinyl-progress-track">
+                        <div class="vinyl-progress-fill" id="vinyl-progress-fill"></div>
+                    </div>
+                    <div class="vinyl-time-row">
+                        <span id="vinyl-current-time">0:00</span>
+                        <span id="vinyl-total-time">3:20</span>
+                    </div>
+                </div>
+            </div>
+            <div class="vinyl-controls">
+                <button class="vinyl-btn-play" id="btn-vinyl-play" title="Play / Pause Romantic Song">
+                    <span id="vinyl-play-icon">▶</span>
+                </button>
+            </div>
+            <div class="floating-music-notes" id="floating-music-notes"></div>
+        </div>
+
         <!-- Feature Switcher Dock (Clean Minimalist Pills) -->
         <nav class="feature-nav-bar" aria-label="Feature Navigation">
             <button class="feature-tab active" data-target="panel-date-card">💌 Date Invite</button>
+            <button class="feature-tab" data-target="panel-scrapbook">📸 Scrapbook</button>
             <button class="feature-tab" data-target="panel-love-actions">💋 Love Actions</button>
             <button class="feature-tab" data-target="panel-live-map">🗺️ Couple Map</button>
             <button class="feature-tab" data-target="panel-live-chat">💬 Live Chat</button>
         </nav>
+
+        <!-- 5. Polaroid Memory Scrapbook ("Our 4 Years Together") -->
+        <section class="scrapbook-section tab-panel" id="panel-scrapbook">
+            <div class="scrapbook-card">
+                <div class="scrapbook-header">
+                    <span class="scrapbook-badge">📸 2022 &mdash; 2026</span>
+                    <h2 class="scrapbook-title">Our 4-Year Story in Polaroids</h2>
+                    <p class="scrapbook-sub">Every photograph is a chapter of our love story 💕</p>
+                </div>
+
+                <!-- Main Polaroid Frame Stage -->
+                <div class="polaroid-stage">
+                    <div class="polaroid-pin">📌</div>
+                    <div class="polaroid-washi-tape"></div>
+                    <div class="polaroid-card" id="active-polaroid">
+                        <div class="polaroid-photo-box" id="polaroid-photo-box">
+                            <img id="polaroid-img" src="" alt="Memory Photo" class="polaroid-img hidden" />
+                            <div class="polaroid-placeholder" id="polaroid-placeholder">
+                                <span class="placeholder-emoji" id="placeholder-emoji">✨</span>
+                                <div class="placeholder-tag" id="placeholder-tag">Chapter 1</div>
+                            </div>
+                        </div>
+                        <div class="polaroid-caption-wrap">
+                            <h3 class="polaroid-year-badge" id="polaroid-year">2022 &bull; August 31</h3>
+                            <p class="polaroid-caption" id="polaroid-caption">Where our universe collided and forever began.</p>
+                            <div class="polaroid-location" id="polaroid-location">📍 Karnataka &harr; Kerala</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Carousel Controls -->
+                <div class="scrapbook-controls">
+                    <button class="scrapbook-nav-btn" id="btn-polaroid-prev" aria-label="Previous Memory">&lsaquo;</button>
+                    <div class="scrapbook-dots" id="polaroid-dots">
+                        <button class="scrap-dot active" data-index="0">2022</button>
+                        <button class="scrap-dot" data-index="1">2023</button>
+                        <button class="scrap-dot" data-index="2">2024</button>
+                        <button class="scrap-dot" data-index="3">2025</button>
+                        <button class="scrap-dot" data-index="4">2026</button>
+                    </div>
+                    <button class="scrapbook-nav-btn" id="btn-polaroid-next" aria-label="Next Memory">&rsaquo;</button>
+                </div>
+
+                <!-- Photo Upload / Replace Action -->
+                <div class="scrapbook-action-row">
+                    <label class="polaroid-upload-btn" for="polaroid-file-input">
+                        <span>📷 Add / Change Our Photo</span>
+                        <input type="file" id="polaroid-file-input" accept="image/*" style="display:none;">
+                    </label>
+                    <button id="btn-love-memory" class="pill-btn-pink" style="padding:10px 18px; font-size:13px;">
+                        <span>❤️ Like Memory</span>
+                        <span id="memory-likes-count">1,464</span>
+                    </button>
+                </div>
+            </div>
+        </section>
 
         <!-- 2. Easily Accessible 1-Tap Love Actions -->
         <section class="love-actions-section tab-panel" id="panel-love-actions">
@@ -541,6 +639,6 @@
         </div>
     </div>
 
-    <script src="terminal.js?v=13.0"></script>
+    <script src="terminal.js?v=14.0"></script>
 </body>
 </html>

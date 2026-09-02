@@ -538,12 +538,32 @@
     // 8-bit Synthwave Lo-fi Engine
     let bgmInterval = null;
     let bgmStep = 0;
+    let bgmSeconds = 0;
+    let notesInterval = null;
+    const totalSongSeconds = 200; // 3:20
+
     const synthChords = [
-        [261.63, 329.63, 392.00, 523.25],
-        [220.00, 261.63, 329.63, 440.00],
-        [174.61, 220.00, 261.63, 349.23],
-        [196.00, 246.94, 293.66, 392.00]
+        [261.63, 329.63, 392.00, 523.25], // C major
+        [196.00, 246.94, 293.66, 392.00], // G major
+        [220.00, 261.63, 329.63, 440.00], // A minor
+        [174.61, 220.00, 261.63, 349.23], // F major
+        [261.63, 329.63, 392.00, 659.25], // C/E
+        [174.61, 220.00, 261.63, 440.00], // F
+        [196.00, 246.94, 293.66, 493.88], // G
+        [261.63, 392.00, 523.25, 659.25]  // C maj
     ];
+
+    function spawnFloatingMusicNote() {
+        const container = document.getElementById('floating-music-notes');
+        if (!container) return;
+        const notes = ['♪', '♫', '♩', '♬', '💕', '✨', '💖'];
+        const note = document.createElement('span');
+        note.className = 'floating-note';
+        note.textContent = notes[Math.floor(Math.random() * notes.length)];
+        note.style.left = Math.floor(Math.random() * 80 + 10) + '%';
+        container.appendChild(note);
+        setTimeout(() => note.remove(), 2600);
+    }
 
     function startMusic() {
         initAudio();
@@ -552,6 +572,7 @@
         state.music = true;
         updateMusicButton();
         bgmStep = 0;
+
         bgmInterval = setInterval(() => {
             if (!state.music || !audioCtx) return;
             const chordIndex = Math.floor(bgmStep / 4) % synthChords.length;
@@ -561,23 +582,42 @@
             const now = audioCtx.currentTime;
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
-            osc.type = 'sine';
+            osc.type = 'triangle';
             osc.frequency.setValueAtTime(freq, now);
-            gain.gain.setValueAtTime(0.03, now);
-            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
+            gain.gain.setValueAtTime(0.04, now);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.42);
             osc.connect(gain);
             gain.connect(audioCtx.destination);
             osc.start(now);
-            osc.stop(now + 0.45);
+            osc.stop(now + 0.42);
 
             bgmStep++;
-        }, 320);
+
+            // Progress bar and timer tick
+            if (bgmStep % 3 === 0) {
+                bgmSeconds = (bgmSeconds + 1) % totalSongSeconds;
+                const curM = Math.floor(bgmSeconds / 60);
+                const curS = (bgmSeconds % 60).toString().padStart(2, '0');
+                const curTimeEl = document.getElementById('vinyl-current-time');
+                const fillEl = document.getElementById('vinyl-progress-fill');
+                if (curTimeEl) curTimeEl.textContent = `${curM}:${curS}`;
+                if (fillEl) fillEl.style.width = `${(bgmSeconds / totalSongSeconds) * 100}%`;
+            }
+        }, 330);
+
+        notesInterval = setInterval(() => {
+            if (state.music) spawnFloatingMusicNote();
+        }, 650);
     }
 
     function stopMusic() {
         if (bgmInterval) {
             clearInterval(bgmInterval);
             bgmInterval = null;
+        }
+        if (notesInterval) {
+            clearInterval(notesInterval);
+            notesInterval = null;
         }
         state.music = false;
         updateMusicButton();
@@ -586,16 +626,38 @@
     function toggleMusic() {
         if (state.music) {
             stopMusic();
-            printLine('🎵 Ambient BGM muted.', 'text-dim');
+            printLine('🎵 Romantic BGM paused.', 'text-dim');
         } else {
             startMusic();
-            printLine('🎵 Romantic 8-Bit Synthwave BGM activated.', 'text-accent');
+            printLine('🎵 Romantic Couple Melody playing on Vinyl.', 'text-accent');
         }
     }
 
     function updateMusicButton() {
         const lbl = document.getElementById('music-label') || (btnMusic ? btnMusic.querySelector('.label') : null);
         if (lbl) lbl.textContent = state.music ? '🎵 ON' : '🎵';
+
+        // Update Vinyl player UI
+        const vinylDisc = document.getElementById('vinyl-disc');
+        const vinylTonearm = document.getElementById('vinyl-tonearm');
+        const vinylBadge = document.getElementById('vinyl-live-badge');
+        const vinylIcon = document.getElementById('vinyl-play-icon');
+
+        if (vinylDisc) {
+            if (state.music) vinylDisc.classList.add('playing');
+            else vinylDisc.classList.remove('playing');
+        }
+        if (vinylTonearm) {
+            if (state.music) vinylTonearm.classList.add('playing');
+            else vinylTonearm.classList.remove('playing');
+        }
+        if (vinylBadge) {
+            if (state.music) vinylBadge.classList.add('playing');
+            else vinylBadge.classList.remove('playing');
+        }
+        if (vinylIcon) {
+            vinylIcon.textContent = state.music ? '❚❚' : '▶';
+        }
     }
 
     function updateSoundButton() {
@@ -2804,7 +2866,188 @@ Happy 4th Anniversary, my love! ❤️
     // Initialize the date card
     renderDateStep();
 
-    // 16. QUICK 1-TAP CHAT REACTION EMOJIS
+    // =========================================================
+    // 16. AESTHETIC VINYL PLAYER CONTROLS
+    // =========================================================
+    const btnVinylPlay = document.getElementById('btn-vinyl-play');
+    if (btnVinylPlay) {
+        btnVinylPlay.addEventListener('click', () => {
+            toggleMusic();
+        });
+    }
+
+    const vinylTrack = document.getElementById('vinyl-progress-track');
+    if (vinylTrack) {
+        vinylTrack.addEventListener('click', (e) => {
+            const rect = vinylTrack.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const fraction = Math.max(0, Math.min(1, clickX / rect.width));
+            bgmSeconds = Math.floor(fraction * totalSongSeconds);
+            const curM = Math.floor(bgmSeconds / 60);
+            const curS = (bgmSeconds % 60).toString().padStart(2, '0');
+            const curTimeEl = document.getElementById('vinyl-current-time');
+            const fillEl = document.getElementById('vinyl-progress-fill');
+            if (curTimeEl) curTimeEl.textContent = `${curM}:${curS}`;
+            if (fillEl) fillEl.style.width = `${fraction * 100}%`;
+            if (!state.music) startMusic();
+        });
+    }
+
+    // =========================================================
+    // 17. POLAROID MEMORY SCRAPBOOK CONTROLLER
+    // =========================================================
+    const memories = [
+        {
+            year: "2022 • August 31",
+            caption: "Where our universe collided and our story officially began ✨",
+            location: "📍 Karnataka ↔ Kerala",
+            emoji: "💫",
+            tag: "Day One"
+        },
+        {
+            year: "2023 • Year 1",
+            caption: "Late night drives, endless laughs, and realizing you're my person 🚗",
+            location: "📍 Endless Memories",
+            emoji: "🥰",
+            tag: "Sweet Smiles"
+        },
+        {
+            year: "2024 • Year 2",
+            caption: "Distance is just physical — every kilometer made our bond unbreakable 💕",
+            location: "📍 KA ✈️ KL Love Route",
+            emoji: "💌",
+            tag: "Unbreakable"
+        },
+        {
+            year: "2025 • Year 3",
+            caption: "Through every laugh, tease, and quiet moment — always my favorite home 🏡",
+            location: "📍 My Favorite Person",
+            emoji: "🧸",
+            tag: "Safe Haven"
+        },
+        {
+            year: "2026 • 4th Anniversary",
+            caption: "4 magnificent years together, and I would choose you in every lifetime 💍",
+            location: "📍 August 31, 2026",
+            emoji: "👑",
+            tag: "Forever & Always"
+        }
+    ];
+
+    let currentMemoryIndex = 0;
+    let memoryLikes = parseInt(localStorage.getItem('memoryLikes') || '1464', 10);
+
+    function renderMemory() {
+        const mem = memories[currentMemoryIndex];
+        if (!mem) return;
+
+        const imgEl = document.getElementById('polaroid-img');
+        const placeholderEl = document.getElementById('polaroid-placeholder');
+        const emojiEl = document.getElementById('placeholder-emoji');
+        const tagEl = document.getElementById('placeholder-tag');
+        const yearEl = document.getElementById('polaroid-year');
+        const captionEl = document.getElementById('polaroid-caption');
+        const locationEl = document.getElementById('polaroid-location');
+        const likesEl = document.getElementById('memory-likes-count');
+
+        if (yearEl) yearEl.textContent = mem.year;
+        if (captionEl) captionEl.textContent = mem.caption;
+        if (locationEl) locationEl.textContent = mem.location;
+        if (emojiEl) emojiEl.textContent = mem.emoji;
+        if (tagEl) tagEl.textContent = mem.tag;
+        if (likesEl) likesEl.textContent = memoryLikes.toLocaleString();
+
+        // Check if custom photo exists in localStorage
+        const customPhoto = localStorage.getItem('custom_memory_' + currentMemoryIndex);
+        if (customPhoto && imgEl && placeholderEl) {
+            imgEl.src = customPhoto;
+            imgEl.classList.remove('hidden');
+            placeholderEl.style.display = 'none';
+        } else if (imgEl && placeholderEl) {
+            imgEl.src = '';
+            imgEl.classList.add('hidden');
+            placeholderEl.style.display = 'flex';
+        }
+
+        // Update dots
+        document.querySelectorAll('.scrap-dot').forEach((dot, idx) => {
+            if (idx === currentMemoryIndex) dot.classList.add('active');
+            else dot.classList.remove('active');
+        });
+    }
+
+    // Scrapbook event listeners
+    const btnPrevMem = document.getElementById('btn-polaroid-prev');
+    if (btnPrevMem) {
+        btnPrevMem.addEventListener('click', () => {
+            initAudio();
+            playKeyClick();
+            currentMemoryIndex = (currentMemoryIndex - 1 + memories.length) % memories.length;
+            renderMemory();
+        });
+    }
+
+    const btnNextMem = document.getElementById('btn-polaroid-next');
+    if (btnNextMem) {
+        btnNextMem.addEventListener('click', () => {
+            initAudio();
+            playKeyClick();
+            currentMemoryIndex = (currentMemoryIndex + 1) % memories.length;
+            renderMemory();
+        });
+    }
+
+    document.addEventListener('click', (e) => {
+        const dot = e.target.closest('.scrap-dot');
+        if (!dot) return;
+        const idx = parseInt(dot.getAttribute('data-index') || '0', 10);
+        currentMemoryIndex = idx;
+        initAudio();
+        playKeyClick();
+        renderMemory();
+    });
+
+    // Upload custom photo to polaroid
+    const fileInput = document.getElementById('polaroid-file-input');
+    if (fileInput) {
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (evt) => {
+                const dataUrl = evt.target.result;
+                try {
+                    localStorage.setItem('custom_memory_' + currentMemoryIndex, dataUrl);
+                } catch (err) {
+                    console.warn('Storage quota exceeded, displaying in session:', err);
+                }
+                initAudio();
+                playCelebrateFanfare();
+                launchCelebration(40);
+                renderMemory();
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // Like memory button
+    const btnLikeMemory = document.getElementById('btn-love-memory');
+    if (btnLikeMemory) {
+        btnLikeMemory.addEventListener('click', () => {
+            initAudio();
+            playBeep(880, 'sine', 0.1);
+            memoryLikes++;
+            localStorage.setItem('memoryLikes', memoryLikes.toString());
+            const likesEl = document.getElementById('memory-likes-count');
+            if (likesEl) likesEl.textContent = memoryLikes.toLocaleString();
+            launchCelebration(25);
+        });
+    }
+
+    // Initialize the scrapbook
+    renderMemory();
+
+    // 18. QUICK 1-TAP CHAT REACTION EMOJIS
     document.addEventListener('click', (e) => {
         const emojiBtn = e.target.closest('.quick-emoji-btn');
         if (!emojiBtn) return;
