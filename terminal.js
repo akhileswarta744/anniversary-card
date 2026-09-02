@@ -583,6 +583,46 @@
             sub: 'Lata Mangeshkar & A.R. Rahman &bull; 1998',
             src: 'audio/track4_jiya_jale.mp3',
             tag: 'KA ↔ KL Anthem'
+        },
+        {
+            id: 'tujhe-dekha-toh',
+            title: 'Tujhe Dekha Toh',
+            movie: 'Dilwale Dulhania Le Jayenge',
+            artist: 'Kumar Sanu & Lata Mangeshkar',
+            year: '1995',
+            sub: 'Kumar Sanu & Lata Mangeshkar &bull; 1995',
+            src: 'audio/track5_tujhe_dekha_toh.mp3',
+            tag: 'DDLJ Romance'
+        },
+        {
+            id: 'pudhu-vellai-mazhai',
+            title: 'Pudhu Vellai Mazhai',
+            movie: 'Roja',
+            artist: 'Unni Menon, Sujatha & A.R. Rahman',
+            year: '1992',
+            sub: 'Unni Menon, Sujatha & A.R. Rahman &bull; 1992',
+            src: 'audio/track6_pudhu_vellai_mazhai.mp3',
+            tag: 'Roja Classic'
+        },
+        {
+            id: 'malare-mounama',
+            title: 'Malare Mounama',
+            movie: 'Karna',
+            artist: 'S.P.B & S. Janaki (Vidyasagar)',
+            year: '1995',
+            sub: 'S.P.B & S. Janaki &bull; 1995 Evergreen Melody',
+            src: 'audio/track7_malare_mounama.mp3',
+            tag: 'S.P.B & Janaki'
+        },
+        {
+            id: 'harikrishnans',
+            title: 'Samayamithapoorva Sayahnam',
+            movie: 'Harikrishnans',
+            artist: 'K.J. Yesudas & K.S. Chithra',
+            year: '1998',
+            sub: 'K.J. Yesudas & K.S. Chithra &bull; 1998 Classic',
+            src: 'audio/track8_harikrishnans.mp3',
+            tag: 'Malayalam Pure Gold'
         }
     ];
 
