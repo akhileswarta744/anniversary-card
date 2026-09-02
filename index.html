@@ -3,166 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>💖 Akhil &amp; Her // 4th Anniversary</title>
+    <title>Akhil &amp; Her 💕 4th Anniversary</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- MQTT.js over Secure WebSockets (100% Reliable across Cellular 4G/5G in India) -->
     <script src="https://unpkg.com/mqtt/dist/mqtt.min.js"></script>
     <!-- Lightweight QR Code Generator -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     
-    <link rel="stylesheet" href="styles.css?v=6.0">
+    <link rel="stylesheet" href="styles.css?v=7.0">
 </head>
-<body class="theme-romantic">
-    <!-- Ambient Canvas (Dreamy Floating Hearts & Bokeh Starlight) -->
-    <canvas id="matrix-canvas"></canvas>
+<body class="theme-minimal-romantic">
 
-    <!-- Main Love App Container -->
-    <div class="terminal-wrapper">
-        <!-- Top Romantic Header -->
-        <header class="terminal-header">
-            <div class="header-left">
-                <span class="status-indicator" id="cloud-status-light"></span>
-                <span class="system-title">💖 AKHIL &amp; HER <span class="badge">4 YEARS ✨</span></span>
-                <span class="p2p-badge" id="hud-room-badge">KA ↔ KL LIVE</span>
-                <span class="uptime-badge" id="hud-uptime">TOGETHER: 4Y 2D</span>
+    <!-- Celebration Fireworks Canvas -->
+    <canvas id="celebration-canvas"></canvas>
+
+    <!-- Fullscreen Kiss & Hug Animations -->
+    <div id="kiss-overlay" class="kiss-overlay"></div>
+    <div id="hug-overlay" class="hug-overlay"></div>
+    <div id="slap-overlay" class="slap-overlay"></div>
+
+    <!-- Main Minimalist Romantic App -->
+    <div class="app-wrapper">
+        
+        <!-- Delicate Romantic Top Bar -->
+        <header class="app-header">
+            <div class="header-couple-info">
+                <span class="heart-avatar">❤️</span>
+                <div class="couple-names-wrap">
+                    <h2 class="couple-title" id="hud-partner-names">Akhil &amp; Her</h2>
+                    <span class="anniversary-tag">4 Years Together ✨</span>
+                </div>
             </div>
-            <div class="header-right">
-                <button id="btn-invite" class="hud-btn highlight-btn" title="Share with Her">
-                    <span class="icon">🔗</span> <span class="label">INVITE HER</span>
+            <div class="header-controls">
+                <button id="btn-invite" class="pill-btn" title="Share with Her">
+                    <span>🔗 Share</span>
                 </button>
-                <button id="btn-sound-toggle" class="hud-btn" title="Toggle Sound">
-                    <span class="icon">🔊</span> <span class="label">SFX: ON</span>
+                <button id="btn-sound-toggle" class="pill-btn icon-only" title="Toggle Sound">
+                    <span id="sound-label">🔊</span>
                 </button>
-                <button id="btn-music-toggle" class="hud-btn" title="Toggle Romantic Music">
-                    <span class="icon">🎵</span> <span class="label">MUSIC: OFF</span>
+                <button id="btn-music-toggle" class="pill-btn icon-only" title="Toggle Romantic Music">
+                    <span id="music-label">🎵</span>
                 </button>
-                <select id="theme-selector" class="hud-select" title="Switch Theme">
-                    <option value="theme-romantic" selected>💖 Romantic Rose</option>
-                    <option value="theme-lavender">💜 Lavender Dream</option>
-                    <option value="theme-cotton-candy">☁️ Cotton Candy</option>
-                    <option value="theme-champagne">✨ Golden Sunset</option>
-                    <option value="theme-midnight">🌙 Starlight Romance</option>
-                </select>
             </div>
         </header>
 
-        <!-- Couple Status Bar -->
-        <div class="metrics-bar">
-            <div class="metric-item">
-                <span class="metric-label">STATUS:</span>
-                <span class="metric-val text-success" id="hud-relay-status">CONNECTING...</span>
+        <!-- Minimalist Hero Card -->
+        <section class="romantic-hero">
+            <div class="hero-sparkle">💖</div>
+            <h1 class="hero-title">Happy 4th Anniversary</h1>
+            <p class="hero-dates">August 31, 2022 &mdash; Forever &amp; Always</p>
+            
+            <div class="hero-badge-row">
+                <span class="hero-pill">📍 Karnataka &harr; Kerala</span>
+                <span class="hero-pill" id="hud-uptime">1,463 Days Together</span>
+                <span class="hero-pill status-pill" id="hud-relay-status">🟢 Connected</span>
             </div>
-            <div class="metric-item">
-                <span class="metric-label">IN ROOM:</span>
-                <span class="metric-val text-accent" id="hud-active-users">YOU</span>
-            </div>
-            <div class="metric-item">
-                <span class="metric-label">LOVE BANK:</span>
-                <span class="metric-val text-gold" id="hud-wallet-balance">9,999 Kisses</span>
-            </div>
-            <div class="metric-item">
-                <span class="metric-label">COUPLE:</span>
-                <span class="metric-val text-highlight" id="hud-partner-names">AKHIL &hearts; HER</span>
-            </div>
-        </div>
+        </section>
 
-        <!-- Live Love Message Stream Screen -->
-        <main class="terminal-body" id="terminal-body" role="log" aria-live="polite">
-            <div id="output"></div>
-        </main>
-
-        <!-- Interactive Love Controls & Chat Input -->
-        <footer class="terminal-footer">
-            <!-- Pretty Touch-Friendly Love Dock -->
-            <div class="love-dock" id="love-dock">
-                <button class="dock-btn dock-kiss" data-action="kiss" title="Send Sweet Kiss">
-                    <span class="dock-icon">💋</span>
-                    <span class="dock-label">Kiss</span>
+        <!-- Easily Accessible 1-Tap Love Actions -->
+        <section class="love-actions-section">
+            <h3 class="section-heading">Quick Romantic Actions</h3>
+            <div class="actions-grid">
+                <button class="action-tile tile-kiss" data-action="kiss">
+                    <span class="tile-icon">💋</span>
+                    <strong class="tile-label">Send Kiss</strong>
+                    <span class="tile-hint">Sweet smooch</span>
                 </button>
-                <button class="dock-btn dock-hug" data-action="hug" title="Send Warm Hug">
-                    <span class="dock-icon">🤗</span>
-                    <span class="dock-label">Hug</span>
+                <button class="action-tile tile-hug" data-action="hug">
+                    <span class="tile-icon">🤗</span>
+                    <strong class="tile-label">Send Hug</strong>
+                    <span class="tile-hint">Warm tight embrace</span>
                 </button>
-                <button class="dock-btn dock-slap" data-action="slap-modal" title="Playful Teasing">
-                    <span class="dock-icon">👋</span>
-                    <span class="dock-label">Tease</span>
+                <button class="action-tile tile-tease" data-action="slap-modal">
+                    <span class="tile-icon">👋</span>
+                    <strong class="tile-label">Tease</strong>
+                    <span class="tile-hint">Poda patti / Ni poda</span>
                 </button>
-                <button class="dock-btn dock-letter" data-action="letter-modal" title="Secret Love Letter">
-                    <span class="dock-icon">💌</span>
-                    <span class="dock-label">Letter</span>
+                <button class="action-tile tile-letter" data-action="letter-modal">
+                    <span class="tile-icon">💌</span>
+                    <strong class="tile-label">Love Letter</strong>
+                    <span class="tile-hint">Our 4-year note</span>
                 </button>
-                <button class="dock-btn dock-coupons" data-action="coupons-modal" title="Romantic Coupons Vault">
-                    <span class="dock-icon">🎟️</span>
-                    <span class="dock-label">Coupons</span>
+                <button class="action-tile tile-coupons" data-action="coupons-modal">
+                    <span class="tile-icon">🎟️</span>
+                    <strong class="tile-label">Coupons</strong>
+                    <span class="tile-hint">5 free vouchers</span>
                 </button>
-                <button class="dock-btn dock-story" data-action="story-modal" title="Our 4-Year Story">
-                    <span class="dock-icon">⏳</span>
-                    <span class="dock-label">Our Story</span>
+                <button class="action-tile tile-story" data-action="story-modal">
+                    <span class="tile-icon">⏳</span>
+                    <strong class="tile-label">Our Story</strong>
+                    <span class="tile-hint">2022 &rarr; 2026</span>
                 </button>
-                <button class="dock-btn dock-wallet" data-action="send-love-modal" title="Send Love Currency">
-                    <span class="dock-icon">💸</span>
-                    <span class="dock-label">Send Love</span>
+                <button class="action-tile tile-send-love" data-action="send-love-modal">
+                    <span class="tile-icon">💸</span>
+                    <strong class="tile-label">Send Love</strong>
+                    <span class="tile-hint">Kisses &amp; hugs pass</span>
                 </button>
-                <button class="dock-btn dock-marry" data-action="marry" title="Renew Our Vows">
-                    <span class="dock-icon">💍</span>
-                    <span class="dock-label">Marry</span>
+                <button class="action-tile tile-marry" data-action="marry">
+                    <span class="tile-icon">💍</span>
+                    <strong class="tile-label">Marry</strong>
+                    <span class="tile-hint">Renew vows</span>
                 </button>
             </div>
+        </section>
 
-            <!-- Modern Love Chat Line -->
-            <div class="prompt-line">
-                <span class="chat-input-avatar" id="prompt-user">💌</span>
+        <!-- Live Love Notes Chat Stream -->
+        <section class="love-notes-section">
+            <div class="notes-header">
+                <h3 class="section-heading">💌 Live Love Notes</h3>
+                <span class="notes-badge">Real-time KA &harr; KL</span>
+            </div>
+
+            <!-- Scrollable Message Stream -->
+            <div class="messages-container" id="terminal-body" role="log" aria-live="polite">
+                <div id="output"></div>
+            </div>
+
+            <!-- Clean Minimalist Chat Bar -->
+            <div class="chat-bar-wrap">
                 <input 
                     type="text" 
                     id="cli-input" 
-                    class="cli-input" 
-                    autocomplete="off" 
-                    autocorrect="off" 
-                    autocapitalize="off" 
-                    spellcheck="false" 
-                    placeholder="Write a sweet message to your love..." 
-                    autofocus
+                    class="love-input" 
+                    placeholder="Write a sweet note to your love..." 
+                    autocomplete="off"
                 >
-                <button id="btn-send" class="btn-send" aria-label="Send" title="Send Message">Send 💖</button>
+                <button id="btn-send" class="love-send-btn" aria-label="Send">
+                    <span>Send</span> 💕
+                </button>
             </div>
-            
-            <!-- Quick Reaction Chips -->
-            <div class="quick-bar" id="quick-bar">
-                <button class="quick-chip" data-cmd="kiss for being the love of my life">💋 Send Kisses</button>
-                <button class="quick-chip" data-cmd="hug for always supporting me">🤗 Big Hug</button>
-                <button class="quick-chip chip-angry" data-cmd="slap angry">😡 Poda Patti</button>
-                <button class="quick-chip chip-sad" data-cmd="slap sad">🥺 Ni Poda</button>
-                <button class="quick-chip chip-happy" data-cmd="slap happy">😄 Aa Ok</button>
-                <button class="quick-chip" data-cmd="pay 500 $KISSES for endless joy">💖 Send 500 Kisses</button>
-                <button class="quick-chip" data-cmd="pay 100 $HUGS for warm hugs">🧸 Send 100 Hugs</button>
-                <button class="quick-chip" data-cmd="invite">🔗 Share Link</button>
-            </div>
+        </section>
+
+        <!-- Minimalist Footer -->
+        <footer class="app-footer">
+            <p>Made with love for our 4th Anniversary &bull; August 31, 2022 &bull; Akhil &hearts; Her</p>
         </footer>
     </div>
 
-    <!-- 1. Live Invite & QR Code Modal -->
+    <!-- 1. Live Invite & Share Modal -->
     <div id="invite-modal" class="modal-overlay hidden">
         <div class="modal-card">
             <div class="modal-header">
-                <h3 class="text-highlight">⚡ CONNECT HER PHONE (KA ↔ KL)</h3>
+                <h3>🔗 Share with Her</h3>
                 <button class="modal-close" data-close="invite-modal">&times;</button>
             </div>
             <div class="modal-body">
-                <p class="text-dim" style="margin-bottom:12px;">
-                    Send this link to her on WhatsApp or scan the QR code. Both of you will connect to the same secure room <strong><span id="modal-room-name" class="text-highlight">akhil-4y</span></strong> in real-time!
+                <p class="modal-desc">
+                    Send this link to her on WhatsApp or scan the QR code to connect both phones live in real-time:
                 </p>
                 <div class="qr-wrapper">
                     <div id="qrcode"></div>
                 </div>
                 <div class="invite-link-box">
                     <input type="text" id="invite-link-input" readonly>
-                    <button id="btn-copy-link" class="hud-btn highlight-btn">📋 COPY LINK</button>
+                    <button id="btn-copy-link" class="modal-btn-primary">📋 Copy Link</button>
                 </div>
                 <div class="room-code-display">
-                    ROOM: <span class="text-accent" id="modal-room-id">AKHIL-4Y</span>
+                    Room: <strong id="modal-room-id">akhil-4y</strong>
                 </div>
             </div>
         </div>
@@ -172,7 +172,7 @@
     <div id="letter-modal" class="modal-overlay hidden">
         <div class="modal-card modal-letter-card">
             <div class="modal-header">
-                <h3 class="text-highlight">💌 OUR 4TH ANNIVERSARY LOVE LETTER</h3>
+                <h3>💌 Our 4th Anniversary Love Letter</h3>
                 <button class="modal-close" data-close="letter-modal">&times;</button>
             </div>
             <div class="modal-body">
@@ -192,9 +192,9 @@
                         <span class="letter-signature" id="modal-letter-author">Akhil ❤️</span>
                     </div>
                 </div>
-                <div style="text-align: center; margin-top: 18px;">
-                    <button class="dock-btn-primary" id="btn-letter-kiss">
-                        💋 SEAL WITH A KISS
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="modal-btn-primary" id="btn-letter-kiss">
+                        💋 Seal with a Kiss
                     </button>
                 </div>
             </div>
@@ -205,12 +205,12 @@
     <div id="coupons-modal" class="modal-overlay hidden">
         <div class="modal-card modal-coupons-card">
             <div class="modal-header">
-                <h3 class="text-highlight">🎟️ 4TH ANNIVERSARY COUPON VAULT</h3>
+                <h3>🎟️ Romantic Coupons Vault</h3>
                 <button class="modal-close" data-close="coupons-modal">&times;</button>
             </div>
             <div class="modal-body">
-                <p class="text-dim" style="font-size: 13px; margin-bottom: 14px;">
-                    Tap <strong>"CLAIM"</strong> on any voucher to redeem it live on his screen! Valid forever with zero expiration:
+                <p class="modal-desc">
+                    Tap <strong>"Claim Coupon"</strong> on any voucher to redeem it live on his screen! Valid forever:
                 </p>
                 <div class="coupons-visual-grid" id="modal-coupons-grid">
                     <!-- Dynamic vouchers rendered by JS -->
@@ -223,48 +223,47 @@
     <div id="story-modal" class="modal-overlay hidden">
         <div class="modal-card modal-story-card">
             <div class="modal-header">
-                <h3 class="text-highlight">⏳ OUR 4-YEAR JOURNEY (2022 – 2026)</h3>
+                <h3>⏳ Our 4-Year Story</h3>
                 <button class="modal-close" data-close="story-modal">&times;</button>
             </div>
             <div class="modal-body">
                 <div class="story-stat-hero">
                     <div class="hero-number" id="story-days-count">1,463</div>
-                    <div class="hero-label">DAYS OF LOVE &amp; HAPPINESS</div>
-                    <div class="hero-uptime" id="story-uptime-badge">UPTIME: 100.000% (ZERO DOWNTIME)</div>
+                    <div class="hero-label">DAYS OF LOVING YOU</div>
                 </div>
                 <div class="story-timeline-list">
                     <div class="story-milestone">
-                        <div class="milestone-badge">🌱 YEAR 1</div>
+                        <div class="milestone-badge">🌱 Year 1</div>
                         <div class="milestone-info">
-                            <strong>August 31, 2022 — The Inception</strong>
+                            <strong>August 31, 2022 &mdash; The Inception</strong>
                             <p>Where our magical story began. The butterflies, endless chats, and falling head over heels.</p>
                         </div>
                     </div>
                     <div class="story-milestone">
-                        <div class="milestone-badge">🌟 YEAR 2</div>
+                        <div class="milestone-badge">🌟 Year 2</div>
                         <div class="milestone-info">
-                            <strong>August 31, 2023 — Unbreakable Bond</strong>
+                            <strong>August 31, 2023 &mdash; Unbreakable Bond</strong>
                             <p>Learning every quirk, becoming each other's safest sanctuary, and mastering long distance.</p>
                         </div>
                     </div>
                     <div class="story-milestone">
-                        <div class="milestone-badge">💫 YEAR 3</div>
+                        <div class="milestone-badge">💫 Year 3</div>
                         <div class="milestone-info">
-                            <strong>August 31, 2024 — Soulmates in Sync</strong>
+                            <strong>August 31, 2024 &mdash; Soulmates in Sync</strong>
                             <p>Conquering life's milestones together, laughing through every challenge, and growing stronger.</p>
                         </div>
                     </div>
                     <div class="story-milestone">
-                        <div class="milestone-badge">👑 YEAR 4</div>
+                        <div class="milestone-badge">👑 Year 4</div>
                         <div class="milestone-info">
-                            <strong>August 31, 2026 — 4 Years Completed!</strong>
+                            <strong>August 31, 2026 &mdash; 4 Years Completed!</strong>
                             <p>Four unforgettable years completed, forever to go. Ready for all our dreams ahead!</p>
                         </div>
                     </div>
                 </div>
-                <div style="text-align: center; margin-top: 16px;">
-                    <button class="dock-btn-primary" id="btn-story-marry">
-                        💍 CELEBRATE &amp; MARRY AGAIN
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="modal-btn-primary" id="btn-story-marry">
+                        💍 Celebrate &amp; Marry Again
                     </button>
                 </div>
             </div>
@@ -275,32 +274,32 @@
     <div id="send-love-modal" class="modal-overlay hidden">
         <div class="modal-card modal-send-card">
             <div class="modal-header">
-                <h3 class="text-highlight">💸 SEND LOVE &amp; AFFECTION</h3>
+                <h3>💸 Send Love &amp; Affection</h3>
                 <button class="modal-close" data-close="send-love-modal">&times;</button>
             </div>
             <div class="modal-body">
-                <p class="text-dim" style="font-size: 13px; margin-bottom: 14px;">
-                    Tap any voucher to transfer affection coins live across states:
+                <p class="modal-desc">
+                    Tap any voucher to send love instantly across states:
                 </p>
                 <div class="send-love-grid">
                     <button class="love-card-btn" onclick="window.sendLovePreset(100, '$KISSES', 'sweet tender kisses')">
                         <span class="btn-emoji">💋</span>
-                        <strong>100 $KISSES</strong>
+                        <strong>100 Kisses</strong>
                         <small>Sweet tender kisses</small>
                     </button>
                     <button class="love-card-btn" onclick="window.sendLovePreset(500, '$KISSES', 'endless love & kisses')">
                         <span class="btn-emoji">💖</span>
-                        <strong>500 $KISSES</strong>
+                        <strong>500 Kisses</strong>
                         <small>Endless love package</small>
                     </button>
                     <button class="love-card-btn" onclick="window.sendLovePreset(100, '$HUGS', 'warm tight squeeze')">
                         <span class="btn-emoji">🤗</span>
-                        <strong>100 $HUGS</strong>
+                        <strong>100 Hugs</strong>
                         <small>Warm cozy hug</small>
                     </button>
                     <button class="love-card-btn" onclick="window.sendLovePreset(500, '$HUGS', 'infinite bear cuddles')">
                         <span class="btn-emoji">🧸</span>
-                        <strong>500 $HUGS</strong>
+                        <strong>500 Hugs</strong>
                         <small>Infinite bear cuddles</small>
                     </button>
                     <button class="love-card-btn" onclick="window.sendLovePreset(1, '$COFFEE_BUCKS', 'coffee date treat')">
@@ -318,37 +317,37 @@
         </div>
     </div>
 
-    <!-- 6. Slap Mood Picker Modal -->
+    <!-- 6. Playful Banter Mood Modal -->
     <div id="slap-mood-modal" class="modal-overlay hidden">
         <div class="modal-card modal-slap-card">
             <div class="modal-header">
-                <h3 class="text-highlight">👋 PLAYFUL BANTER &amp; SLAP</h3>
+                <h3>👋 Playful Banter</h3>
                 <button class="modal-close" data-close="slap-mood-modal">&times;</button>
             </div>
             <div class="modal-body">
-                <p class="text-dim" style="font-size: 13px; margin-bottom: 14px;">
-                    Pick a mood to tease your partner across states:
+                <p class="modal-desc">
+                    Pick a teasing mood to send across to your partner:
                 </p>
                 <div class="slap-modal-choices">
-                    <button class="slap-choice-card choice-angry" onclick="window.runTerminalCmd('slap angry'); document.getElementById('slap-mood-modal').classList.add('hidden');">
+                    <button class="slap-choice-card choice-angry" onclick="window.sendSlapMood('angry'); document.getElementById('slap-mood-modal').classList.add('hidden');">
                         <div class="choice-icon">😡👋</div>
                         <div class="choice-text">
-                            <strong>BAD / ANGRY: "Poda patti!"</strong>
-                            <small>Crimson flame flash &amp; explosive comic smack!</small>
+                            <strong>Angry: "Poda patti!"</strong>
+                            <small>Crimson spark &amp; comic smack</small>
                         </div>
                     </button>
-                    <button class="slap-choice-card choice-sad" onclick="window.runTerminalCmd('slap sad'); document.getElementById('slap-mood-modal').classList.add('hidden');">
+                    <button class="slap-choice-card choice-sad" onclick="window.sendSlapMood('sad'); document.getElementById('slap-mood-modal').classList.add('hidden');">
                         <div class="choice-icon">🥺👋</div>
                         <div class="choice-text">
-                            <strong>NEUTRAL / SAD: "Ni poda, happy aa?"</strong>
-                            <small>Neon blue rain wobble &amp; cartoon drop sound!</small>
+                            <strong>Sad: "Ni poda, happy aa?"</strong>
+                            <small>Soft blue drops &amp; cartoon wobble</small>
                         </div>
                     </button>
-                    <button class="slap-choice-card choice-happy" onclick="window.runTerminalCmd('slap happy'); document.getElementById('slap-mood-modal').classList.add('hidden');">
+                    <button class="slap-choice-card choice-happy" onclick="window.sendSlapMood('happy'); document.getElementById('slap-mood-modal').classList.add('hidden');">
                         <div class="choice-icon">😄👋</div>
                         <div class="choice-text">
-                            <strong>GOOD / HAPPY: "Ok!"</strong>
-                            <small>Golden sunshine sparkle &amp; cheerful boing!</small>
+                            <strong>Happy: "Ok!"</strong>
+                            <small>Golden sunshine sparkle &amp; boing</small>
                         </div>
                     </button>
                 </div>
@@ -356,12 +355,6 @@
         </div>
     </div>
 
-    <!-- Slap Overlay Animation -->
-    <div id="slap-overlay" class="slap-overlay"></div>
-
-    <!-- Celebration Fireworks Canvas -->
-    <canvas id="celebration-canvas"></canvas>
-
-    <script src="terminal.js?v=5.0"></script>
+    <script src="terminal.js?v=7.0"></script>
 </body>
 </html>

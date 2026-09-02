@@ -1,1572 +1,477 @@
-/* =========================================================
-   AKHIL & HER // Modern Romantic Couple Web App
+﻿/* =========================================================
+   AKHIL & HER // Minimalist Romantic Couple Web App
    ========================================================= */
 
 :root {
     --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-serif: 'Playfair Display', Georgia, serif;
     --font-cursive: 'Dancing Script', cursive, sans-serif;
-    --font-display: 'Plus Jakarta Sans', sans-serif;
-    --font-mono: 'Plus Jakarta Sans', sans-serif;
+    
+    /* Romantic Minimalist Light Palette */
+    --bg-page: #fff6f8;
+    --bg-card: #ffffff;
+    --bg-card-subtle: #fff0f4;
+    
+    --text-main: #2d1e2e;
+    --text-muted: #7d6579;
+    --text-accent: #ff4081;
+    --text-accent-dark: #e91e63;
+    --text-gold: #e67e22;
+    --text-success: #2e7d32;
+    
+    --border-color: rgba(255, 182, 193, 0.45);
+    --border-accent: rgba(255, 64, 129, 0.4);
+    --shadow-soft: 0 8px 24px rgba(233, 30, 99, 0.06), 0 2px 8px rgba(0, 0, 0, 0.02);
+    --shadow-hover: 0 12px 32px rgba(233, 30, 99, 0.12), 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
-/* 1. ROMANTIC AESTHETIC THEMES */
-body.theme-romantic {
-    --bg-color: #120317;
-    --terminal-bg: rgba(26, 8, 36, 0.85);
-    --border-color: rgba(255, 105, 180, 0.45);
-    --text-main: #fff0f6;
-    --text-dim: #c48ba4;
-    --text-accent: #ff2d7b;
-    --text-highlight: #ff85c0;
-    --text-success: #00f0ff;
-    --glow-color: rgba(255, 45, 123, 0.35);
-    --input-bg: rgba(45, 12, 58, 0.7);
-    --chip-bg: rgba(255, 105, 180, 0.16);
-    --chip-border: rgba(255, 105, 180, 0.5);
-}
-
-body.theme-lavender {
-    --bg-color: #0d061c;
-    --terminal-bg: rgba(26, 14, 52, 0.85);
-    --border-color: rgba(186, 147, 255, 0.45);
-    --text-main: #f3edff;
-    --text-dim: #9c84c4;
-    --text-accent: #b070ff;
-    --text-highlight: #d8b8ff;
-    --text-success: #70d6ff;
-    --glow-color: rgba(176, 112, 255, 0.35);
-    --input-bg: rgba(38, 18, 75, 0.7);
-    --chip-bg: rgba(176, 112, 255, 0.16);
-    --chip-border: rgba(186, 147, 255, 0.5);
-}
-
-body.theme-cotton-candy {
-    --bg-color: #080d1e;
-    --terminal-bg: rgba(18, 24, 50, 0.85);
-    --border-color: rgba(120, 200, 255, 0.45);
-    --text-main: #ffffff;
-    --text-dim: #8ba2c4;
-    --text-accent: #ff7ebb;
-    --text-highlight: #70d6ff;
-    --text-success: #69f0ae;
-    --glow-color: rgba(255, 126, 187, 0.35);
-    --input-bg: rgba(20, 32, 68, 0.7);
-    --chip-bg: rgba(120, 200, 255, 0.16);
-    --chip-border: rgba(120, 200, 255, 0.5);
-}
-
-body.theme-champagne {
-    --bg-color: #160c04;
-    --terminal-bg: rgba(38, 20, 10, 0.85);
-    --border-color: rgba(255, 195, 120, 0.45);
-    --text-main: #fffdf5;
-    --text-dim: #c4a482;
-    --text-accent: #ff9f43;
-    --text-highlight: #fed330;
-    --text-success: #2ed573;
-    --glow-color: rgba(255, 159, 67, 0.35);
-    --input-bg: rgba(55, 30, 14, 0.7);
-    --chip-bg: rgba(255, 195, 120, 0.16);
-    --chip-border: rgba(255, 195, 120, 0.5);
-}
-
-body.theme-midnight {
-    --bg-color: #050814;
-    --terminal-bg: rgba(10, 16, 40, 0.85);
-    --border-color: rgba(100, 150, 255, 0.45);
-    --text-main: #f0f4ff;
-    --text-dim: #7f95c4;
-    --text-accent: #4a90e2;
-    --text-highlight: #82b1ff;
-    --text-success: #00e5ff;
-    --glow-color: rgba(74, 144, 226, 0.35);
-    --input-bg: rgba(14, 22, 58, 0.7);
-    --chip-bg: rgba(100, 150, 255, 0.16);
-    --chip-border: rgba(100, 150, 255, 0.5);
-}
-
-/* 2. BASE & RESET */
+/* Base Reset */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
-    background: var(--bg-color);
+    background-color: var(--bg-page);
+    background-image: 
+        radial-gradient(circle at 10% 10%, #ffeaf0 0%, transparent 45%),
+        radial-gradient(circle at 90% 85%, #ffe6ee 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, #fff9fb 0%, transparent 70%);
     background-attachment: fixed;
     color: var(--text-main);
     font-family: var(--font-sans);
     font-size: 14.5px;
     line-height: 1.55;
-    height: 100vh;
-    height: 100dvh;
-    width: 100vw;
-    overflow: hidden;
+    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     justify-content: center;
-    align-items: center;
-    position: relative;
-    user-select: text;
-    transition: background 0.4s ease, color 0.4s ease;
+    align-items: flex-start;
+    padding: 16px 12px 40px 12px;
 }
 
-/* Background Canvas */
-#matrix-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
+/* App Container */
+.app-wrapper {
     width: 100%;
-    height: 100%;
-    z-index: 1;
-    pointer-events: none;
-}
-
-#celebration-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 100;
-    pointer-events: none;
-}
-
-/* 3. TERMINAL WINDOW CONTAINER */
-.terminal-wrapper {
-    position: relative;
-    z-index: 10;
-    width: 96vw;
-    max-width: 1150px;
-    height: 92vh;
-    background: var(--terminal-bg);
-    border: 2px solid var(--border-color);
-    border-radius: 12px;
-    box-shadow: 0 0 30px var(--glow-color), inset 0 0 15px var(--glow-color);
-    backdrop-filter: blur(10px);
+    max-width: 580px;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    animation: terminal-flicker 0.25s ease-out;
-}
-
-@keyframes terminal-flicker {
-    0% { opacity: 0.2; transform: scale(0.98); }
-    50% { opacity: 0.8; }
-    100% { opacity: 1; transform: scale(1); }
-}
-
-/* 4. TOP HUD HEADER */
-.terminal-header {
-    background: rgba(0, 0, 0, 0.65);
-    border-bottom: 1px solid var(--border-color);
-    padding: 10px 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.header-left {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.status-indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--text-dim);
-    box-shadow: 0 0 6px var(--text-dim);
-    transition: all 0.3s ease;
-}
-
-.status-indicator.connected {
-    background: var(--text-success);
-    box-shadow: 0 0 12px var(--text-success);
-    animation: blink-indicator 1.4s infinite;
-}
-
-.status-indicator.waiting {
-    background: var(--text-highlight);
-    box-shadow: 0 0 10px var(--text-highlight);
-    animation: blink-indicator 0.8s infinite;
-}
-
-@keyframes blink-indicator {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-}
-
-.system-title {
-    font-family: var(--font-display);
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    font-size: 15px;
-    text-shadow: 0 0 8px var(--text-main);
-}
-
-.system-title .badge {
-    font-size: 10px;
-    background: var(--text-accent);
-    color: #fff;
-    padding: 2px 6px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-    text-shadow: none;
-    margin-left: 6px;
-}
-
-.p2p-badge {
-    font-size: 11px;
-    color: var(--text-main);
-    background: rgba(0, 240, 255, 0.1);
-    border: 1px solid var(--text-main);
-    padding: 2px 8px;
-    border-radius: 4px;
-}
-
-.uptime-badge {
-    font-size: 11px;
-    color: var(--text-highlight);
-    background: rgba(255, 230, 0, 0.1);
-    border: 1px solid var(--text-highlight);
-    padding: 2px 8px;
-    border-radius: 4px;
-}
-
-.header-right {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-}
-
-.hud-btn {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid var(--border-color);
-    color: var(--text-main);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    padding: 5px 10px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.hud-btn:hover {
-    background: var(--border-color);
-    color: #000;
-    box-shadow: 0 0 12px var(--border-color);
-}
-
-.hud-btn.highlight-btn {
-    background: var(--text-accent);
-    color: #fff;
-    font-weight: 600;
-    box-shadow: 0 0 10px var(--text-accent);
-}
-
-.hud-btn.highlight-btn:hover {
-    background: #fff;
-    color: #000;
-    box-shadow: 0 0 16px #fff;
-}
-
-.hud-select {
-    background: rgba(0, 0, 0, 0.7);
-    border: 1px solid var(--border-color);
-    color: var(--text-main);
-    font-family: var(--font-mono);
-    font-size: 12px;
-    padding: 5px 8px;
-    border-radius: 6px;
-    cursor: pointer;
-    outline: none;
-}
-
-/* 5. METRICS BAR */
-.metrics-bar {
-    display: flex;
-    flex-wrap: wrap;
-    background: rgba(0, 0, 0, 0.45);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    padding: 6px 18px;
     gap: 18px;
-    font-size: 12px;
-}
-
-.metric-item {
-    display: flex;
-    gap: 6px;
-}
-
-.metric-label {
-    color: var(--text-dim);
-}
-
-.metric-val {
-    font-weight: 600;
-}
-
-.text-success { color: var(--text-success); text-shadow: 0 0 6px var(--text-success); }
-.text-accent { color: var(--text-accent); text-shadow: 0 0 6px var(--text-accent); }
-.text-highlight { color: var(--text-highlight); text-shadow: 0 0 6px var(--text-highlight); }
-.text-gold { color: #ffd700; text-shadow: 0 0 8px #ffd700; }
-.text-dim { color: var(--text-dim); }
-
-/* 6. TERMINAL BODY / OUTPUT */
-.terminal-body {
-    flex: 1;
-    padding: 16px 20px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    scroll-behavior: smooth;
-}
-
-.terminal-body::-webkit-scrollbar {
-    width: 6px;
-}
-
-.terminal-body::-webkit-scrollbar-thumb {
-    background: var(--border-color);
-    border-radius: 3px;
-}
-
-.terminal-body::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.3);
-}
-
-.term-line {
-    margin-bottom: 10px;
-    word-break: break-word;
-    animation: fadeIn 0.15s ease;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.term-cmd-echo {
-    color: var(--text-highlight);
-    font-weight: 600;
-    margin-top: 14px;
-    margin-bottom: 6px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.term-cmd-echo .prefix {
-    color: var(--text-dim);
-}
-
-.ascii-banner {
-    font-family: var(--font-retro);
-    font-size: 16px;
-    line-height: 1.15;
-    color: var(--text-accent);
-    text-shadow: 0 0 10px var(--text-accent);
-    white-space: pre;
-    overflow-x: auto;
-    margin: 10px 0 18px 0;
-    padding: 8px 0;
-}
-
-.help-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 10px;
-    margin: 12px 0;
-}
-
-.help-card {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-left: 3px solid var(--text-accent);
-    padding: 8px 12px;
-    border-radius: 4px;
-}
-
-.help-cmd {
-    color: var(--text-highlight);
-    font-weight: 700;
-    cursor: pointer;
-}
-
-.help-cmd:hover {
-    text-decoration: underline;
-}
-
-.help-desc {
-    color: var(--text-dim);
-    font-size: 12px;
-    margin-top: 3px;
-}
-
-/* Cyber Payment Receipt Card */
-.cyber-receipt {
-    background: rgba(0, 0, 0, 0.7);
-    border: 2px dashed var(--text-highlight);
-    padding: 16px;
-    border-radius: 8px;
-    max-width: 520px;
-    margin: 14px 0;
-    box-shadow: 0 0 20px rgba(255, 230, 0, 0.2);
-    position: relative;
-}
-
-.receipt-title {
-    font-family: var(--font-display);
-    font-size: 15px;
-    color: var(--text-highlight);
-    text-align: center;
-    border-bottom: 1px solid var(--text-dim);
-    padding-bottom: 8px;
-    margin-bottom: 12px;
-    letter-spacing: 1px;
-}
-
-.receipt-row {
-    display: flex;
-    justify-content: space-between;
-    margin: 6px 0;
-    font-size: 13px;
-}
-
-.receipt-divider {
-    border-top: 1px dashed rgba(255, 255, 255, 0.2);
-    margin: 10px 0;
-}
-
-.receipt-hash {
-    font-size: 11px;
-    color: var(--text-dim);
-    word-break: break-all;
-}
-
-.receipt-status {
-    text-align: center;
-    font-weight: bold;
-    color: var(--text-success);
-    margin-top: 8px;
-    padding: 4px;
-    background: rgba(5, 255, 161, 0.1);
-    border: 1px solid var(--text-success);
-    border-radius: 4px;
-}
-
-/* Welcome Anniversary Hero Card */
-.welcome-hero-card {
-    background: linear-gradient(135deg, rgba(255, 45, 123, 0.14), rgba(255, 105, 180, 0.06));
-    border: 1.5px solid var(--border-color);
-    border-radius: 20px;
-    padding: 24px 20px;
-    text-align: center;
-    margin: 8px 0 16px 0;
-    backdrop-filter: blur(14px);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25), 0 0 25px var(--glow-color);
     animation: fadeIn 0.4s ease-out;
 }
 
-.welcome-heart-badge {
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 1. Header */
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 4px;
+}
+
+.header-couple-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.heart-avatar {
+    font-size: 24px;
+    background: #fff;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border-color);
+}
+
+.couple-names-wrap {
+    display: flex;
+    flex-direction: column;
+}
+
+.couple-title {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.2;
+}
+
+.anniversary-tag {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-accent-dark);
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pill-btn {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    font-family: var(--font-sans);
+    font-size: 12.5px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.pill-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--text-accent);
+}
+
+.pill-btn.icon-only {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    justify-content: center;
+    font-size: 15px;
+}
+
+/* 2. Romantic Hero Card */
+.romantic-hero {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 28px 20px;
+    text-align: center;
+    box-shadow: var(--shadow-soft);
+}
+
+.hero-sparkle {
     font-size: 38px;
     line-height: 1;
     margin-bottom: 8px;
-    filter: drop-shadow(0 0 12px var(--glow-color));
-    animation: heartbeat 1.8s infinite ease-in-out;
+    display: inline-block;
+    animation: pulseHeart 2s infinite ease-in-out;
 }
 
-@keyframes heartbeat {
+@keyframes pulseHeart {
     0%, 100% { transform: scale(1); }
-    15% { transform: scale(1.18); }
+    15% { transform: scale(1.15); }
     30% { transform: scale(1); }
-    45% { transform: scale(1.12); }
+    45% { transform: scale(1.08); }
 }
 
-.welcome-hero-tag {
-    font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 2px;
-    color: var(--text-highlight);
-    margin-bottom: 6px;
-    text-transform: uppercase;
-}
-
-.welcome-hero-heading {
-    font-family: var(--font-cursive);
-    font-size: 34px;
-    color: #fff;
+.hero-title {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-accent-dark);
     margin-bottom: 4px;
-    text-shadow: 0 0 16px var(--glow-color);
+    letter-spacing: -0.3px;
 }
 
-.welcome-hero-sub {
-    font-size: 13px;
-    color: var(--text-dim);
-    margin-bottom: 12px;
+.hero-dates {
+    font-family: var(--font-cursive);
+    font-size: 18px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
 }
 
-.welcome-pills-row {
+.hero-badge-row {
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
     gap: 8px;
-    margin-bottom: 12px;
 }
 
-.welcome-pill {
-    background: rgba(255, 255, 255, 0.08);
+.hero-pill {
+    background: var(--bg-card-subtle);
     border: 1px solid var(--border-color);
-    border-radius: 20px;
-    padding: 4px 12px;
-    font-size: 11px;
-    font-weight: 600;
     color: var(--text-main);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 5px 12px;
+    border-radius: 16px;
 }
 
-.welcome-greeting-msg {
-    font-size: 13.5px;
-    color: #ffe6f0;
-    line-height: 1.6;
-    max-width: 520px;
-    margin: 0 auto;
+.hero-pill.status-pill {
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+    color: var(--text-success);
 }
 
-/* Chat Messages */
-.chat-thread {
+/* 3. Love Actions Section */
+.love-actions-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.section-heading {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding-left: 4px;
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+@media (max-width: 480px) {
+    .actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.action-tile {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 18px;
+    padding: 14px 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+    transition: all 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    outline: none;
+}
+
+.action-tile:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-hover);
+    border-color: var(--text-accent);
+}
+
+.action-tile:active {
+    transform: scale(0.96);
+}
+
+.tile-icon {
+    font-size: 26px;
+    margin-bottom: 6px;
+    line-height: 1;
+}
+
+.tile-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 2px;
+}
+
+.tile-hint {
+    font-size: 10.5px;
+    color: var(--text-muted);
+    white-space: nowrap;
+}
+
+/* Tile Subtle Tinting */
+.tile-kiss { background: #fff5f8; }
+.tile-hug { background: #fffaf0; }
+.tile-tease { background: #fff4f4; }
+.tile-letter { background: #fdf5ff; }
+.tile-coupons { background: #f0fdfa; }
+.tile-story { background: #fdfaf0; }
+.tile-send-love { background: #f0fdf4; }
+.tile-marry { background: #f5f3ff; }
+
+/* 4. Live Love Notes Chat Stream */
+.love-notes-section {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 18px;
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.notes-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 182, 193, 0.25);
+    padding-bottom: 10px;
+}
+
+.notes-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-accent-dark);
+    background: var(--bg-card-subtle);
+    padding: 3px 8px;
+    border-radius: 12px;
+}
+
+.messages-container {
+    min-height: 180px;
+    max-height: 380px;
+    overflow-y: auto;
+    padding: 8px 4px;
     display: flex;
     flex-direction: column;
     gap: 8px;
-    margin: 10px 0;
+}
+
+.messages-container::-webkit-scrollbar {
+    width: 5px;
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+/* Chat Threads & Bubbles */
+.chat-thread {
+    display: flex;
+    flex-direction: column;
     width: 100%;
+    margin-bottom: 6px;
 }
 
 .chat-bubble {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.12);
     padding: 10px 14px;
-    border-radius: 16px 16px 16px 4px;
-    max-width: 82%;
-    backdrop-filter: blur(8px);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
-    align-self: flex-start;
+    max-width: 84%;
+    font-size: 14px;
+    line-height: 1.45;
+    word-break: break-word;
+    border-radius: 18px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .chat-bubble.from-me {
-    background: linear-gradient(135deg, var(--text-accent), #ff69b4);
-    color: #ffffff;
-    border: none;
-    border-radius: 16px 16px 4px 16px;
     align-self: flex-end;
-    box-shadow: 0 4px 18px var(--glow-color);
+    background: linear-gradient(135deg, #ff4081, #e91e63);
+    color: #ffffff;
+    border-bottom-right-radius: 4px;
 }
 
 .chat-bubble.from-partner {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1.5px solid var(--border-color);
-    border-radius: 16px 16px 16px 4px;
     align-self: flex-start;
+    background: #ffffff;
+    border: 1.5px solid var(--border-color);
+    color: var(--text-main);
+    border-bottom-left-radius: 4px;
 }
 
 .chat-bubble-header {
     display: flex;
     justify-content: space-between;
     font-size: 10.5px;
+    margin-bottom: 3px;
     opacity: 0.85;
-    margin-bottom: 4px;
-    gap: 12px;
+    gap: 10px;
+}
+
+.chat-bubble.from-me .chat-bubble-header {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.chat-bubble.from-partner .chat-bubble-header {
+    color: var(--text-muted);
 }
 
 .chat-bubble-author {
     font-weight: 700;
 }
 
-.chat-bubble-body {
-    font-size: 14px;
-    line-height: 1.45;
-    word-break: break-word;
+/* General Term-Line container for events */
+.term-line {
+    margin-bottom: 8px;
 }
 
-/* Decrypted Love Letter */
-.love-letter-box {
-    background: rgba(20, 0, 30, 0.85);
-    border: 2px solid var(--text-accent);
-    border-radius: 8px;
-    padding: 20px;
-    max-width: 680px;
-    margin: 14px 0;
-    box-shadow: 0 0 25px var(--glow-color);
-    position: relative;
-}
-
-.love-letter-title {
-    font-family: var(--font-display);
-    font-size: 18px;
-    color: var(--text-highlight);
-    margin-bottom: 12px;
-    text-align: center;
-    border-bottom: 1px solid var(--text-accent);
-    padding-bottom: 6px;
-}
-
-.love-letter-content {
-    line-height: 1.7;
-    font-size: 14px;
-    color: #fff;
-    white-space: pre-line;
-}
-
-.love-letter-seal {
-    text-align: right;
-    margin-top: 14px;
-    font-weight: bold;
-    color: var(--text-accent);
-}
-
-/* Timeline Cards */
-.timeline-card {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 14px;
-    margin: 10px 0;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.timeline-card:hover {
-    transform: translateX(6px);
-    box-shadow: 0 0 15px var(--glow-color);
-}
-
-.timeline-year {
-    font-family: var(--font-display);
-    font-size: 16px;
-    color: var(--text-highlight);
-    margin-bottom: 4px;
-}
-
-/* =========================================================
-   PLAYFUL SLAP ANIMATION & INCIDENT CARD
-   ========================================================= */
-
-/* Screen Shake Effect */
-@keyframes screen-shake {
-    0% { transform: translate(0, 0) rotate(0deg); }
-    10% { transform: translate(-22px, 14px) rotate(-4deg); }
-    20% { transform: translate(20px, -18px) rotate(4deg); }
-    35% { transform: translate(-16px, 10px) rotate(-3deg); }
-    50% { transform: translate(14px, -10px) rotate(2deg); }
-    65% { transform: translate(-8px, 6px) rotate(-1deg); }
-    80% { transform: translate(6px, -3px) rotate(1deg); }
-    100% { transform: translate(0, 0) rotate(0deg); }
-}
-
-body.screen-shake,
-.terminal-wrapper.screen-shake {
-    animation: screen-shake 0.55s ease-in-out !important;
-}
-
-/* Slap Flash Red/Pink Overlay */
-.slap-flash {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;
-    background: radial-gradient(circle, rgba(255, 0, 80, 0.45) 0%, rgba(255, 0, 80, 0.85) 100%);
-    pointer-events: none;
-    z-index: 999998 !important;
-    animation: slap-flash-anim 0.6s ease-out forwards;
-}
-
-.slap-flash.slap-flash-angry {
-    background: radial-gradient(circle, rgba(255, 0, 0, 0.65) 0%, rgba(180, 0, 0, 0.92) 100%);
-}
-
-.slap-flash.slap-flash-sad {
-    background: radial-gradient(circle, rgba(0, 180, 255, 0.5) 0%, rgba(50, 0, 150, 0.85) 100%);
-}
-
-.slap-flash.slap-flash-happy {
-    background: radial-gradient(circle, rgba(255, 230, 0, 0.55) 0%, rgba(255, 120, 0, 0.8) 100%);
-}
-
-@keyframes slap-flash-anim {
-    0% { opacity: 0.95; }
-    100% { opacity: 0; }
-}
-
-/* Slap Overlay Visuals */
-.slap-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;
-    pointer-events: none;
-    z-index: 999999 !important;
+/* Chat Input Bar */
+.chat-bar-wrap {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-}
-
-.slap-animation-box {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-}
-
-.slap-hand-anim {
-    font-size: clamp(140px, 16vw, 220px);
-    filter: drop-shadow(0 0 35px rgba(255, 0, 128, 0.95));
-    animation: slap-swing 1.2s cubic-bezier(0.18, 0.89, 0.32, 1.28) forwards;
-    transform-origin: bottom center;
-}
-
-@keyframes slap-swing {
-    0% {
-        transform: scale(0.4) rotate(70deg) translate(350px, -80px);
-        opacity: 0;
-    }
-    20% {
-        transform: scale(1.4) rotate(-20deg) translate(-20px, 10px);
-        opacity: 1;
-    }
-    40% {
-        transform: scale(1.15) rotate(5deg) translate(0, 0);
-        opacity: 1;
-    }
-    75% {
-        transform: scale(1.05) rotate(-3deg);
-        opacity: 1;
-    }
-    100% {
-        transform: scale(0.7) rotate(25deg) translate(100px, 50px);
-        opacity: 0;
-    }
-}
-
-.slap-smack-text {
-    font-family: var(--font-display);
-    font-weight: 900;
-    font-size: clamp(42px, 9vw, 84px);
-    color: #ffe600;
-    text-shadow: 0 0 25px #ff007f, 0 0 50px #ff007f, 4px 4px 0 #000;
-    animation: slap-pop 1.4s ease-out forwards;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-}
-
-@keyframes slap-pop {
-    0% {
-        transform: scale(0.1) rotate(-20deg);
-        opacity: 0;
-    }
-    18% {
-        transform: scale(1.35) rotate(8deg);
-        opacity: 1;
-    }
-    35% {
-        transform: scale(1.05) rotate(-5deg);
-        opacity: 1;
-    }
-    75% {
-        transform: scale(1) rotate(0deg);
-        opacity: 1;
-    }
-    90% {
-        transform: scale(1.05) rotate(2deg);
-        opacity: 0.85;
-    }
-    100% {
-        transform: scale(0.75) translateY(-30px);
-        opacity: 0;
-    }
-}
-
-.slap-reason-tag {
-    background: rgba(0, 0, 0, 0.85);
-    border: 2px solid #ff007f;
-    color: #05ffa1;
-    font-family: var(--font-mono);
-    font-size: 14px;
-    padding: 6px 14px;
-    border-radius: 20px;
-    margin-top: 10px;
-    box-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
-    animation: fadeIn 0.3s ease;
-}
-
-/* Playful Slap Incident Card */
-.slap-card {
-    background: rgba(30, 5, 20, 0.9);
-    border: 2px solid #ff0055;
-    border-radius: 8px;
-    padding: 16px;
-    max-width: 520px;
-    margin: 14px 0;
-    box-shadow: 0 0 25px rgba(255, 0, 85, 0.35);
-    position: relative;
-    animation: fadeIn 0.2s ease;
-}
-
-/* Mood Variants for Slap Cards */
-.slap-card.slap-angry {
-    border-color: #ff0033;
-    background: rgba(40, 5, 10, 0.95);
-    box-shadow: 0 0 30px rgba(255, 0, 50, 0.5);
-}
-
-.slap-card.slap-angry .slap-card-title {
-    color: #ff3344;
-    border-bottom-color: rgba(255, 50, 50, 0.6);
-}
-
-.slap-card.slap-sad {
-    border-color: #00d4ff;
-    background: rgba(5, 15, 35, 0.95);
-    box-shadow: 0 0 30px rgba(0, 212, 255, 0.45);
-}
-
-.slap-card.slap-sad .slap-card-title {
-    color: #00d4ff;
-    border-bottom-color: rgba(0, 212, 255, 0.6);
-}
-
-.slap-card.slap-happy {
-    border-color: #ffd700;
-    background: rgba(35, 30, 5, 0.95);
-    box-shadow: 0 0 30px rgba(255, 215, 0, 0.45);
-}
-
-.slap-card.slap-happy .slap-card-title {
-    color: #ffd700;
-    border-bottom-color: rgba(255, 215, 0, 0.6);
-}
-
-/* Mood-specific Slap Smack Overlay Text */
-.slap-smack-text.text-angry {
-    color: #ff1100 !important;
-    text-shadow: 0 0 25px #ff0000, 0 0 50px #ff0033, 4px 4px 0 #000 !important;
-}
-
-.slap-smack-text.text-sad {
-    color: #00e5ff !important;
-    text-shadow: 0 0 25px #0088ff, 0 0 50px #7b2cbf, 4px 4px 0 #000 !important;
-}
-
-.slap-smack-text.text-happy {
-    color: #ffe600 !important;
-    text-shadow: 0 0 25px #ffaa00, 0 0 50px #05ffa1, 4px 4px 0 #000 !important;
-}
-
-/* Quick Chips for Slap Moods */
-.quick-chip.chip-angry {
-    border-color: #ff0055;
-    color: #ff4477;
-}
-
-.quick-chip.chip-angry:hover {
-    background: #ff0055;
-    color: #fff;
-    box-shadow: 0 0 12px #ff0055;
-}
-
-.quick-chip.chip-sad {
-    border-color: #00d4ff;
-    color: #80d8ff;
-}
-
-.quick-chip.chip-sad:hover {
-    background: #00d4ff;
-    color: #000;
-    box-shadow: 0 0 12px #00d4ff;
-}
-
-.quick-chip.chip-happy {
-    border-color: #ffd700;
-    color: #ffe57f;
-}
-
-.quick-chip.chip-happy:hover {
-    background: #ffd700;
-    color: #000;
-    box-shadow: 0 0 12px #ffd700;
-}
-
-/* Mood Selection Card in Terminal */
-.slap-mood-box {
-    background: rgba(20, 10, 30, 0.92);
-    border: 2px solid var(--border-color);
-    border-radius: 8px;
-    padding: 16px;
-    max-width: 520px;
-    margin: 12px 0;
-    box-shadow: 0 0 25px var(--glow-color);
-    animation: fadeIn 0.2s ease;
-}
-
-.slap-mood-title {
-    font-family: var(--font-display);
-    font-size: 15px;
-    color: var(--text-highlight);
-    text-align: center;
-    border-bottom: 1px dashed var(--border-color);
-    padding-bottom: 6px;
-    margin-bottom: 12px;
-}
-
-.slap-mood-btn {
-    width: 100%;
-    margin: 8px 0;
-    padding: 10px 14px;
-    font-family: var(--font-mono);
-    font-size: 13px;
-    font-weight: bold;
-    text-align: left;
-    border-radius: 6px;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.slap-mood-btn.mood-angry {
-    background: rgba(255, 0, 50, 0.15);
-    border: 1px solid #ff0055;
-    color: #ff5577;
-}
-
-.slap-mood-btn.mood-angry:hover {
-    background: #ff0055;
-    color: #fff;
-    box-shadow: 0 0 15px #ff0055;
-}
-
-.slap-mood-btn.mood-sad {
-    background: rgba(0, 212, 255, 0.12);
-    border: 1px solid #00d4ff;
-    color: #80d8ff;
-}
-
-.slap-mood-btn.mood-sad:hover {
-    background: #00d4ff;
-    color: #000;
-    box-shadow: 0 0 15px #00d4ff;
-}
-
-.slap-mood-btn.mood-happy {
-    background: rgba(255, 215, 0, 0.15);
-    border: 1px solid #ffd700;
-    color: #ffe57f;
-}
-
-.slap-mood-btn.mood-happy:hover {
-    background: #ffd700;
-    color: #000;
-    box-shadow: 0 0 15px #ffd700;
-}
-
-.slap-card-title {
-    font-family: var(--font-display);
-    font-size: 15px;
-    color: #ff0055;
-    text-align: center;
-    border-bottom: 1px dashed rgba(255, 0, 85, 0.5);
-    padding-bottom: 6px;
-    margin-bottom: 10px;
-    letter-spacing: 1px;
-}
-
-.slap-actions {
-    display: flex;
-    flex-wrap: wrap;
     gap: 8px;
-    margin-top: 12px;
-    padding-top: 10px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.slap-btn {
-    background: rgba(255, 0, 85, 0.15);
-    border: 1px solid #ff0055;
-    color: #fff;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.slap-btn:hover {
-    background: #ff0055;
-    color: #fff;
-    box-shadow: 0 0 12px #ff0055;
-    transform: translateY(-1px);
-}
-
-.slap-btn.btn-peace {
-    border-color: var(--text-success);
-    background: rgba(5, 255, 161, 0.12);
-    color: var(--text-success);
-}
-
-.slap-btn.btn-peace:hover {
-    background: var(--text-success);
-    color: #000;
-    box-shadow: 0 0 12px var(--text-success);
-}
-
-/* =========================================================
-   KISS ANIMATIONS & CARDS
-   ========================================================= */
-
-.kiss-flash {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;
-    background: radial-gradient(circle, rgba(255, 0, 128, 0.45) 0%, rgba(255, 20, 147, 0.8) 100%);
-    pointer-events: none;
-    z-index: 999998 !important;
-    animation: slap-flash-anim 0.7s ease-out forwards;
-}
-
-.kiss-lips-anim {
-    font-size: clamp(140px, 18vw, 240px);
-    filter: drop-shadow(0 0 40px rgba(255, 0, 128, 0.95));
-    animation: kiss-pop 1.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    transform-origin: center;
-}
-
-@keyframes kiss-pop {
-    0% { transform: scale(0.2) rotate(-15deg); opacity: 0; }
-    25% { transform: scale(1.4) rotate(5deg); opacity: 1; }
-    45% { transform: scale(1.1) rotate(-3deg); opacity: 1; }
-    75% { transform: scale(1.15) rotate(0deg); opacity: 1; }
-    100% { transform: scale(0.8) translateY(-25px); opacity: 0; }
-}
-
-.kiss-mwah-text {
-    font-family: var(--font-display);
-    font-weight: 900;
-    font-size: clamp(42px, 9vw, 84px);
-    color: #ff66cc;
-    text-shadow: 0 0 25px #ff007f, 0 0 50px #ff007f, 4px 4px 0 #000;
-    animation: slap-pop 1.4s ease-out forwards;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-}
-
-.kiss-heart-particle {
-    position: absolute;
-    font-size: clamp(24px, 4vw, 40px);
-    pointer-events: none;
-    animation: float-heart-radial 1.3s ease-out forwards;
-}
-
-@keyframes float-heart-radial {
-    0% {
-        transform: translate(0, 0) scale(0.4);
-        opacity: 1;
-    }
-    100% {
-        transform: translate(var(--tx), var(--ty)) scale(1.3) rotate(var(--rot));
-        opacity: 0;
-    }
-}
-
-.kiss-card {
-    background: rgba(35, 5, 25, 0.92);
-    border: 2px solid #ff007f;
-    border-radius: 8px;
-    padding: 16px;
-    max-width: 520px;
-    margin: 14px 0;
-    box-shadow: 0 0 25px rgba(255, 0, 127, 0.4);
-    position: relative;
-    animation: fadeIn 0.2s ease;
-}
-
-.kiss-card-title {
-    font-family: var(--font-display);
-    font-size: 15px;
-    color: #ff007f;
-    text-align: center;
-    border-bottom: 1px dashed rgba(255, 0, 127, 0.5);
-    padding-bottom: 6px;
-    margin-bottom: 10px;
-    letter-spacing: 1px;
-}
-
-/* =========================================================
-   HUG ANIMATIONS & CARDS
-   ========================================================= */
-
-.hug-flash {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh;
-    background: radial-gradient(circle, rgba(255, 180, 0, 0.4) 0%, rgba(255, 105, 180, 0.7) 100%);
-    pointer-events: none;
-    z-index: 999998 !important;
-    animation: slap-flash-anim 0.8s ease-out forwards;
-}
-
-.hug-bear-anim {
-    font-size: clamp(140px, 18vw, 240px);
-    filter: drop-shadow(0 0 40px rgba(255, 180, 0, 0.95));
-    animation: hug-squeeze 1.4s ease-in-out forwards;
-    transform-origin: center;
-}
-
-@keyframes hug-squeeze {
-    0% { transform: scale(0.3); opacity: 0; }
-    25% { transform: scale(1.35); opacity: 1; }
-    45% { transform: scale(1.1); opacity: 1; }
-    60% { transform: scale(1.3); opacity: 1; }
-    80% { transform: scale(1.15); opacity: 1; }
-    100% { transform: scale(0.85); opacity: 0; }
-}
-
-.hug-text {
-    font-family: var(--font-display);
-    font-weight: 900;
-    font-size: clamp(40px, 8.5vw, 80px);
-    color: #ffd700;
-    text-shadow: 0 0 25px #ff8800, 0 0 50px #ff007f, 4px 4px 0 #000;
-    animation: slap-pop 1.4s ease-out forwards;
-    letter-spacing: 3px;
-    text-transform: uppercase;
-}
-
-.hug-card {
-    background: rgba(35, 25, 5, 0.92);
-    border: 2px solid #ffd700;
-    border-radius: 8px;
-    padding: 16px;
-    max-width: 520px;
-    margin: 14px 0;
-    box-shadow: 0 0 25px rgba(255, 215, 0, 0.35);
-    position: relative;
-    animation: fadeIn 0.2s ease;
-}
-
-.hug-card-title {
-    font-family: var(--font-display);
-    font-size: 15px;
-    color: #ffd700;
-    text-align: center;
-    border-bottom: 1px dashed rgba(255, 215, 0, 0.5);
-    padding-bottom: 6px;
-    margin-bottom: 10px;
-    letter-spacing: 1px;
-}
-
-/* Common Action Button */
-.action-btn {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid var(--border-color);
-    color: #fff;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    position: relative;
-    overflow: hidden;
-}
-
-.action-btn:hover {
-    background: var(--text-accent);
-    color: #fff;
-    box-shadow: 0 0 12px var(--text-accent);
-    transform: translateY(-2px);
-}
-
-/* =========================================================
-   ANIMATION FOR EVERY BUTTON (HOVER SHIMMER, LIFT, PRESS, RIPPLE)
-   ========================================================= */
-
-button,
-.hud-btn,
-.quick-chip,
-.btn-send,
-.modal-close,
-.slap-btn,
-.action-btn {
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1), 
-                box-shadow 0.2s ease, 
-                background-color 0.2s ease, 
-                border-color 0.2s ease, 
-                color 0.2s ease !important;
-}
-
-/* Shimmer Light Sweep on Hover for all buttons */
-button::before,
-.hud-btn::before,
-.quick-chip::before,
-.btn-send::before,
-.slap-btn::before,
-.action-btn::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -120%;
-    width: 60%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    transform: skewX(-25deg);
-    pointer-events: none;
-    transition: none;
-    z-index: 2;
-}
-
-button:hover::before,
-.hud-btn:hover::before,
-.quick-chip:hover::before,
-.btn-send:hover::before,
-.slap-btn:hover::before,
-.action-btn:hover::before {
-    left: 160%;
-    transition: all 0.65s ease;
-}
-
-/* Hover Lift & Glow for all buttons */
-button:hover,
-.hud-btn:hover,
-.quick-chip:hover,
-.modal-close:hover,
-.slap-btn:hover,
-.action-btn:hover {
-    transform: translateY(-2.5px) scale(1.05);
-    box-shadow: 0 0 16px var(--glow-color);
-}
-
-/* Active Click / Tap Pop for all buttons */
-button:active,
-.hud-btn:active,
-.quick-chip:active,
-.btn-send:active,
-.modal-close:active,
-.slap-btn:active,
-.action-btn:active {
-    transform: translateY(1px) scale(0.93) !important;
-    box-shadow: 0 0 8px var(--glow-color) !important;
-}
-
-/* Attention pulse on key interactive buttons */
-.hud-btn.highlight-btn {
-    animation: pulse-invite-btn 2.6s infinite ease-in-out;
-}
-
-@keyframes pulse-invite-btn {
-    0%, 100% {
-        box-shadow: 0 0 8px var(--text-accent);
-    }
-    50% {
-        box-shadow: 0 0 20px var(--text-accent), 0 0 30px rgba(255, 0, 127, 0.6);
-        transform: scale(1.02);
-    }
-}
-
-.btn-send {
-    animation: pulse-send-btn 2.4s infinite ease-in-out;
-}
-
-@keyframes pulse-send-btn {
-    0%, 100% {
-        box-shadow: 0 0 6px var(--text-accent);
-    }
-    50% {
-        box-shadow: 0 0 16px var(--text-accent), 0 0 26px rgba(255, 0, 127, 0.65);
-        transform: scale(1.06);
-    }
-}
-
-/* Click Ripple Wave */
-.btn-ripple {
-    position: absolute;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.6);
-    transform: scale(0);
-    animation: ripple-wave-anim 0.55s ease-out forwards;
-    pointer-events: none;
-    z-index: 3;
-}
-
-@keyframes ripple-wave-anim {
-    to {
-        transform: scale(4);
-        opacity: 0;
-    }
-}
-
-/* 7. TERMINAL FOOTER & INPUT */
-.terminal-footer {
-    background: rgba(0, 0, 0, 0.75);
-    border-top: 1px solid var(--border-color);
-    padding: 12px 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.prompt-line {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: rgba(255, 255, 255, 0.08);
+    background: #fdf5f7;
     border: 1.5px solid var(--border-color);
     border-radius: 30px;
-    padding: 6px 8px 6px 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25), inset 0 0 10px rgba(255, 105, 180, 0.08);
-    backdrop-filter: blur(12px);
-    transition: all 0.25s ease;
+    padding: 4px 6px 4px 16px;
+    box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.02);
+    transition: all 0.2s ease;
 }
 
-.prompt-line:focus-within {
-    border-color: #fff;
-    box-shadow: 0 6px 25px var(--glow-color);
+.chat-bar-wrap:focus-within {
+    border-color: var(--text-accent);
+    background: #ffffff;
+    box-shadow: 0 0 12px rgba(255, 64, 129, 0.15);
 }
 
-.chat-input-avatar {
-    font-size: 18px;
-    flex-shrink: 0;
-}
-
-.cli-input {
+.love-input {
     flex: 1;
-    background: transparent;
     border: none;
+    background: transparent;
     outline: none;
-    color: var(--text-main);
     font-family: var(--font-sans);
-    font-size: 14.5px;
-    font-weight: 500;
-    caret-color: var(--text-accent);
+    font-size: 14px;
+    color: var(--text-main);
 }
 
-.cli-input::placeholder {
-    color: var(--text-dim);
+.love-input::placeholder {
+    color: #a894a4;
     font-size: 13.5px;
 }
 
-.btn-send {
-    background: linear-gradient(135deg, var(--text-accent), #ff1493);
+.love-send-btn {
+    background: linear-gradient(135deg, var(--text-accent), var(--text-accent-dark));
+    color: #ffffff;
     border: none;
-    color: #fff;
+    border-radius: 20px;
     font-family: var(--font-sans);
     font-size: 13px;
     font-weight: 700;
-    height: 38px;
-    padding: 0 18px;
-    border-radius: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    padding: 8px 16px;
     cursor: pointer;
-    box-shadow: 0 3px 12px var(--glow-color);
+    box-shadow: 0 3px 10px rgba(233, 30, 99, 0.25);
     transition: all 0.2s ease;
-    flex-shrink: 0;
-}
-
-.btn-send:hover, .btn-send:active {
-    background: #fff;
-    color: #000;
-    transform: scale(1.04);
-}
-
-/* =========================================================
-   PRETTY LOVE DOCK (Accessible Touch Bar for Mobile/Laptop)
-   ========================================================= */
-.love-dock {
     display: flex;
     align-items: center;
-    gap: 8px;
-    overflow-x: auto;
-    padding: 6px 2px 10px 2px;
-    margin-bottom: 8px;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border-color) transparent;
+    gap: 4px;
 }
 
-.love-dock::-webkit-scrollbar {
-    height: 4px;
+.love-send-btn:hover {
+    transform: scale(1.03);
+    box-shadow: 0 5px 14px rgba(233, 30, 99, 0.35);
 }
 
-.love-dock::-webkit-scrollbar-thumb {
-    background: var(--border-color);
-    border-radius: 4px;
+.love-send-btn:active {
+    transform: scale(0.96);
 }
 
-.dock-btn {
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-width: 64px;
-    padding: 6px 10px;
-    background: rgba(255, 255, 255, 0.06);
-    border: 1.5px solid var(--border-color);
-    border-radius: 12px;
-    color: var(--text-main);
-    cursor: pointer;
-    transition: all 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    flex-shrink: 0;
-    backdrop-filter: blur(8px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+/* 5. Minimalist Footer */
+.app-footer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 12px 0 20px 0;
 }
 
-.dock-btn:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow: 0 6px 18px var(--glow-color);
-    border-color: #fff;
-}
-
-.dock-btn:active {
-    transform: scale(0.92);
-}
-
-.dock-icon {
-    font-size: 20px;
-    line-height: 1;
-    margin-bottom: 3px;
-    filter: drop-shadow(0 0 6px var(--glow-color));
-}
-
-.dock-label {
-    font-family: var(--font-sans);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-    white-space: nowrap;
-}
-
-/* Individual Dock Accents */
-.dock-btn.dock-kiss {
-    border-color: #ff4d94;
-    background: linear-gradient(135deg, rgba(255, 77, 148, 0.2), rgba(255, 20, 147, 0.08));
-}
-.dock-btn.dock-kiss:hover {
-    box-shadow: 0 0 16px rgba(255, 77, 148, 0.6);
-}
-
-.dock-btn.dock-hug {
-    border-color: #ffd700;
-    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 140, 0, 0.08));
-}
-.dock-btn.dock-hug:hover {
-    box-shadow: 0 0 16px rgba(255, 215, 0, 0.6);
-}
-
-.dock-btn.dock-slap {
-    border-color: #ff4757;
-    background: linear-gradient(135deg, rgba(255, 71, 87, 0.2), rgba(255, 0, 85, 0.08));
-}
-.dock-btn.dock-slap:hover {
-    box-shadow: 0 0 16px rgba(255, 71, 87, 0.6);
-}
-
-.dock-btn.dock-letter {
-    border-color: #e056fd;
-    background: linear-gradient(135deg, rgba(224, 86, 253, 0.22), rgba(156, 39, 176, 0.08));
-}
-.dock-btn.dock-letter:hover {
-    box-shadow: 0 0 16px rgba(224, 86, 253, 0.6);
-}
-
-.dock-btn.dock-coupons {
-    border-color: #00f0ff;
-    background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(0, 150, 255, 0.08));
-}
-.dock-btn.dock-coupons:hover {
-    box-shadow: 0 0 16px rgba(0, 240, 255, 0.6);
-}
-
-.dock-btn.dock-story {
-    border-color: #ffbe76;
-    background: linear-gradient(135deg, rgba(255, 190, 118, 0.22), rgba(230, 126, 34, 0.08));
-}
-.dock-btn.dock-story:hover {
-    box-shadow: 0 0 16px rgba(255, 190, 118, 0.6);
-}
-
-.dock-btn.dock-wallet {
-    border-color: #05ffa1;
-    background: linear-gradient(135deg, rgba(5, 255, 161, 0.2), rgba(46, 213, 115, 0.08));
-}
-.dock-btn.dock-wallet:hover {
-    box-shadow: 0 0 16px rgba(5, 255, 161, 0.6);
-}
-
-.dock-btn.dock-marry {
-    border-color: #a29bfe;
-    background: linear-gradient(135deg, rgba(162, 155, 254, 0.22), rgba(108, 92, 231, 0.08));
-}
-.dock-btn.dock-marry:hover {
-    box-shadow: 0 0 16px rgba(162, 155, 254, 0.6);
-}
-
-/* 8. QUICK COMMAND ACTION CHIPS */
-.quick-bar {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    overflow-x: auto;
-    padding-bottom: 2px;
-}
-
-.quick-chip {
-    background: var(--chip-bg);
-    border: 1px solid var(--chip-border);
-    color: var(--text-main);
-    font-family: var(--font-mono);
-    font-size: 11.5px;
-    padding: 4px 10px;
-    border-radius: 14px;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.15s ease;
-}
-
-.quick-chip:hover {
-    background: var(--border-color);
-    color: #000;
-    box-shadow: 0 0 10px var(--border-color);
-    transform: translateY(-1px);
-}
-
-/* 9. MODAL & QR CODE OVERLAY */
+/* 6. Modals (Clean White Cards) */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -1574,7 +479,7 @@ button:active,
     width: 100vw;
     height: 100vh;
     height: 100dvh;
-    background: rgba(0, 0, 0, 0.85);
+    background: rgba(45, 30, 46, 0.45);
     backdrop-filter: blur(8px);
     z-index: 200;
     display: flex;
@@ -1591,351 +496,367 @@ button:active,
 }
 
 .modal-card {
-    background: var(--terminal-bg);
-    border: 2px solid var(--border-color);
-    border-radius: 16px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), 0 0 35px var(--glow-color);
-    padding: 22px;
-    max-width: 520px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(45, 30, 46, 0.25);
+    padding: 24px;
+    max-width: 480px;
     width: 92vw;
     max-height: 88vh;
     overflow-y: auto;
-    font-family: var(--font-sans);
-    backdrop-filter: blur(16px);
-    animation: modal-pop 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    animation: modalScale 0.22s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-@keyframes modal-pop {
-    0% { transform: scale(0.9); opacity: 0; }
+@keyframes modalScale {
+    0% { transform: scale(0.93); opacity: 0; }
     100% { transform: scale(1); opacity: 1; }
-}
-
-/* Primary Modal CTA Button */
-.dock-btn-primary {
-    background: linear-gradient(135deg, var(--text-accent), #ff1493);
-    border: none;
-    color: #fff;
-    font-family: var(--font-sans);
-    font-size: 14px;
-    font-weight: 700;
-    padding: 12px 24px;
-    border-radius: 25px;
-    cursor: pointer;
-    box-shadow: 0 4px 20px var(--glow-color);
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-}
-.dock-btn-primary:hover {
-    transform: translateY(-2px) scale(1.03);
-    box-shadow: 0 6px 25px var(--glow-color);
-}
-.dock-btn-primary:active {
-    transform: scale(0.96);
-}
-
-/* 1. Love Letter Styling */
-.modal-letter-card {
-    border-color: #ff69b4;
-    background: linear-gradient(180deg, rgba(35, 10, 45, 0.95), rgba(20, 5, 30, 0.95));
-}
-.letter-scroll-content {
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 105, 180, 0.25);
-    border-radius: 12px;
-    padding: 20px;
-    line-height: 1.75;
-    color: #fff;
-}
-.letter-heading {
-    font-family: var(--font-cursive);
-    font-size: 28px;
-    color: var(--text-highlight);
-    margin-bottom: 12px;
-}
-.letter-para {
-    font-size: 14.5px;
-    margin-bottom: 12px;
-    color: #ffe6f0;
-}
-.letter-sign {
-    margin-top: 16px;
-    text-align: right;
-    font-size: 14px;
-    color: var(--text-dim);
-}
-.letter-signature {
-    font-family: var(--font-cursive);
-    font-size: 26px;
-    color: var(--text-accent);
-    display: inline-block;
-    margin-top: 4px;
-}
-
-/* 2. Visual Coupons Grid */
-.coupons-visual-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-top: 10px;
-}
-.voucher-card {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1.5px dashed rgba(255, 105, 180, 0.5);
-    border-radius: 12px;
-    padding: 12px 14px;
-    transition: all 0.2s ease;
-    gap: 12px;
-}
-.voucher-card:hover {
-    background: rgba(255, 105, 180, 0.08);
-    transform: translateX(4px);
-    box-shadow: 0 0 15px rgba(255, 105, 180, 0.25);
-}
-.voucher-card.redeemed {
-    opacity: 0.5;
-    border-color: #555;
-    filter: grayscale(0.8);
-}
-.voucher-left {
-    flex: 1;
-}
-.voucher-title {
-    font-size: 14px;
-    font-weight: 700;
-    color: #fff;
-    margin-bottom: 3px;
-}
-.voucher-desc {
-    font-size: 12px;
-    color: var(--text-dim);
-}
-.voucher-claim-btn {
-    background: linear-gradient(135deg, #ff1493, #ff69b4);
-    border: none;
-    color: #fff;
-    font-family: var(--font-sans);
-    font-size: 11.5px;
-    font-weight: 700;
-    padding: 8px 14px;
-    border-radius: 20px;
-    cursor: pointer;
-    white-space: nowrap;
-    box-shadow: 0 2px 10px rgba(255, 20, 147, 0.4);
-    transition: all 0.2s ease;
-}
-.voucher-claim-btn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 14px rgba(255, 20, 147, 0.7);
-}
-.voucher-claimed-tag {
-    font-size: 11px;
-    color: #aaa;
-    font-weight: bold;
-}
-
-/* 3. Relationship Story & Timeline */
-.story-stat-hero {
-    text-align: center;
-    background: linear-gradient(135deg, rgba(255, 105, 180, 0.15), rgba(255, 20, 147, 0.05));
-    border: 1px solid rgba(255, 105, 180, 0.3);
-    border-radius: 14px;
-    padding: 18px;
-    margin-bottom: 16px;
-}
-.hero-number {
-    font-size: 44px;
-    font-weight: 800;
-    font-family: var(--font-display);
-    color: var(--text-highlight);
-    text-shadow: 0 0 15px var(--glow-color);
-    line-height: 1;
-}
-.hero-label {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 1px;
-    color: #ffe6f0;
-    margin-top: 6px;
-}
-.hero-uptime {
-    display: inline-block;
-    font-size: 10.5px;
-    font-weight: 700;
-    background: rgba(0, 240, 255, 0.12);
-    border: 1px solid #00f0ff;
-    color: #00f0ff;
-    padding: 2px 8px;
-    border-radius: 10px;
-    margin-top: 8px;
-}
-.story-timeline-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-.story-milestone {
-    display: flex;
-    gap: 12px;
-    background: rgba(255, 255, 255, 0.03);
-    border-left: 3px solid var(--text-accent);
-    padding: 10px 14px;
-    border-radius: 8px;
-}
-.milestone-badge {
-    font-size: 12px;
-    font-weight: 800;
-    color: var(--text-highlight);
-    white-space: nowrap;
-    padding-top: 2px;
-}
-.milestone-info strong {
-    font-size: 13.5px;
-    color: #fff;
-    display: block;
-    margin-bottom: 2px;
-}
-.milestone-info p {
-    font-size: 12px;
-    color: var(--text-dim);
-    line-height: 1.45;
-}
-
-/* 4. Quick Send Love Grid */
-.send-love-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
-}
-.love-card-btn {
-    background: rgba(255, 255, 255, 0.05);
-    border: 1.5px solid var(--border-color);
-    border-radius: 12px;
-    padding: 14px 10px;
-    color: #fff;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    transition: all 0.2s ease;
-}
-.love-card-btn:hover {
-    background: rgba(255, 105, 180, 0.15);
-    border-color: #fff;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px var(--glow-color);
-}
-.love-card-btn:active {
-    transform: scale(0.95);
-}
-.love-card-btn .btn-emoji {
-    font-size: 26px;
-    margin-bottom: 4px;
-}
-.love-card-btn strong {
-    font-size: 13px;
-    color: var(--text-highlight);
-    margin-bottom: 2px;
-}
-.love-card-btn small {
-    font-size: 10.5px;
-    color: var(--text-dim);
-}
-
-/* 5. Slap Mood Choices */
-.slap-modal-choices {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-.slap-choice-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 14px;
-    border-radius: 12px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1.5px solid var(--border-color);
-    color: #fff;
-    cursor: pointer;
-    text-align: left;
-    transition: all 0.2s ease;
-}
-.slap-choice-card:hover {
-    transform: translateX(4px);
-}
-.slap-choice-card .choice-icon {
-    font-size: 32px;
-    flex-shrink: 0;
-}
-.slap-choice-card .choice-text strong {
-    display: block;
-    font-size: 14px;
-    margin-bottom: 3px;
-}
-.slap-choice-card .choice-text small {
-    font-size: 12px;
-    color: var(--text-dim);
-}
-.slap-choice-card.choice-angry {
-    border-color: #ff0055;
-}
-.slap-choice-card.choice-angry:hover {
-    background: rgba(255, 0, 85, 0.15);
-    box-shadow: 0 0 16px rgba(255, 0, 85, 0.4);
-}
-.slap-choice-card.choice-sad {
-    border-color: #00d4ff;
-}
-.slap-choice-card.choice-sad:hover {
-    background: rgba(0, 212, 255, 0.15);
-    box-shadow: 0 0 16px rgba(0, 212, 255, 0.4);
-}
-.slap-choice-card.choice-happy {
-    border-color: #ffd700;
-}
-.slap-choice-card.choice-happy:hover {
-    background: rgba(255, 215, 0, 0.15);
-    box-shadow: 0 0 16px rgba(255, 215, 0, 0.4);
 }
 
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border-bottom: 1px solid rgba(255, 182, 193, 0.3);
+    padding-bottom: 12px;
     margin-bottom: 16px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
-    padding-bottom: 8px;
+}
+
+.modal-header h3 {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--text-accent-dark);
 }
 
 .modal-close {
-    background: transparent;
+    background: #f5f0f3;
     border: none;
-    color: var(--text-dim);
-    font-size: 24px;
+    color: var(--text-muted);
+    font-size: 20px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
     cursor: pointer;
-    padding: 4px 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
 }
 
 .modal-close:hover {
-    color: #fff;
+    background: #ffe3ea;
+    color: var(--text-accent-dark);
 }
 
+.modal-desc {
+    font-size: 13.5px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    line-height: 1.5;
+}
+
+.modal-btn-primary {
+    background: linear-gradient(135deg, var(--text-accent), var(--text-accent-dark));
+    color: #ffffff;
+    border: none;
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 700;
+    padding: 12px 24px;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(233, 30, 99, 0.3);
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modal-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(233, 30, 99, 0.4);
+}
+
+/* Love Letter Styling */
+.letter-scroll-content {
+    background: #fffbfa;
+    border: 1px solid rgba(255, 182, 193, 0.5);
+    border-radius: 16px;
+    padding: 22px;
+    line-height: 1.8;
+}
+
+.letter-heading {
+    font-family: var(--font-cursive);
+    font-size: 30px;
+    color: var(--text-accent-dark);
+    margin-bottom: 12px;
+}
+
+.letter-para {
+    font-size: 14.5px;
+    color: #4a3449;
+    margin-bottom: 14px;
+}
+
+.letter-sign {
+    margin-top: 18px;
+    text-align: right;
+    font-size: 14px;
+    color: var(--text-muted);
+}
+
+.letter-signature {
+    font-family: var(--font-cursive);
+    font-size: 26px;
+    color: var(--text-accent-dark);
+    display: inline-block;
+    margin-top: 4px;
+}
+
+/* Visual Coupons */
+.coupons-visual-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.voucher-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff8fa;
+    border: 1.5px dashed rgba(255, 64, 129, 0.35);
+    border-radius: 14px;
+    padding: 14px;
+    gap: 12px;
+    transition: all 0.2s ease;
+}
+
+.voucher-card:hover {
+    background: #fff0f5;
+    border-color: var(--text-accent);
+}
+
+.voucher-card.redeemed {
+    opacity: 0.55;
+    border-style: solid;
+    border-color: #ddd;
+    background: #fafafa;
+}
+
+.voucher-left {
+    flex: 1;
+}
+
+.voucher-title {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 3px;
+}
+
+.voucher-desc {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.voucher-claim-btn {
+    background: linear-gradient(135deg, var(--text-accent), var(--text-accent-dark));
+    color: #ffffff;
+    border: none;
+    font-family: var(--font-sans);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 8px 14px;
+    border-radius: 18px;
+    cursor: pointer;
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(233, 30, 99, 0.25);
+    transition: all 0.2s ease;
+}
+
+.voucher-claim-btn:hover {
+    transform: scale(1.04);
+}
+
+.voucher-claimed-tag {
+    font-size: 11px;
+    font-weight: 700;
+    color: #999;
+}
+
+/* Story Modal */
+.story-stat-hero {
+    text-align: center;
+    background: var(--bg-card-subtle);
+    border-radius: 16px;
+    padding: 18px;
+    margin-bottom: 16px;
+}
+
+.story-stat-hero .hero-number {
+    font-family: var(--font-serif);
+    font-size: 42px;
+    font-weight: 700;
+    color: var(--text-accent-dark);
+    line-height: 1;
+}
+
+.story-stat-hero .hero-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text-muted);
+    margin-top: 6px;
+}
+
+.story-timeline-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.story-milestone {
+    display: flex;
+    gap: 12px;
+    background: #fff8fa;
+    border-left: 3px solid var(--text-accent);
+    padding: 12px 14px;
+    border-radius: 10px;
+}
+
+.milestone-badge {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--text-accent-dark);
+    white-space: nowrap;
+    padding-top: 1px;
+}
+
+.milestone-info strong {
+    font-size: 13.5px;
+    color: var(--text-main);
+    display: block;
+    margin-bottom: 2px;
+}
+
+.milestone-info p {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.45;
+}
+
+/* Send Love Modal */
+.send-love-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.love-card-btn {
+    background: #fff8fa;
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 14px 10px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.love-card-btn:hover {
+    background: #ffeef3;
+    border-color: var(--text-accent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-soft);
+}
+
+.love-card-btn .btn-emoji {
+    font-size: 26px;
+    margin-bottom: 4px;
+}
+
+.love-card-btn strong {
+    font-size: 13px;
+    color: var(--text-accent-dark);
+    margin-bottom: 2px;
+}
+
+.love-card-btn small {
+    font-size: 11px;
+    color: var(--text-muted);
+}
+
+/* Slap Mood Choices */
+.slap-modal-choices {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.slap-choice-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    border-radius: 14px;
+    border: 1.5px solid var(--border-color);
+    background: #ffffff;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+}
+
+.slap-choice-card:hover {
+    transform: translateX(4px);
+}
+
+.slap-choice-card .choice-icon {
+    font-size: 30px;
+    flex-shrink: 0;
+}
+
+.slap-choice-card .choice-text strong {
+    display: block;
+    font-size: 14px;
+    margin-bottom: 2px;
+    color: var(--text-main);
+}
+
+.slap-choice-card .choice-text small {
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+.slap-choice-card.choice-angry {
+    border-color: #ff4d6d;
+    background: #fff5f7;
+}
+
+.slap-choice-card.choice-sad {
+    border-color: #64b5f6;
+    background: #f0f7ff;
+}
+
+.slap-choice-card.choice-happy {
+    border-color: #ffd54f;
+    background: #fffdf5;
+}
+
+/* QR Code & Share */
 .qr-wrapper {
     display: flex;
     justify-content: center;
-    align-items: center;
     background: #fff;
     padding: 14px;
-    border-radius: 8px;
-    margin: 14px auto;
+    border-radius: 12px;
+    margin: 12px auto;
     width: fit-content;
-    box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border-color);
 }
 
 .invite-link-box {
@@ -1946,228 +867,51 @@ button:active,
 
 .invite-link-box input {
     flex: 1;
-    background: rgba(0, 0, 0, 0.6);
+    background: #faf6f8;
     border: 1px solid var(--border-color);
     color: var(--text-main);
-    padding: 8px 10px;
-    border-radius: 6px;
-    font-family: var(--font-mono);
-    font-size: 11.5px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    outline: none;
 }
 
 .room-code-display {
     text-align: center;
     font-size: 12px;
-    color: var(--text-dim);
-    margin-top: 12px;
-    font-family: var(--font-mono);
+    color: var(--text-muted);
+    margin-top: 10px;
 }
 
-/* 10. COMPREHENSIVE MOBILE RESPONSIVENESS */
-@media (max-width: 768px) {
-    body {
-        height: 100vh;
-        height: 100dvh;
-        overflow: hidden;
-    }
+/* 7. Canvas Overlays */
+#celebration-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    pointer-events: none;
+}
 
-    .terminal-wrapper {
-        width: 100vw;
-        height: 100vh;
-        height: 100dvh;
-        border-radius: 0;
-        border: none;
-        box-shadow: none;
-    }
-    
-    .terminal-header {
-        padding: 8px 10px;
-        gap: 6px;
-    }
+.slap-overlay, .kiss-overlay, .hug-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 300;
+    pointer-events: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-    .header-left {
-        gap: 8px;
-    }
-
-    .system-title {
-        font-size: 13px;
-        letter-spacing: 0.8px;
-    }
-
-    .system-title .badge {
-        font-size: 9px;
-        padding: 1px 4px;
-    }
-
-    .p2p-badge {
-        font-size: 9.5px;
-        padding: 2px 5px;
-    }
-
-    .uptime-badge {
-        font-size: 9.5px;
-        padding: 2px 5px;
-    }
-
-    .header-right {
-        gap: 6px;
-    }
-
-    .hud-btn {
-        padding: 4px 7px;
-        font-size: 11px;
-    }
-
-    .hud-btn .icon {
-        font-size: 13px;
-    }
-
-    .hud-select {
-        font-size: 11px;
-        padding: 4px 6px;
-        max-width: 115px;
-    }
-
-    /* Swipeable Metrics Strip on Mobile */
-    .metrics-bar {
-        display: flex;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-        padding: 6px 10px;
-        gap: 12px;
-        font-size: 11px;
-    }
-
-    .metrics-bar::-webkit-scrollbar {
-        display: none;
-    }
-
-    .metric-item {
-        flex-shrink: 0;
-    }
-
-    /* Terminal Output for Mobile */
-    .terminal-body {
-        padding: 10px 10px;
-        font-size: 13px;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .ascii-banner {
-        font-size: min(2.5vw, 10px);
-        line-height: 1.1;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        white-space: pre;
-        margin: 6px 0 10px 0;
-        padding: 4px 0;
-    }
-
-    .help-grid {
-        grid-template-columns: 1fr;
-        gap: 8px;
-    }
-
-    .cyber-receipt, .love-letter-box {
-        max-width: 100%;
-        padding: 12px 10px;
-    }
-
-    .chat-thread {
-        max-width: 100%;
-    }
-
-    .chat-bubble {
-        padding: 8px 10px;
-        font-size: 13px;
-    }
-
-    /* Sticky Footer with Safe Area on Mobile */
-    .terminal-footer {
-        padding: 8px 10px;
-        padding-bottom: max(10px, env(safe-area-inset-bottom));
-        gap: 8px;
-    }
-
-    .prompt-line {
-        padding: 6px 8px;
-        gap: 6px;
-    }
-
-    .prompt-user {
-        font-size: 12px;
-    }
-
-    .prompt-symbol {
-        font-size: 12px;
-    }
-
-    /* 16px font-size prevents iOS Safari auto-zoom on input focus */
-    .cli-input {
-        font-size: 16px;
-    }
-
-    .btn-send {
-        width: 32px;
-        height: 32px;
-        font-size: 13px;
-    }
-
-    /* Horizontal Touch Swipe Quick Bar */
-    .quick-bar {
-        display: flex;
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: none;
-        padding: 2px 0 4px 0;
-        gap: 6px;
-    }
-
-    .quick-bar::-webkit-scrollbar {
-        display: none;
-    }
-
-    .quick-chip {
-        flex-shrink: 0;
-        font-size: 11px;
-        height: 30px;
-        padding: 0 10px;
-        display: inline-flex;
-        align-items: center;
-        border-radius: 12px;
-    }
-
-    /* Modal Mobile Adjustments */
-    .modal-card {
-        width: 92vw;
-        max-width: 380px;
-        padding: 16px 12px;
-    }
-
-    .qr-wrapper {
-        padding: 10px;
-        margin: 10px auto;
-    }
-
-    #qrcode img {
-        max-width: 150px;
-        height: auto;
-    }
-
-    .invite-link-box {
-        flex-direction: column;
-        gap: 6px;
-    }
-
-    .invite-link-box input {
-        font-size: 11px;
-    }
-
-    .invite-link-box button {
-        width: 100%;
-        justify-content: center;
-    }
+.slap-card-box {
+    padding: 18px 22px;
+    border-radius: 16px;
+    background: #ffffff;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    border: 2px solid var(--border-color);
+    margin: 10px 0;
 }

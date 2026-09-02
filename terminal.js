@@ -590,81 +590,20 @@
     }
 
     function updateMusicButton() {
-        btnMusic.querySelector('.label').textContent = state.music ? 'BGM: ON' : 'BGM: OFF';
+        const lbl = document.getElementById('music-label') || (btnMusic ? btnMusic.querySelector('.label') : null);
+        if (lbl) lbl.textContent = state.music ? '🎵 ON' : '🎵';
     }
 
     function updateSoundButton() {
-        btnSound.querySelector('.label').textContent = state.sfx ? 'SFX: ON' : 'SFX: OFF';
+        const lbl = document.getElementById('sound-label') || (btnSound ? btnSound.querySelector('.label') : null);
+        if (lbl) lbl.textContent = state.sfx ? '🔊' : '🔇';
     }
 
-    // 4. DREAMY FLOATING HEARTS & BOKEH CANVAS (Romantic Aesthetic)
+    // 4. CLEAN MINIMALIST ROMANTIC BACKGROUND (No heavy cyberpunk/matrix canvas)
     const matrixCanvas = document.getElementById('matrix-canvas');
-    const matrixCtx = matrixCanvas.getContext('2d');
-    let floatingParticles = [];
-
-    function initFloatingCanvas() {
-        matrixCanvas.width = window.innerWidth;
-        matrixCanvas.height = window.innerHeight;
-        floatingParticles = [];
-        const count = Math.max(25, Math.floor((matrixCanvas.width * matrixCanvas.height) / 24000));
-        const heartIcons = ['💖', '💕', '💗', '✨', '🌸', '💝', '♥'];
-        for (let i = 0; i < count; i++) {
-            floatingParticles.push({
-                x: Math.random() * matrixCanvas.width,
-                y: Math.random() * matrixCanvas.height,
-                size: Math.random() * 12 + 12,
-                speedY: Math.random() * 0.5 + 0.25,
-                speedX: (Math.random() - 0.5) * 0.35,
-                icon: heartIcons[Math.floor(Math.random() * heartIcons.length)],
-                alpha: Math.random() * 0.5 + 0.2,
-                twinkleSpeed: Math.random() * 0.02 + 0.01,
-                isBokeh: Math.random() > 0.45
-            });
-        }
+    if (matrixCanvas) {
+        matrixCanvas.remove();
     }
-
-    function drawFloatingCanvas() {
-        matrixCtx.clearRect(0, 0, matrixCanvas.width, matrixCanvas.height);
-
-        for (let i = 0; i < floatingParticles.length; i++) {
-            const p = floatingParticles[i];
-            p.y -= p.speedY;
-            p.x += p.speedX;
-            p.alpha += Math.sin(Date.now() * p.twinkleSpeed) * 0.005;
-
-            if (p.y < -30) {
-                p.y = matrixCanvas.height + 30;
-                p.x = Math.random() * matrixCanvas.width;
-            }
-            if (p.x < -30) p.x = matrixCanvas.width + 30;
-            if (p.x > matrixCanvas.width + 30) p.x = -30;
-
-            matrixCtx.save();
-            const currentAlpha = Math.max(0.12, Math.min(0.7, p.alpha));
-            matrixCtx.globalAlpha = currentAlpha;
-
-            if (p.isBokeh) {
-                const grad = matrixCtx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size * 1.5);
-                grad.addColorStop(0, 'rgba(255, 105, 180, 0.45)');
-                grad.addColorStop(1, 'rgba(255, 105, 180, 0)');
-                matrixCtx.fillStyle = grad;
-                matrixCtx.beginPath();
-                matrixCtx.arc(p.x, p.y, p.size * 1.5, 0, Math.PI * 2);
-                matrixCtx.fill();
-            } else {
-                matrixCtx.font = `${p.size}px "Plus Jakarta Sans", sans-serif`;
-                matrixCtx.textAlign = 'center';
-                matrixCtx.fillText(p.icon, p.x, p.y);
-            }
-            matrixCtx.restore();
-        }
-
-        requestAnimationFrame(drawFloatingCanvas);
-    }
-
-    window.addEventListener('resize', initFloatingCanvas);
-    initFloatingCanvas();
-    requestAnimationFrame(drawFloatingCanvas);
 
     // 5. CELEBRATION CONFETTI & HEARTS
     const celebCanvas = document.getElementById('celebration-canvas');
@@ -759,12 +698,21 @@
         const remDays = Math.floor(days % 365.25);
 
         const pad = (n) => String(n).padStart(2, '0');
-        hudUptime.textContent = `TOGETHER: ${years}Y ${remDays}D ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        if (hudUptime) {
+            hudUptime.textContent = `${days.toLocaleString()} Days Together 💕`;
+        }
 
-        hudWallet.textContent = `${state.wallet['$KISSES'].toLocaleString()} Kisses`;
-        hudPartners.innerHTML = `${escapeHTML(state.partner1)} &hearts; ${escapeHTML(state.partner2)}`;
+        if (hudWallet) {
+            hudWallet.textContent = `${state.wallet['$KISSES'].toLocaleString()} Kisses`;
+        }
+        if (hudPartners) {
+            hudPartners.innerHTML = `${escapeHTML(state.partner1)} &amp; ${escapeHTML(state.partner2)}`;
+        }
         if (promptUser) promptUser.textContent = `💌`;
         if (hudRoomBadge) hudRoomBadge.textContent = `KA ↔ KL LIVE`;
+        if (hudRelayStatus) {
+            hudRelayStatus.innerHTML = isCloudConnected ? '🟢 Connected' : '🟡 Connecting...';
+        }
     }
     setInterval(updateHUD, 1000);
     updateHUD();
@@ -772,11 +720,12 @@
     // 7. TERMINAL OUTPUT UTILITIES
     function scrollToBottom() {
         setTimeout(() => {
-            terminalBody.scrollTop = terminalBody.scrollHeight;
+            if (terminalBody) terminalBody.scrollTop = terminalBody.scrollHeight;
         }, 10);
     }
 
     function printRawHTML(html) {
+        if (!outputEl) return;
         const div = document.createElement('div');
         div.className = 'term-line';
         div.innerHTML = html;
@@ -785,6 +734,7 @@
     }
 
     function printLine(text, className = '') {
+        if (!outputEl) return;
         const p = document.createElement('p');
         p.className = `term-line ${className}`;
         p.textContent = text;
@@ -793,14 +743,7 @@
     }
 
     function printEcho(cmd) {
-        const cmdName = cmd.trim().split(/\s+/)[0].toLowerCase();
-        if (commands[cmdName]) {
-            const div = document.createElement('div');
-            div.className = 'term-cmd-echo';
-            div.innerHTML = `<span class="prefix">⚡ ${getMyName()}:</span> <span class="cmd-text">${escapeHTML(cmd)}</span>`;
-            outputEl.appendChild(div);
-            scrollToBottom();
-        }
+        // Suppress technical command echoes for minimalist romantic feel
     }
 
     function escapeHTML(str) {
@@ -847,8 +790,8 @@
 
             mqttClient.on('connect', () => {
                 isCloudConnected = true;
-                cloudStatusLight.className = 'status-indicator connected';
-                hudRelayStatus.textContent = 'CONNECTED_TO_RELAY_⚡';
+                if (cloudStatusLight) cloudStatusLight.className = 'status-indicator connected';
+                if (hudRelayStatus) hudRelayStatus.innerHTML = '🟢 Connected';
                 console.log('Connected to Cloud Relay on topic:', topic);
 
                 mqttClient.subscribe(topic, { qos: 1 }, (err) => {
@@ -876,13 +819,13 @@
 
             mqttClient.on('error', (err) => {
                 console.warn('MQTT connection error:', err);
-                hudRelayStatus.textContent = 'RECONNECTING...';
+                if (hudRelayStatus) hudRelayStatus.innerHTML = '🟡 Connecting...';
             });
 
             mqttClient.on('close', () => {
                 isCloudConnected = false;
-                cloudStatusLight.className = 'status-indicator waiting';
-                hudRelayStatus.textContent = 'DISCONNECTED';
+                if (cloudStatusLight) cloudStatusLight.className = 'status-indicator waiting';
+                if (hudRelayStatus) hudRelayStatus.innerHTML = '🟡 Reconnecting...';
             });
         } catch (e) {
             console.warn('Cloud relay failed to initialize:', e);
@@ -920,7 +863,7 @@
         switch (packet.type) {
             case 'PRESENCE_JOIN':
                 partnerOnline = true;
-                hudActiveUsers.textContent = `${state.partner1.toUpperCase()} + ${state.partner2.toUpperCase()} 🟢`;
+                if (hudActiveUsers) hudActiveUsers.textContent = `${state.partner1.toUpperCase()} + ${state.partner2.toUpperCase()} 🟢`;
                 playCelebrateFanfare();
                 launchCelebration(80);
 
@@ -931,7 +874,7 @@
                     updateHUD();
                 }
 
-                printLine(`⚡ [HEART-LINK ACTIVE]: ${escapeHTML(packet.senderName || 'Your Partner')} connected from Kerala!`, 'text-success');
+                printLine(`💌 ${escapeHTML(packet.senderName || 'Your Partner')} connected live across states!`, 'text-success');
 
                 // Host responds with full state sync
                 if (myRole === 'partner1') {
@@ -948,7 +891,7 @@
 
             case 'HEARTBEAT':
                 partnerOnline = true;
-                hudActiveUsers.textContent = `${state.partner1.toUpperCase()} + ${state.partner2.toUpperCase()} 🟢`;
+                if (hudActiveUsers) hudActiveUsers.textContent = `${state.partner1.toUpperCase()} + ${state.partner2.toUpperCase()} 🟢`;
                 break;
 
             case 'STATE_SYNC':
@@ -1841,24 +1784,28 @@ Happy 4th Anniversary, my love! ❤️
         inviteModal.classList.add('hidden');
     }
 
-    btnInvite.addEventListener('click', openInviteModal);
-    btnCloseModal.addEventListener('click', closeInviteModal);
-    inviteModal.addEventListener('click', (e) => {
-        if (e.target === inviteModal) closeInviteModal();
-    });
-
-    btnCopyLink.addEventListener('click', () => {
-        inviteLinkInput.select();
-        navigator.clipboard.writeText(inviteLinkInput.value).then(() => {
-            btnCopyLink.textContent = '✔ COPIED!';
-            setTimeout(() => { btnCopyLink.textContent = '📋 COPY LINK'; }, 2000);
-            playBeep(1000, 'sine', 0.08);
-        }).catch(() => {
-            document.execCommand('copy');
-            btnCopyLink.textContent = '✔ COPIED!';
-            setTimeout(() => { btnCopyLink.textContent = '📋 COPY LINK'; }, 2000);
+    if (btnInvite) btnInvite.addEventListener('click', openInviteModal);
+    if (btnCloseModal) btnCloseModal.addEventListener('click', closeInviteModal);
+    if (inviteModal) {
+        inviteModal.addEventListener('click', (e) => {
+            if (e.target === inviteModal) closeInviteModal();
         });
-    });
+    }
+
+    if (btnCopyLink) {
+        btnCopyLink.addEventListener('click', () => {
+            inviteLinkInput.select();
+            navigator.clipboard.writeText(inviteLinkInput.value).then(() => {
+                btnCopyLink.textContent = '✔ Copied!';
+                setTimeout(() => { btnCopyLink.textContent = '📋 Copy Link'; }, 2000);
+                playBeep(1000, 'sine', 0.08);
+            }).catch(() => {
+                document.execCommand('copy');
+                btnCopyLink.textContent = '✔ Copied!';
+                setTimeout(() => { btnCopyLink.textContent = '📋 Copy Link'; }, 2000);
+            });
+        });
+    }
 
     // 11. COMMAND EXECUTION DISPATCHER
     function executeCommand(inputStr) {
@@ -1881,42 +1828,33 @@ Happy 4th Anniversary, my love! ❤️
         if (commands[cmdName]) {
             commands[cmdName].exec(args);
         } else {
-            // Friendly Auto-Chat Fallback:
-            // If the user types anything that isn't a recognized CLI command (e.g. "I love you", "Happy anniversary!"),
-            // automatically deliver it as a live chat message across states!
+            // Friendly Auto-Chat: deliver plain text messages straight to her screen!
             commands.chat.exec([raw]);
         }
     }
 
     window.runTerminalCmd = function (cmdText) {
         initAudio();
-        inputEl.value = '';
+        if (inputEl) inputEl.value = '';
         executeCommand(cmdText);
-        inputEl.focus();
+        if (inputEl) inputEl.focus();
     };
 
-    // 12. WELCOME BANNER
+    // 12. WELCOME GREETING
     function printWelcomeBanner() {
-        const welcomeCardHTML = `
-<div class="welcome-hero-card">
-    <div class="welcome-heart-badge">💖</div>
-    <div class="welcome-hero-tag">✨ HAPPY 4TH ANNIVERSARY ✨</div>
-    <h1 class="welcome-hero-heading">${escapeHTML(state.partner1)} &amp; ${escapeHTML(state.partner2)}</h1>
-    <p class="welcome-hero-sub">4 Beautiful Years Together (August 31, 2022 — Forever)</p>
-    <div class="welcome-pills-row">
-        <span class="welcome-pill">📍 Karnataka ↔ Kerala</span>
-        <span class="welcome-pill">⏳ 4 Years Completed</span>
-        <span class="welcome-pill">💕 100% Love Guaranteed</span>
+        const welcomeMsgHTML = `
+<div class="chat-thread">
+    <div class="chat-bubble from-partner" style="background:#ffffff; border:1.5px solid rgba(255, 182, 193, 0.6);">
+        <div class="chat-bubble-header">
+            <span class="chat-bubble-author">💌 Love Notes</span>
+            <span>KA ↔ KL</span>
+        </div>
+        <div class="chat-bubble-body">
+            Connected live with ${escapeHTML(getPartnerName())}! Tap any quick action above or send a sweet note below 💕
+        </div>
     </div>
-    <p class="welcome-greeting-msg">
-        ${isGuest 
-            ? `Welcome my love! Tap any button on the Love Dock above to send kisses, hugs, or playful teasing, or write a love note below!` 
-            : `Welcome back! Tap 'INVITE HER' to connect her phone live, or tap any reaction above to share sweet moments across states!`
-        }
-    </p>
-</div>
-`;
-        printRawHTML(welcomeCardHTML);
+</div>`;
+        printRawHTML(welcomeMsgHTML);
     }
 
     // 13. EVENT LISTENERS
@@ -1969,31 +1907,37 @@ Happy 4th Anniversary, my love! ❤️
 
     btnMusic.addEventListener('click', () => toggleMusic());
 
-    themeSelect.addEventListener('change', (e) => {
-        const theme = e.target.value;
-        document.body.className = theme;
-        state.theme = theme;
-        saveState();
-        playBeep(700, 'sine', 0.08);
-    });
-
-    quickBar.addEventListener('click', (e) => {
-        const target = e.target.closest('.quick-chip');
-        if (!target) return;
-        const cmd = target.getAttribute('data-cmd');
-        if (cmd) window.runTerminalCmd(cmd);
-    });
-
-    // 13. PRETTY LOVE DOCK & ACCESSIBLE MODALS
-    const loveDock = document.getElementById('love-dock');
-    if (loveDock) {
-        loveDock.addEventListener('click', (e) => {
-            const btn = e.target.closest('.dock-btn');
-            if (!btn) return;
-            const action = btn.getAttribute('data-action');
-            handleDockAction(action);
+    if (themeSelect) {
+        themeSelect.addEventListener('change', (e) => {
+            const theme = e.target.value;
+            document.body.className = theme;
+            state.theme = theme;
+            saveState();
+            playBeep(700, 'sine', 0.08);
         });
     }
+
+    if (quickBar) {
+        quickBar.addEventListener('click', (e) => {
+            const target = e.target.closest('.quick-chip');
+            if (!target) return;
+            const cmd = target.getAttribute('data-cmd');
+            if (cmd) window.runTerminalCmd(cmd);
+        });
+    }
+
+    // 13. PRETTY LOVE ACTIONS & ACCESSIBLE MODALS
+    document.addEventListener('click', (e) => {
+        const btn = e.target.closest('.action-tile, .dock-btn');
+        if (!btn) return;
+        const action = btn.getAttribute('data-action');
+        if (action) handleDockAction(action);
+    });
+
+    window.sendSlapMood = function (mood) {
+        initAudio();
+        commands.slap.exec([mood]);
+    };
 
     function handleDockAction(action) {
         initAudio();
@@ -2142,7 +2086,7 @@ Happy 4th Anniversary, my love! ❤️
         }
     });
 
-    if (state.theme) {
+    if (state.theme && themeSelect) {
         document.body.className = state.theme;
         themeSelect.value = state.theme;
     }
