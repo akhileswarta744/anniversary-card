@@ -540,6 +540,39 @@
         });
     }
 
+    function playNotificationChime() {
+        if (!state.sfx) return;
+        initAudio();
+        if (!audioCtx) return;
+        try {
+            const now = audioCtx.currentTime;
+
+            // Note 1 (E5: 659.25Hz)
+            const osc1 = audioCtx.createOscillator();
+            const gain1 = audioCtx.createGain();
+            osc1.type = 'sine';
+            osc1.frequency.setValueAtTime(659.25, now);
+            gain1.gain.setValueAtTime(0.12, now);
+            gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
+            osc1.connect(gain1);
+            gain1.connect(audioCtx.destination);
+            osc1.start(now);
+            osc1.stop(now + 0.32);
+
+            // Note 2 (B5: 987.77Hz)
+            const osc2 = audioCtx.createOscillator();
+            const gain2 = audioCtx.createGain();
+            osc2.type = 'sine';
+            osc2.frequency.setValueAtTime(987.77, now + 0.1);
+            gain2.gain.setValueAtTime(0.16, now + 0.1);
+            gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.52);
+            osc2.connect(gain2);
+            gain2.connect(audioCtx.destination);
+            osc2.start(now + 0.1);
+            osc2.stop(now + 0.52);
+        } catch (e) {}
+    }
+
     // =========================================================
     // 90s ROMANTIC VINYL AUDIO ENGINE & PLAYLIST
     // =========================================================
@@ -1152,7 +1185,6 @@
                 break;
 
             case 'CHAT':
-                playBeep(1200, 'sine', 0.1);
                 state.chatMessages.push({
                     from: packet.senderName,
                     text: packet.text,
@@ -1172,6 +1204,23 @@
 </div>
 `;
                 printRawHTML(chatBubbleHTML);
+
+                // In-App Notification Toast, chime, unread badge & browser push alert
+                if (typeof triggerChatNotification === 'function') {
+                    triggerChatNotification(packet.senderName, packet.text);
+                }
+                break;
+
+            case 'GALLERY_ADD_PHOTO':
+                if (packet.photo && typeof handleIncomingGalleryPhoto === 'function') {
+                    handleIncomingGalleryPhoto(packet.photo, packet.senderName);
+                }
+                break;
+
+            case 'GALLERY_LIKE_PHOTO':
+                if (packet.photoId && typeof handleIncomingPhotoLike === 'function') {
+                    handleIncomingPhotoLike(packet.photoId);
+                }
                 break;
 
             case 'LOCATION_UPDATE':
@@ -3025,18 +3074,12 @@ Happy 4th Anniversary, my love! ❤️
     });
 
     // Handle feature tab switcher
-    document.addEventListener('click', (e) => {
-        const tabBtn = e.target.closest('.feature-tab');
-        if (!tabBtn) return;
-        initAudio();
-        playKeyClick();
-
-        const targetId = tabBtn.getAttribute('data-target');
+    function switchToFeatureTab(targetId) {
         if (!targetId) return;
-
-        document.querySelectorAll('.feature-tab').forEach(b => b.classList.remove('active'));
-        tabBtn.classList.add('active');
-
+        document.querySelectorAll('.feature-tab').forEach(b => {
+            if (b.getAttribute('data-target') === targetId) b.classList.add('active');
+            else b.classList.remove('active');
+        });
         document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
         const activePanel = document.getElementById(targetId);
         if (activePanel) {
@@ -3045,6 +3088,25 @@ Happy 4th Anniversary, my love! ❤️
                 setTimeout(() => coupleMap.invalidateSize(), 150);
             }
         }
+        if (targetId === 'panel-live-chat') {
+            if (typeof clearChatNotifications === 'function') clearChatNotifications();
+            setTimeout(() => {
+                const termBody = document.getElementById('terminal-body');
+                if (termBody) termBody.scrollTop = termBody.scrollHeight;
+                const input = document.getElementById('cli-input');
+                if (input) input.focus();
+            }, 100);
+        }
+    }
+    window.switchToFeatureTab = switchToFeatureTab;
+
+    document.addEventListener('click', (e) => {
+        const tabBtn = e.target.closest('.feature-tab');
+        if (!tabBtn) return;
+        initAudio();
+        playKeyClick();
+        const targetId = tabBtn.getAttribute('data-target');
+        if (targetId) switchToFeatureTab(targetId);
     });
 
     // Initialize the date card
@@ -3336,6 +3398,614 @@ Happy 4th Anniversary, my love! ❤️
 
     // Initialize the scrapbook
     renderMemory();
+
+    // =========================================================
+    // 18. CHAT NOTIFICATION & ALERT SYSTEM
+    // =========================================================
+    let unreadChatCount = 0;
+    let chatAlertsEnabled = (localStorage.getItem('chat_alerts_enabled') !== 'false');
+    let titleBlinkInterval = null;
+    const defaultAppTitle = document.title || 'Akhil & Her | 4 Years Together 💕';
+    let toastTimeout = null;
+
+    const chatToastBanner = document.getElementById('chat-toast-banner');
+    const toastSenderEl = document.getElementById('toast-sender');
+    const toastTextEl = document.getElementById('toast-text');
+    const toastReplyBtn = document.getElementById('toast-reply-btn');
+    const toastCloseBtn = document.getElementById('toast-close-btn');
+    const chatUnreadBadge = document.getElementById('chat-unread-badge');
+    const btnChatAlerts = document.getElementById('btn-chat-alerts');
+    const chatAlertIcon = document.getElementById('chat-alert-icon');
+    const chatAlertText = document.getElementById('chat-alert-text');
+
+    function updateAlertButtonUI() {
+        if (!btnChatAlerts) return;
+        if (chatAlertsEnabled) {
+            btnChatAlerts.classList.remove('muted');
+            if (chatAlertIcon) chatAlertIcon.textContent = '🔔';
+            if (chatAlertText) chatAlertText.textContent = 'Alerts ON';
+        } else {
+            btnChatAlerts.classList.add('muted');
+            if (chatAlertIcon) chatAlertIcon.textContent = '🔕';
+            if (chatAlertText) chatAlertText.textContent = 'Alerts Muted';
+        }
+    }
+    updateAlertButtonUI();
+
+    if (btnChatAlerts) {
+        btnChatAlerts.addEventListener('click', () => {
+            initAudio();
+            playKeyClick();
+            chatAlertsEnabled = !chatAlertsEnabled;
+            localStorage.setItem('chat_alerts_enabled', chatAlertsEnabled ? 'true' : 'false');
+            updateAlertButtonUI();
+
+            if (chatAlertsEnabled && window.Notification && Notification.permission === 'default') {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        printLine('🔔 Browser push notifications enabled for our love chat!', 'text-success');
+                    }
+                });
+            }
+        });
+    }
+
+    function triggerChatNotification(senderName, text) {
+        if (!chatAlertsEnabled) return;
+
+        const chatPanel = document.getElementById('panel-live-chat');
+        const isChatActive = chatPanel && chatPanel.classList.contains('active') && !document.hidden;
+
+        if (isChatActive) {
+            playKeyClick();
+            return;
+        }
+
+        // 1. Play musical double chime
+        playNotificationChime();
+
+        // 2. Vibrate phone
+        if ('vibrate' in navigator) {
+            try { navigator.vibrate([100, 50, 150]); } catch (e) {}
+        }
+
+        // 3. Update unread counter badge
+        unreadChatCount++;
+        if (chatUnreadBadge) {
+            chatUnreadBadge.textContent = unreadChatCount > 9 ? '9+' : unreadChatCount;
+            chatUnreadBadge.classList.remove('hidden');
+        }
+
+        // 4. Show In-App Floating Toast Banner
+        if (chatToastBanner && toastSenderEl && toastTextEl) {
+            toastSenderEl.textContent = senderName || 'Her';
+            toastTextEl.textContent = text || 'Sent a sweet love note 💕';
+            chatToastBanner.classList.remove('hidden');
+
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                if (chatToastBanner) chatToastBanner.classList.add('hidden');
+            }, 6500);
+        }
+
+        // 5. Document title notification blink
+        startTitleFlashing(senderName);
+
+        // 6. Browser Push / System Notification (if backgrounded or minimized)
+        if (document.hidden && window.Notification && Notification.permission === 'granted') {
+            try {
+                const notif = new Notification(`${senderName || 'Your Love'} 💕`, {
+                    body: text || 'Sent you a new love message!',
+                    icon: 'icons/icon-192.png',
+                    badge: 'icons/icon-192.png',
+                    tag: 'love-msg-alert'
+                });
+                notif.onclick = () => {
+                    window.focus();
+                    switchToFeatureTab('panel-live-chat');
+                    notif.close();
+                };
+            } catch (e) {}
+        }
+    }
+    window.triggerChatNotification = triggerChatNotification;
+
+    function clearChatNotifications() {
+        unreadChatCount = 0;
+        if (chatUnreadBadge) chatUnreadBadge.classList.add('hidden');
+        if (chatToastBanner) chatToastBanner.classList.add('hidden');
+        if (toastTimeout) clearTimeout(toastTimeout);
+
+        if (titleBlinkInterval) {
+            clearInterval(titleBlinkInterval);
+            titleBlinkInterval = null;
+        }
+        document.title = defaultAppTitle;
+    }
+    window.clearChatNotifications = clearChatNotifications;
+
+    function startTitleFlashing(senderName) {
+        if (titleBlinkInterval) return;
+        let toggle = false;
+        titleBlinkInterval = setInterval(() => {
+            toggle = !toggle;
+            document.title = toggle ? `💌 (1) New message from ${senderName || 'Her'}!` : defaultAppTitle;
+        }, 1200);
+    }
+
+    if (toastReplyBtn) {
+        toastReplyBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            initAudio();
+            playKeyClick();
+            switchToFeatureTab('panel-live-chat');
+        });
+    }
+
+    if (chatToastBanner) {
+        chatToastBanner.addEventListener('click', () => {
+            initAudio();
+            playKeyClick();
+            switchToFeatureTab('panel-live-chat');
+        });
+    }
+
+    if (toastCloseBtn) {
+        toastCloseBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (chatToastBanner) chatToastBanner.classList.add('hidden');
+            if (toastTimeout) clearTimeout(toastTimeout);
+        });
+    }
+
+    // =========================================================
+    // 19. ROMANTIC PHOTO GALLERY & MEMORY VAULT
+    // =========================================================
+    const DEFAULT_GALLERY_PHOTOS = [
+        {
+            id: 'photo_1',
+            isUploaded: false,
+            emoji: '💫',
+            quote: 'Where our universe collided and forever began ✨',
+            caption: 'August 31, 2022 • The Day We Began',
+            date: '2022 • Aug 31',
+            location: '📍 Karnataka ↔ Kerala',
+            category: 'milestones',
+            likes: 1464
+        },
+        {
+            id: 'photo_2',
+            isUploaded: false,
+            emoji: '🚗',
+            quote: 'Every kilometer between KA & KL only made us closer 💕',
+            caption: 'KA ✈️ KL • Long Distance Love Route',
+            date: '2023 • Year 1',
+            location: '📍 Karnataka ↔ Kerala',
+            category: 'long_distance',
+            likes: 1280
+        },
+        {
+            id: 'photo_3',
+            isUploaded: false,
+            emoji: '🎶',
+            quote: 'Falling asleep on calls listening to 90s melodies 🌙',
+            caption: 'Late Night Calls & 90s Songs',
+            date: '2024 • Year 2',
+            location: '📍 Endless Memories',
+            category: 'memories',
+            likes: 1395
+        },
+        {
+            id: 'photo_4',
+            isUploaded: false,
+            emoji: '🥰',
+            quote: 'Two cute Flork beans conquering life together 🌸',
+            caption: 'A ❤️ M • Flork Couple Hugs',
+            date: '2025 • Year 3',
+            location: '📍 Safe Haven',
+            category: 'favorites',
+            likes: 1520
+        },
+        {
+            id: 'photo_5',
+            isUploaded: false,
+            emoji: '💍',
+            quote: '4 magnificent years together, and I choose you forever 👑',
+            caption: 'August 31, 2026 • 4 Years Together',
+            date: '2026 • 4th Anniversary',
+            location: '📍 Forever & Always',
+            category: 'milestones',
+            likes: 2026
+        },
+        {
+            id: 'photo_6',
+            isUploaded: false,
+            emoji: '🧸',
+            quote: 'In your embrace is my absolute favorite place in the world 🏡',
+            caption: 'My Comfort & My Home',
+            date: 'Special Moments',
+            location: '📍 In Each Other\'s Hearts',
+            category: 'favorites',
+            likes: 1110
+        }
+    ];
+
+    let galleryPhotos = [];
+    try {
+        const savedPhotos = localStorage.getItem('akhil_her_gallery_photos');
+        if (savedPhotos) {
+            galleryPhotos = JSON.parse(savedPhotos);
+        } else {
+            galleryPhotos = [...DEFAULT_GALLERY_PHOTOS];
+        }
+    } catch (e) {
+        galleryPhotos = [...DEFAULT_GALLERY_PHOTOS];
+    }
+
+    function saveGalleryPhotos() {
+        try {
+            localStorage.setItem('akhil_her_gallery_photos', JSON.stringify(galleryPhotos));
+        } catch (e) {}
+    }
+
+    let activeGalleryFilter = 'all';
+    let currentLightboxPhotoIndex = 0;
+
+    // View Switcher: Grid vs Polaroid
+    const btnViewGrid = document.getElementById('btn-view-grid');
+    const btnViewPolaroid = document.getElementById('btn-view-polaroid');
+    const galleryGridWrapper = document.getElementById('gallery-grid-wrapper');
+    const scrapbookPolaroidWrapper = document.getElementById('scrapbook-polaroid-wrapper');
+
+    if (btnViewGrid && btnViewPolaroid) {
+        btnViewGrid.addEventListener('click', () => {
+            initAudio();
+            playKeyClick();
+            btnViewGrid.classList.add('active');
+            btnViewPolaroid.classList.remove('active');
+            if (galleryGridWrapper) galleryGridWrapper.classList.remove('hidden');
+            if (scrapbookPolaroidWrapper) scrapbookPolaroidWrapper.classList.add('hidden');
+        });
+
+        btnViewPolaroid.addEventListener('click', () => {
+            initAudio();
+            playKeyClick();
+            btnViewPolaroid.classList.add('active');
+            btnViewGrid.classList.remove('active');
+            if (galleryGridWrapper) galleryGridWrapper.classList.add('hidden');
+            if (scrapbookPolaroidWrapper) scrapbookPolaroidWrapper.classList.remove('hidden');
+            renderMemory();
+        });
+    }
+
+    // Filter Chips
+    document.addEventListener('click', (e) => {
+        const chip = e.target.closest('.filter-chip');
+        if (!chip) return;
+        initAudio();
+        playKeyClick();
+        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        activeGalleryFilter = chip.getAttribute('data-filter') || 'all';
+        renderGalleryGrid();
+    });
+
+    function renderGalleryGrid() {
+        const gridContainer = document.getElementById('photo-cards-grid');
+        if (!gridContainer) return;
+
+        let filtered = galleryPhotos;
+        if (activeGalleryFilter === 'favorites') {
+            filtered = galleryPhotos.filter(p => p.category === 'favorites' || p.likes >= 1400);
+        } else if (activeGalleryFilter === 'milestones') {
+            filtered = galleryPhotos.filter(p => p.category === 'milestones');
+        } else if (activeGalleryFilter === 'long_distance') {
+            filtered = galleryPhotos.filter(p => p.category === 'long_distance');
+        } else if (activeGalleryFilter === 'custom') {
+            filtered = galleryPhotos.filter(p => p.isUploaded);
+        }
+
+        if (filtered.length === 0) {
+            gridContainer.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align:center; padding: 36px 16px; color:#9ca3af;">
+                    <span style="font-size:36px; display:block; margin-bottom:8px;">📸</span>
+                    <p style="margin:0; font-size:13px; font-weight:600;">No photos in this category yet!</p>
+                    <small>Tap "+ Add Photo" above to upload your first sweet memory 💕</small>
+                </div>
+            `;
+            return;
+        }
+
+        let html = '';
+        filtered.forEach((p) => {
+            const originalIndex = galleryPhotos.findIndex(item => item.id === p.id);
+            const thumbContent = p.src
+                ? `<img src="${p.src}" alt="${escapeHTML(p.caption)}" class="card-thumb-img" loading="lazy">`
+                : `
+                    <div class="card-thumb-art">
+                        <span class="card-art-emoji">${p.emoji || '✨'}</span>
+                        <div class="card-art-quote">${escapeHTML(p.quote || '')}</div>
+                    </div>
+                `;
+
+            html += `
+                <div class="photo-card" onclick="window.openPhotoLightbox(${originalIndex})">
+                    <div class="card-thumb-wrap">
+                        ${thumbContent}
+                        <button class="card-heart-badge" onclick="window.likeGalleryPhoto(event, '${p.id}')" title="Like photo">
+                            <span>❤️</span> <span>${p.likes.toLocaleString()}</span>
+                        </button>
+                    </div>
+                    <div class="card-info">
+                        <div class="card-tag-row">
+                            <span>${escapeHTML(p.date || 'Memory')}</span>
+                        </div>
+                        <div class="card-caption">${escapeHTML(p.caption)}</div>
+                        <div class="card-location">${escapeHTML(p.location || '📍 Karnataka ↔ Kerala')}</div>
+                    </div>
+                </div>
+            `;
+        });
+        gridContainer.innerHTML = html;
+    }
+
+    // Like Photo
+    window.likeGalleryPhoto = function(e, photoId) {
+        if (e) e.stopPropagation();
+        initAudio();
+        playCelebrateFanfare();
+        const photo = galleryPhotos.find(p => p.id === photoId);
+        if (photo) {
+            photo.likes++;
+            saveGalleryPhotos();
+            renderGalleryGrid();
+            spawnFloatingHeartsAtClick(e);
+
+            sendPacket({
+                type: 'GALLERY_LIKE_PHOTO',
+                photoId: photoId
+            });
+        }
+    };
+
+    window.handleIncomingPhotoLike = function(photoId) {
+        const photo = galleryPhotos.find(p => p.id === photoId);
+        if (photo) {
+            photo.likes++;
+            saveGalleryPhotos();
+            renderGalleryGrid();
+            launchCelebration(35);
+        }
+    };
+
+    function spawnFloatingHeartsAtClick(e) {
+        const x = (e && e.clientX) ? e.clientX : window.innerWidth / 2;
+        const y = (e && e.clientY) ? e.clientY : window.innerHeight / 2;
+        for (let i = 0; i < 6; i++) {
+            const h = document.createElement('span');
+            h.textContent = ['❤️', '💕', '💖', '✨'][Math.floor(Math.random() * 4)];
+            h.style.position = 'fixed';
+            h.style.left = (x + Math.random() * 20 - 10) + 'px';
+            h.style.top = (y + Math.random() * 20 - 10) + 'px';
+            h.style.pointerEvents = 'none';
+            h.style.fontSize = (16 + Math.random() * 10) + 'px';
+            h.style.transition = 'all 1s cubic-bezier(0.16, 1, 0.3, 1)';
+            h.style.zIndex = '99999';
+            document.body.appendChild(h);
+            requestAnimationFrame(() => {
+                h.style.transform = `translate(${Math.random() * 60 - 30}px, ${-60 - Math.random() * 40}px) scale(1.3)`;
+                h.style.opacity = '0';
+            });
+            setTimeout(() => h.remove(), 1000);
+        }
+    }
+
+    // Photo Upload
+    let pendingUploadDataUrl = null;
+    const galleryFileInput = document.getElementById('gallery-file-input');
+    const uploadPreviewImg = document.getElementById('upload-preview-img');
+    const uploadCaptionInput = document.getElementById('upload-caption-input');
+    const uploadDateInput = document.getElementById('upload-date-input');
+    const btnSaveUploadedPhoto = document.getElementById('btn-save-uploaded-photo');
+
+    if (galleryFileInput) {
+        galleryFileInput.addEventListener('change', (e) => {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                pendingUploadDataUrl = ev.target.result;
+                if (uploadPreviewImg) uploadPreviewImg.src = pendingUploadDataUrl;
+                if (uploadCaptionInput) uploadCaptionInput.value = '';
+                if (uploadDateInput) uploadDateInput.value = `2026 • ${myRole === 'partner1' ? 'Akhil' : 'Her'} Added`;
+                openModal('add-photo-caption-modal');
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    if (btnSaveUploadedPhoto) {
+        btnSaveUploadedPhoto.addEventListener('click', () => {
+            if (!pendingUploadDataUrl) return;
+            initAudio();
+            playCelebrateFanfare();
+
+            const caption = (uploadCaptionInput && uploadCaptionInput.value.trim()) || 'Our Beautiful Memory 💕';
+            const dateStr = (uploadDateInput && uploadDateInput.value.trim()) || '2026';
+
+            const newPhoto = {
+                id: 'custom_' + Date.now(),
+                isUploaded: true,
+                src: pendingUploadDataUrl,
+                caption: caption,
+                date: dateStr,
+                location: '📍 Captured with Love',
+                category: 'custom',
+                likes: 1
+            };
+
+            galleryPhotos.unshift(newPhoto);
+            saveGalleryPhotos();
+            closeModal('add-photo-caption-modal');
+            renderGalleryGrid();
+            launchCelebration(60);
+
+            // Broadcast to partner!
+            sendPacket({
+                type: 'GALLERY_ADD_PHOTO',
+                photo: newPhoto,
+                senderName: myRole === 'partner1' ? 'Akhil' : 'Her'
+            });
+
+            printLine('📸 New photo added to Our Gallery & synced across devices!', 'text-success');
+        });
+    }
+
+    window.handleIncomingGalleryPhoto = function(photo, senderName) {
+        if (!photo || !photo.id) return;
+        if (!galleryPhotos.some(p => p.id === photo.id)) {
+            galleryPhotos.unshift(photo);
+            saveGalleryPhotos();
+            renderGalleryGrid();
+            playNotificationChime();
+            if (typeof triggerChatNotification === 'function') {
+                triggerChatNotification(senderName || 'Her', '📸 Added a new photo to Our Gallery!');
+            }
+        }
+    };
+
+    // Lightbox Modal Logic
+    const photoLightboxModal = document.getElementById('photo-lightbox-modal');
+    const lightboxTitle = document.getElementById('lightbox-title');
+    const lightboxImg = document.getElementById('lightbox-img');
+    const lightboxArtPlaceholder = document.getElementById('lightbox-art-placeholder');
+    const lightboxCaption = document.getElementById('lightbox-caption');
+    const lightboxDate = document.getElementById('lightbox-date');
+    const lightboxLocation = document.getElementById('lightbox-location');
+    const lightboxLikesCount = document.getElementById('lightbox-likes-count');
+    const btnCloseLightbox = document.getElementById('btn-close-lightbox');
+    const btnLightboxPrev = document.getElementById('btn-lightbox-prev');
+    const btnLightboxNext = document.getElementById('btn-lightbox-next');
+    const btnLightboxLike = document.getElementById('btn-lightbox-like');
+    const btnLightboxDownload = document.getElementById('btn-lightbox-download');
+    const btnLightboxDelete = document.getElementById('btn-lightbox-delete');
+
+    window.openPhotoLightbox = function(index) {
+        initAudio();
+        playKeyClick();
+        currentLightboxPhotoIndex = index;
+        renderLightboxPhoto();
+        if (photoLightboxModal) photoLightboxModal.classList.remove('hidden');
+    };
+
+    function renderLightboxPhoto() {
+        const p = galleryPhotos[currentLightboxPhotoIndex];
+        if (!p) return;
+
+        if (lightboxTitle) lightboxTitle.textContent = p.caption;
+        if (lightboxCaption) lightboxCaption.textContent = p.caption;
+        if (lightboxDate) lightboxDate.textContent = `🗓️ ${p.date || 'Memory'}`;
+        if (lightboxLocation) lightboxLocation.textContent = p.location || '📍 Karnataka ↔ Kerala';
+        if (lightboxLikesCount) lightboxLikesCount.textContent = p.likes.toLocaleString();
+
+        if (p.src) {
+            if (lightboxImg) {
+                lightboxImg.src = p.src;
+                lightboxImg.classList.remove('hidden');
+            }
+            if (lightboxArtPlaceholder) lightboxArtPlaceholder.style.display = 'none';
+        } else {
+            if (lightboxImg) lightboxImg.classList.add('hidden');
+            if (lightboxArtPlaceholder) {
+                lightboxArtPlaceholder.style.display = 'flex';
+                lightboxArtPlaceholder.innerHTML = `
+                    <span class="card-art-emoji" style="font-size:60px;">${p.emoji || '✨'}</span>
+                    <div class="card-art-quote" style="font-size:15px; margin-top:10px;">${escapeHTML(p.quote || '')}</div>
+                `;
+            }
+        }
+
+        if (btnLightboxDelete) {
+            if (p.isUploaded) btnLightboxDelete.classList.remove('hidden');
+            else btnLightboxDelete.classList.add('hidden');
+        }
+    }
+
+    if (btnCloseLightbox) {
+        btnCloseLightbox.addEventListener('click', () => {
+            if (photoLightboxModal) photoLightboxModal.classList.add('hidden');
+        });
+    }
+
+    if (photoLightboxModal) {
+        photoLightboxModal.addEventListener('click', (e) => {
+            if (e.target === photoLightboxModal) {
+                photoLightboxModal.classList.add('hidden');
+            }
+        });
+    }
+
+    if (btnLightboxPrev) {
+        btnLightboxPrev.addEventListener('click', () => {
+            initAudio();
+            playKeyClick();
+            currentLightboxPhotoIndex = (currentLightboxPhotoIndex - 1 + galleryPhotos.length) % galleryPhotos.length;
+            renderLightboxPhoto();
+        });
+    }
+
+    if (btnLightboxNext) {
+        btnLightboxNext.addEventListener('click', () => {
+            initAudio();
+            playKeyClick();
+            currentLightboxPhotoIndex = (currentLightboxPhotoIndex + 1) % galleryPhotos.length;
+            renderLightboxPhoto();
+        });
+    }
+
+    if (btnLightboxLike) {
+        btnLightboxLike.addEventListener('click', (e) => {
+            const p = galleryPhotos[currentLightboxPhotoIndex];
+            if (p) {
+                window.likeGalleryPhoto(e, p.id);
+                if (lightboxLikesCount) lightboxLikesCount.textContent = p.likes.toLocaleString();
+            }
+        });
+    }
+
+    if (btnLightboxDownload) {
+        btnLightboxDownload.addEventListener('click', () => {
+            const p = galleryPhotos[currentLightboxPhotoIndex];
+            if (!p) return;
+            initAudio();
+            playKeyClick();
+            if (p.src) {
+                const a = document.createElement('a');
+                a.href = p.src;
+                a.download = `akhil_her_memory_${p.id}.png`;
+                a.click();
+            } else {
+                printLine('📸 Image saved to memory!', 'text-success');
+            }
+        });
+    }
+
+    if (btnLightboxDelete) {
+        btnLightboxDelete.addEventListener('click', () => {
+            const p = galleryPhotos[currentLightboxPhotoIndex];
+            if (!p || !p.isUploaded) return;
+            if (confirm('Delete this photo from Our Gallery?')) {
+                galleryPhotos.splice(currentLightboxPhotoIndex, 1);
+                saveGalleryPhotos();
+                renderGalleryGrid();
+                if (photoLightboxModal) photoLightboxModal.classList.add('hidden');
+            }
+        });
+    }
+
+    // Initial render of gallery grid
+    renderGalleryGrid();
 
     // 18. QUICK 1-TAP CHAT REACTION EMOJIS
     document.addEventListener('click', (e) => {

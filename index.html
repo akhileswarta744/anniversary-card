@@ -28,12 +28,26 @@
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
     <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 
-    <link rel="stylesheet" href="styles.css?v=23.0">
+    <link rel="stylesheet" href="styles.css?v=24.0">
 </head>
 <body class="theme-minimal-romantic">
 
     <!-- Celebration Fireworks Canvas -->
     <canvas id="celebration-canvas"></canvas>
+
+    <!-- Floating In-App Chat Notification Toast -->
+    <div id="chat-toast-banner" class="chat-toast-banner hidden">
+        <div class="toast-avatar">💌</div>
+        <div class="toast-body">
+            <div class="toast-top-row">
+                <strong class="toast-sender" id="toast-sender">Her</strong>
+                <span class="toast-time">Just now</span>
+            </div>
+            <div class="toast-text" id="toast-text">New message...</div>
+        </div>
+        <button class="toast-reply-btn" id="toast-reply-btn">Open 💬</button>
+        <button class="toast-close-btn" id="toast-close-btn" aria-label="Dismiss">&times;</button>
+    </div>
 
     <!-- Fullscreen Kiss & Hug Animations -->
     <div id="kiss-overlay" class="kiss-overlay"></div>
@@ -312,15 +326,55 @@
                 <span class="tab-icon">🗺️</span>
                 <span class="tab-label">Map</span>
             </button>
-            <button class="feature-tab" data-target="panel-live-chat">
+            <button class="feature-tab" data-target="panel-live-chat" id="tab-live-chat" style="position:relative;">
                 <span class="tab-icon">💬</span>
                 <span class="tab-label">Chat</span>
+                <span class="chat-unread-badge hidden" id="chat-unread-badge">0</span>
             </button>
         </nav>
 
-        <!-- 5. Polaroid Memory Scrapbook ("Our 4 Years Together") -->
+        <!-- 5. Romantic Photo Gallery & Polaroid Memory Scrapbook -->
         <section class="scrapbook-section tab-panel" id="panel-scrapbook">
-            <div class="scrapbook-card">
+            <!-- View Switcher: Photo Gallery Grid vs Polaroid Carousel -->
+            <div class="gallery-view-switcher">
+                <button class="gallery-view-btn active" id="btn-view-grid">
+                    <span>🖼️ Photo Gallery Grid</span>
+                </button>
+                <button class="gallery-view-btn" id="btn-view-polaroid">
+                    <span>🎞️ Polaroid Story</span>
+                </button>
+            </div>
+
+            <!-- VIEW 1: Romantic Photo Gallery Grid -->
+            <div class="gallery-grid-wrapper" id="gallery-grid-wrapper">
+                <div class="gallery-header-row">
+                    <div class="gallery-title-box">
+                        <h3>Our Love Photo Gallery</h3>
+                        <p>Smiles, milestones & memories from 2022 &mdash; 2026 💕</p>
+                    </div>
+                    <label class="gallery-upload-pill" for="gallery-file-input">
+                        <span>📸 + Add Photo</span>
+                        <input type="file" id="gallery-file-input" accept="image/*" style="display:none;">
+                    </label>
+                </div>
+
+                <!-- Filter Chips -->
+                <div class="gallery-filter-chips" id="gallery-filter-chips">
+                    <button class="filter-chip active" data-filter="all">All Memories</button>
+                    <button class="filter-chip" data-filter="favorites">Favorites ❤️</button>
+                    <button class="filter-chip" data-filter="milestones">Milestones 💍</button>
+                    <button class="filter-chip" data-filter="long_distance">KA ↔ KL 🚗</button>
+                    <button class="filter-chip" data-filter="custom">Our Uploads 📷</button>
+                </div>
+
+                <!-- Photos Grid Container -->
+                <div class="photo-cards-grid" id="photo-cards-grid">
+                    <!-- Populated dynamically via terminal.js -->
+                </div>
+            </div>
+
+            <!-- VIEW 2: Polaroid Scrapbook Carousel -->
+            <div class="scrapbook-card hidden" id="scrapbook-polaroid-wrapper">
                 <div class="scrapbook-header">
                     <span class="scrapbook-badge">📸 2022 &mdash; 2026</span>
                     <h2 class="scrapbook-title">Our 4-Year Story in Polaroids</h2>
@@ -458,7 +512,13 @@
                     <span style="font-size:18px;">💬</span>
                     <h3 class="section-heading" style="margin:0; padding:0;">Our Private Chat Space</h3>
                 </div>
-                <span class="notes-badge">🟢 Live KA &harr; KL</span>
+                <div class="chat-header-actions">
+                    <button class="chat-alert-toggle-btn" id="btn-chat-alerts" title="Toggle sound & push alerts">
+                        <span id="chat-alert-icon">🔔</span>
+                        <span id="chat-alert-text">Alerts ON</span>
+                    </button>
+                    <span class="notes-badge">🟢 Live KA &harr; KL</span>
+                </div>
             </div>
 
             <!-- Scrollable Message Stream -->
@@ -841,6 +901,68 @@
         </div>
     </div>
 
-    <script src="terminal.js?v=23.0"></script>
+    <!-- Photo Lightbox Modal -->
+    <div id="photo-lightbox-modal" class="lightbox-modal hidden" role="dialog" aria-label="Photo Lightbox">
+        <div class="lightbox-card">
+            <div class="lightbox-header">
+                <h4 id="lightbox-title">Photo Memory</h4>
+                <button class="modal-close" id="btn-close-lightbox">&times;</button>
+            </div>
+            <div class="lightbox-media-box">
+                <button class="lightbox-nav-btn lightbox-prev-btn" id="btn-lightbox-prev" aria-label="Previous">&lsaquo;</button>
+                <div id="lightbox-content-area" style="width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
+                    <img id="lightbox-img" src="" alt="Enlarged Memory Photo" class="hidden" />
+                    <div id="lightbox-art-placeholder" class="card-thumb-art"></div>
+                </div>
+                <button class="lightbox-nav-btn lightbox-next-btn" id="btn-lightbox-next" aria-label="Next">&rsaquo;</button>
+            </div>
+            <div class="lightbox-details">
+                <h3 class="lightbox-caption" id="lightbox-caption">Caption</h3>
+                <div class="lightbox-meta-row">
+                    <span id="lightbox-date">🗓️ August 31, 2022</span>
+                    <span id="lightbox-location">📍 Karnataka ↔ Kerala</span>
+                </div>
+                <div class="lightbox-actions-row">
+                    <button class="pill-btn-pink" id="btn-lightbox-like" style="padding: 8px 16px; font-size:12px;">
+                        <span>❤️ Like</span> <span id="lightbox-likes-count">142</span>
+                    </button>
+                    <div style="display:flex; gap:8px;">
+                        <button class="modal-btn-secondary" id="btn-lightbox-download" style="padding: 8px 14px; font-size:12px;">💾 Save</button>
+                        <button class="modal-btn-secondary hidden" id="btn-lightbox-delete" style="padding: 8px 14px; font-size:12px; color:#ef4444; border-color:#fca5a5;">🗑️ Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Photo with Caption Modal -->
+    <div id="add-photo-caption-modal" class="modal-overlay hidden">
+        <div class="modal-card" style="max-width: 440px;">
+            <div class="modal-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:22px;">📸</span>
+                    <h3 style="margin:0;">Add to Our Gallery</h3>
+                </div>
+                <button class="modal-close" data-close="add-photo-caption-modal">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align: left;">
+                <div style="width:100%; height:180px; border-radius:16px; overflow:hidden; background:#fdf2f8; margin-bottom:14px; display:flex; align-items:center; justify-content:center; border:1px solid #fbcfe8;">
+                    <img id="upload-preview-img" src="" alt="Preview" style="max-width:100%; max-height:100%; object-fit:contain;" />
+                </div>
+                <label style="font-size:12px; font-weight:700; color:#831843; display:block; margin-bottom:6px;">Sweet Caption / Story:</label>
+                <input type="text" id="upload-caption-input" class="love-input" placeholder="e.g. Our cute sunset drive together 💕" style="width:100%; box-sizing:border-box; margin-bottom:12px;">
+                
+                <label style="font-size:12px; font-weight:700; color:#831843; display:block; margin-bottom:6px;">Memory Tag / Year:</label>
+                <input type="text" id="upload-date-input" class="love-input" placeholder="e.g. 2026 • Special Moment" style="width:100%; box-sizing:border-box; margin-bottom:18px;">
+                
+                <div style="display:flex; gap:10px; justify-content:flex-end;">
+                    <button class="modal-btn-secondary" data-close="add-photo-caption-modal">Cancel</button>
+                    <button id="btn-save-uploaded-photo" class="modal-btn-primary">💖 Save to Gallery</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="terminal.js?v=24.0"></script>
 </body>
 </html>
