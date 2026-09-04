@@ -1,5 +1,5 @@
 // Service Worker for Akhil & Her Progressive Web App
-const CACHE_NAME = 'akhil-her-app-v12';
+const CACHE_NAME = 'akhil-her-app-v13';
 const ASSETS_TO_CACHE = [
     './',
     './index.html',

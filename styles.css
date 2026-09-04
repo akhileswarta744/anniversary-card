@@ -3294,39 +3294,47 @@ button:active, .action-tile:active, .pill-btn:active, .love-send-btn:active, .qu
 }
 
 /* =========================================================
-   PHOTO GALLERY & MEMORY VAULT
+   POLAROID OPTION SWITCHER & PHOTO GALLERY
    ========================================================= */
-.gallery-view-switcher {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+.polaroid-mode-switcher {
+    display: flex;
+    align-items: center;
+    justify-content: center;
     gap: 8px;
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(244, 114, 182, 0.35);
+    background: rgba(253, 242, 248, 0.9);
+    border: 1.5px solid rgba(244, 114, 182, 0.35);
     border-radius: 999px;
     padding: 4px;
-    margin: 0 auto 16px auto;
-    max-width: 420px;
+    margin: 12px auto 0 auto;
+    max-width: 380px;
     width: 100%;
 }
 
-.gallery-view-btn {
+.polaroid-mode-tab {
+    flex: 1;
     background: transparent;
     border: none;
     border-radius: 999px;
-    padding: 8px 12px;
+    padding: 8px 14px;
     font-size: 12px;
     font-weight: 700;
     color: #6b7280;
     cursor: pointer;
-    transition: all 0.22s ease;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 4px;
 }
 
-.gallery-view-btn:hover {
+.polaroid-mode-tab:hover {
     color: #ec4899;
+}
+
+.polaroid-mode-tab.active {
+    background: #ffffff;
+    color: #ec4899;
+    box-shadow: 0 3px 10px rgba(236, 72, 153, 0.22);
 }
 
 .gallery-view-btn.active {

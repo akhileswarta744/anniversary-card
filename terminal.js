@@ -3246,8 +3246,106 @@ Happy 4th Anniversary, my love! ❤️
     }
 
     // =========================================================
-    // 17. POLAROID MEMORY SCRAPBOOK CONTROLLER
+    // 17. POLAROID MEMORY SCRAPBOOK & PHOTO VAULT CONTROLLER
     // =========================================================
+    const DEFAULT_GALLERY_PHOTOS = [
+        {
+            id: 'photo_1',
+            isUploaded: false,
+            emoji: '💫',
+            quote: 'Where our universe collided and forever began ✨',
+            caption: 'August 31, 2022 • The Day We Began',
+            date: '2022 • Aug 31',
+            location: '📍 Karnataka ↔ Kerala',
+            category: 'milestones',
+            likes: 1464
+        },
+        {
+            id: 'photo_2',
+            isUploaded: false,
+            emoji: '🚗',
+            quote: 'Every kilometer between KA & KL only made us closer 💕',
+            caption: 'KA ✈️ KL • Long Distance Love Route',
+            date: '2023 • Year 1',
+            location: '📍 Karnataka ↔ Kerala',
+            category: 'long_distance',
+            likes: 1280
+        },
+        {
+            id: 'photo_3',
+            isUploaded: false,
+            emoji: '🎶',
+            quote: 'Falling asleep on calls listening to 90s melodies 🌙',
+            caption: 'Late Night Calls & 90s Songs',
+            date: '2024 • Year 2',
+            location: '📍 Endless Memories',
+            category: 'memories',
+            likes: 1395
+        },
+        {
+            id: 'photo_4',
+            isUploaded: false,
+            emoji: '🥰',
+            quote: 'Two cute Flork beans conquering life together 🌸',
+            caption: 'A ❤️ M • Flork Couple Hugs',
+            date: '2025 • Year 3',
+            location: '📍 Safe Haven',
+            category: 'favorites',
+            likes: 1520
+        },
+        {
+            id: 'photo_5',
+            isUploaded: false,
+            emoji: '💍',
+            quote: '4 magnificent years together, and I choose you forever 👑',
+            caption: 'August 31, 2026 • 4 Years Together',
+            date: '2026 • 4th Anniversary',
+            location: '📍 Forever & Always',
+            category: 'milestones',
+            likes: 2026
+        },
+        {
+            id: 'photo_6',
+            isUploaded: false,
+            emoji: '🧸',
+            quote: 'In your embrace is my absolute favorite place in the world 🏡',
+            caption: 'My Comfort & My Home',
+            date: 'Special Moments',
+            location: '📍 In Each Other\'s Hearts',
+            category: 'favorites',
+            likes: 1110
+        }
+    ];
+
+    let galleryPhotos = [];
+    try {
+        const savedPhotos = localStorage.getItem('akhil_her_gallery_photos');
+        if (savedPhotos) {
+            galleryPhotos = JSON.parse(savedPhotos);
+        } else {
+            galleryPhotos = [...DEFAULT_GALLERY_PHOTOS];
+        }
+    } catch (e) {
+        galleryPhotos = [...DEFAULT_GALLERY_PHOTOS];
+    }
+
+    function saveGalleryPhotos() {
+        try {
+            localStorage.setItem('akhil_her_gallery_photos', JSON.stringify(galleryPhotos));
+        } catch (e) {}
+    }
+
+    function getUploadedPhotos() {
+        return galleryPhotos.filter(p => p.isUploaded || (p.src && p.src.length > 0));
+    }
+
+    function updateUploadedCountBadge() {
+        const badge = document.getElementById('uploaded-count-badge');
+        if (badge) {
+            badge.textContent = getUploadedPhotos().length;
+        }
+    }
+
     const memories = [
         {
             year: "2022 • August 31",
@@ -3286,13 +3384,12 @@ Happy 4th Anniversary, my love! ❤️
         }
     ];
 
-    let currentMemoryIndex = 0;
+    let polaroidMode = 'story'; // 'story' or 'uploaded'
+    let currentStoryIndex = 0;
+    let currentUploadedIndex = 0;
     let memoryLikes = parseInt(localStorage.getItem('memoryLikes') || '1464', 10);
 
-    function renderMemory() {
-        const mem = memories[currentMemoryIndex];
-        if (!mem) return;
-
+    function renderPolaroid() {
         const imgEl = document.getElementById('polaroid-img');
         const placeholderEl = document.getElementById('polaroid-placeholder');
         const emojiEl = document.getElementById('placeholder-emoji');
@@ -3301,41 +3398,144 @@ Happy 4th Anniversary, my love! ❤️
         const captionEl = document.getElementById('polaroid-caption');
         const locationEl = document.getElementById('polaroid-location');
         const likesEl = document.getElementById('memory-likes-count');
+        const dotsContainer = document.getElementById('polaroid-dots');
+        const btnDeletePolaroid = document.getElementById('btn-delete-polaroid');
 
-        if (yearEl) yearEl.textContent = mem.year;
-        if (captionEl) captionEl.textContent = mem.caption;
-        if (locationEl) locationEl.textContent = mem.location;
-        if (emojiEl) emojiEl.textContent = mem.emoji;
-        if (tagEl) tagEl.textContent = mem.tag;
-        if (likesEl) likesEl.textContent = memoryLikes.toLocaleString();
+        updateUploadedCountBadge();
 
-        // Check if custom photo exists in localStorage
-        const customPhoto = localStorage.getItem('custom_memory_' + currentMemoryIndex);
-        if (customPhoto && imgEl && placeholderEl) {
-            imgEl.src = customPhoto;
-            imgEl.classList.remove('hidden');
-            placeholderEl.style.display = 'none';
-        } else if (imgEl && placeholderEl) {
-            imgEl.src = '';
-            imgEl.classList.add('hidden');
-            placeholderEl.style.display = 'flex';
+        if (polaroidMode === 'story') {
+            const mem = memories[currentStoryIndex];
+            if (!mem) return;
+
+            if (yearEl) yearEl.textContent = mem.year;
+            if (captionEl) captionEl.textContent = mem.caption;
+            if (locationEl) locationEl.textContent = mem.location;
+            if (emojiEl) emojiEl.textContent = mem.emoji;
+            if (tagEl) tagEl.textContent = mem.tag;
+            if (likesEl) likesEl.textContent = memoryLikes.toLocaleString();
+            if (btnDeletePolaroid) btnDeletePolaroid.classList.add('hidden');
+
+            const customPhoto = localStorage.getItem('custom_memory_' + currentStoryIndex);
+            if (customPhoto && imgEl && placeholderEl) {
+                imgEl.src = customPhoto;
+                imgEl.classList.remove('hidden');
+                placeholderEl.style.display = 'none';
+            } else if (imgEl && placeholderEl) {
+                imgEl.src = '';
+                imgEl.classList.add('hidden');
+                placeholderEl.style.display = 'flex';
+            }
+
+            if (dotsContainer) {
+                let dotsHtml = '';
+                memories.forEach((_, idx) => {
+                    const label = ['2022', '2023', '2024', '2025', '2026'][idx] || `Yr ${idx+1}`;
+                    const activeClass = (idx === currentStoryIndex) ? 'active' : '';
+                    dotsHtml += `<button class="scrap-dot ${activeClass}" data-index="${idx}">${label}</button>`;
+                });
+                dotsContainer.innerHTML = dotsHtml;
+            }
+        } else {
+            // UPLOADED PHOTOS MODE
+            const uploadedList = getUploadedPhotos();
+
+            if (uploadedList.length === 0) {
+                if (imgEl) {
+                    imgEl.src = '';
+                    imgEl.classList.add('hidden');
+                }
+                if (placeholderEl) {
+                    placeholderEl.style.display = 'flex';
+                }
+                if (emojiEl) emojiEl.textContent = '📸';
+                if (tagEl) tagEl.textContent = 'No Uploads Yet';
+                if (yearEl) yearEl.textContent = 'Our Uploaded Gallery';
+                if (captionEl) captionEl.textContent = 'No photos uploaded yet! Tap "+ Upload Photo" below to display your real pictures here 💕';
+                if (locationEl) locationEl.textContent = '📍 Karnataka ↔ Kerala';
+                if (likesEl) likesEl.textContent = '0';
+                if (btnDeletePolaroid) btnDeletePolaroid.classList.add('hidden');
+                if (dotsContainer) dotsContainer.innerHTML = '<span style="font-size:12px; color:#9ca3af; padding:4px 10px;">Tap "+ Upload Photo" below</span>';
+                return;
+            }
+
+            if (currentUploadedIndex >= uploadedList.length) {
+                currentUploadedIndex = uploadedList.length - 1;
+            }
+            if (currentUploadedIndex < 0) currentUploadedIndex = 0;
+
+            const curPhoto = uploadedList[currentUploadedIndex];
+
+            if (imgEl && placeholderEl) {
+                if (curPhoto.src) {
+                    imgEl.src = curPhoto.src;
+                    imgEl.classList.remove('hidden');
+                    placeholderEl.style.display = 'none';
+                } else {
+                    imgEl.src = '';
+                    imgEl.classList.add('hidden');
+                    placeholderEl.style.display = 'flex';
+                    if (emojiEl) emojiEl.textContent = curPhoto.emoji || '📸';
+                    if (tagEl) tagEl.textContent = curPhoto.date || 'Memory';
+                }
+            }
+
+            if (yearEl) yearEl.textContent = curPhoto.date || 'Our Uploaded Memory';
+            if (captionEl) captionEl.textContent = curPhoto.caption || 'Our Special Picture 💕';
+            if (locationEl) locationEl.textContent = curPhoto.location || '📍 Captured with Love';
+            if (likesEl) likesEl.textContent = (curPhoto.likes || 1).toLocaleString();
+            if (btnDeletePolaroid) btnDeletePolaroid.classList.remove('hidden');
+
+            if (dotsContainer) {
+                let dotsHtml = '';
+                uploadedList.forEach((_, idx) => {
+                    const activeClass = (idx === currentUploadedIndex) ? 'active' : '';
+                    dotsHtml += `<button class="scrap-dot ${activeClass}" data-uploaded-index="${idx}">${idx + 1}</button>`;
+                });
+                dotsContainer.innerHTML = dotsHtml;
+            }
         }
+    }
+    const renderMemory = renderPolaroid;
 
-        // Update dots
-        document.querySelectorAll('.scrap-dot').forEach((dot, idx) => {
-            if (idx === currentMemoryIndex) dot.classList.add('active');
-            else dot.classList.remove('active');
+    // Mode Switcher: 4-Year Story vs Uploaded Photos
+    const tabPolaroidStory = document.getElementById('tab-polaroid-story');
+    const tabPolaroidUploaded = document.getElementById('tab-polaroid-uploaded');
+
+    if (tabPolaroidStory && tabPolaroidUploaded) {
+        tabPolaroidStory.addEventListener('click', () => {
+            initAudio();
+            playKeyClick();
+            polaroidMode = 'story';
+            tabPolaroidStory.classList.add('active');
+            tabPolaroidUploaded.classList.remove('active');
+            renderPolaroid();
+        });
+
+        tabPolaroidUploaded.addEventListener('click', () => {
+            initAudio();
+            playKeyClick();
+            polaroidMode = 'uploaded';
+            tabPolaroidUploaded.classList.add('active');
+            tabPolaroidStory.classList.remove('active');
+            renderPolaroid();
         });
     }
 
-    // Scrapbook event listeners
+    // Prev / Next Memory & Uploaded Navigation
     const btnPrevMem = document.getElementById('btn-polaroid-prev');
     if (btnPrevMem) {
         btnPrevMem.addEventListener('click', () => {
             initAudio();
             playKeyClick();
-            currentMemoryIndex = (currentMemoryIndex - 1 + memories.length) % memories.length;
-            renderMemory();
+            if (polaroidMode === 'story') {
+                currentStoryIndex = (currentStoryIndex - 1 + memories.length) % memories.length;
+            } else {
+                const list = getUploadedPhotos();
+                if (list.length > 0) {
+                    currentUploadedIndex = (currentUploadedIndex - 1 + list.length) % list.length;
+                }
+            }
+            renderPolaroid();
         });
     }
 
@@ -3344,39 +3544,76 @@ Happy 4th Anniversary, my love! ❤️
         btnNextMem.addEventListener('click', () => {
             initAudio();
             playKeyClick();
-            currentMemoryIndex = (currentMemoryIndex + 1) % memories.length;
-            renderMemory();
+            if (polaroidMode === 'story') {
+                currentStoryIndex = (currentStoryIndex + 1) % memories.length;
+            } else {
+                const list = getUploadedPhotos();
+                if (list.length > 0) {
+                    currentUploadedIndex = (currentUploadedIndex + 1) % list.length;
+                }
+            }
+            renderPolaroid();
         });
     }
 
+    // Dots click handler
     document.addEventListener('click', (e) => {
         const dot = e.target.closest('.scrap-dot');
         if (!dot) return;
-        const idx = parseInt(dot.getAttribute('data-index') || '0', 10);
-        currentMemoryIndex = idx;
         initAudio();
         playKeyClick();
-        renderMemory();
+        if (dot.hasAttribute('data-uploaded-index')) {
+            currentUploadedIndex = parseInt(dot.getAttribute('data-uploaded-index') || '0', 10);
+            polaroidMode = 'uploaded';
+            if (tabPolaroidUploaded) tabPolaroidUploaded.classList.add('active');
+            if (tabPolaroidStory) tabPolaroidStory.classList.remove('active');
+        } else if (dot.hasAttribute('data-index')) {
+            currentStoryIndex = parseInt(dot.getAttribute('data-index') || '0', 10);
+            polaroidMode = 'story';
+            if (tabPolaroidStory) tabPolaroidStory.classList.add('active');
+            if (tabPolaroidUploaded) tabPolaroidUploaded.classList.remove('active');
+        }
+        renderPolaroid();
     });
 
-    // Upload custom photo to polaroid
-    const fileInput = document.getElementById('polaroid-file-input');
-    if (fileInput) {
-        fileInput.addEventListener('change', (e) => {
+    // Delete button for uploaded polaroid
+    const btnDeletePolaroid = document.getElementById('btn-delete-polaroid');
+    if (btnDeletePolaroid) {
+        btnDeletePolaroid.addEventListener('click', () => {
+            if (polaroidMode !== 'uploaded') return;
+            const list = getUploadedPhotos();
+            const curPhoto = list[currentUploadedIndex];
+            if (!curPhoto) return;
+            if (confirm(`Remove "${curPhoto.caption || 'this photo'}" from Our Gallery?`)) {
+                initAudio();
+                playKeyClick();
+                const idxInGallery = galleryPhotos.findIndex(p => p.id === curPhoto.id);
+                if (idxInGallery !== -1) {
+                    galleryPhotos.splice(idxInGallery, 1);
+                    saveGalleryPhotos();
+                }
+                if (currentUploadedIndex >= getUploadedPhotos().length) {
+                    currentUploadedIndex = Math.max(0, getUploadedPhotos().length - 1);
+                }
+                renderPolaroid();
+                if (typeof renderGalleryGrid === 'function') renderGalleryGrid();
+            }
+        });
+    }
+
+    // Upload custom photo from polaroid
+    const polaroidFileInput = document.getElementById('polaroid-file-input');
+    if (polaroidFileInput) {
+        polaroidFileInput.addEventListener('change', (e) => {
             const file = e.target.files && e.target.files[0];
             if (!file) return;
             const reader = new FileReader();
             reader.onload = (evt) => {
-                const dataUrl = evt.target.result;
-                try {
-                    localStorage.setItem('custom_memory_' + currentMemoryIndex, dataUrl);
-                } catch (err) {
-                    console.warn('Storage quota exceeded, displaying in session:', err);
-                }
-                initAudio();
-                playCelebrateFanfare();
-                launchCelebration(40);
-                renderMemory();
+                pendingUploadDataUrl = evt.target.result;
+                if (uploadPreviewImg) uploadPreviewImg.src = pendingUploadDataUrl;
+                if (uploadCaptionInput) uploadCaptionInput.value = '';
+                if (uploadDateInput) uploadDateInput.value = `2026 • ${myRole === 'partner1' ? 'Akhil' : 'Her'} Added`;
+                openModal('add-photo-caption-modal');
             };
             reader.readAsDataURL(file);
         });
@@ -3385,19 +3622,26 @@ Happy 4th Anniversary, my love! ❤️
     // Like memory button
     const btnLikeMemory = document.getElementById('btn-love-memory');
     if (btnLikeMemory) {
-        btnLikeMemory.addEventListener('click', () => {
+        btnLikeMemory.addEventListener('click', (e) => {
             initAudio();
-            playBeep(880, 'sine', 0.1);
-            memoryLikes++;
-            localStorage.setItem('memoryLikes', memoryLikes.toString());
-            const likesEl = document.getElementById('memory-likes-count');
-            if (likesEl) likesEl.textContent = memoryLikes.toLocaleString();
-            launchCelebration(25);
+            playCelebrateFanfare();
+            if (polaroidMode === 'story') {
+                memoryLikes++;
+                localStorage.setItem('memoryLikes', memoryLikes.toString());
+                const likesEl = document.getElementById('memory-likes-count');
+                if (likesEl) likesEl.textContent = memoryLikes.toLocaleString();
+                launchCelebration(25);
+            } else {
+                const list = getUploadedPhotos();
+                const curPhoto = list[currentUploadedIndex];
+                if (curPhoto && typeof window.likeGalleryPhoto === 'function') {
+                    window.likeGalleryPhoto(e, curPhoto.id);
+                }
+            }
         });
     }
 
-    // Initialize the scrapbook
-    renderMemory();
+    renderPolaroid();
 
     // =========================================================
     // 18. CHAT NOTIFICATION & ALERT SYSTEM
@@ -3561,122 +3805,8 @@ Happy 4th Anniversary, my love! ❤️
     // =========================================================
     // 19. ROMANTIC PHOTO GALLERY & MEMORY VAULT
     // =========================================================
-    const DEFAULT_GALLERY_PHOTOS = [
-        {
-            id: 'photo_1',
-            isUploaded: false,
-            emoji: '💫',
-            quote: 'Where our universe collided and forever began ✨',
-            caption: 'August 31, 2022 • The Day We Began',
-            date: '2022 • Aug 31',
-            location: '📍 Karnataka ↔ Kerala',
-            category: 'milestones',
-            likes: 1464
-        },
-        {
-            id: 'photo_2',
-            isUploaded: false,
-            emoji: '🚗',
-            quote: 'Every kilometer between KA & KL only made us closer 💕',
-            caption: 'KA ✈️ KL • Long Distance Love Route',
-            date: '2023 • Year 1',
-            location: '📍 Karnataka ↔ Kerala',
-            category: 'long_distance',
-            likes: 1280
-        },
-        {
-            id: 'photo_3',
-            isUploaded: false,
-            emoji: '🎶',
-            quote: 'Falling asleep on calls listening to 90s melodies 🌙',
-            caption: 'Late Night Calls & 90s Songs',
-            date: '2024 • Year 2',
-            location: '📍 Endless Memories',
-            category: 'memories',
-            likes: 1395
-        },
-        {
-            id: 'photo_4',
-            isUploaded: false,
-            emoji: '🥰',
-            quote: 'Two cute Flork beans conquering life together 🌸',
-            caption: 'A ❤️ M • Flork Couple Hugs',
-            date: '2025 • Year 3',
-            location: '📍 Safe Haven',
-            category: 'favorites',
-            likes: 1520
-        },
-        {
-            id: 'photo_5',
-            isUploaded: false,
-            emoji: '💍',
-            quote: '4 magnificent years together, and I choose you forever 👑',
-            caption: 'August 31, 2026 • 4 Years Together',
-            date: '2026 • 4th Anniversary',
-            location: '📍 Forever & Always',
-            category: 'milestones',
-            likes: 2026
-        },
-        {
-            id: 'photo_6',
-            isUploaded: false,
-            emoji: '🧸',
-            quote: 'In your embrace is my absolute favorite place in the world 🏡',
-            caption: 'My Comfort & My Home',
-            date: 'Special Moments',
-            location: '📍 In Each Other\'s Hearts',
-            category: 'favorites',
-            likes: 1110
-        }
-    ];
-
-    let galleryPhotos = [];
-    try {
-        const savedPhotos = localStorage.getItem('akhil_her_gallery_photos');
-        if (savedPhotos) {
-            galleryPhotos = JSON.parse(savedPhotos);
-        } else {
-            galleryPhotos = [...DEFAULT_GALLERY_PHOTOS];
-        }
-    } catch (e) {
-        galleryPhotos = [...DEFAULT_GALLERY_PHOTOS];
-    }
-
-    function saveGalleryPhotos() {
-        try {
-            localStorage.setItem('akhil_her_gallery_photos', JSON.stringify(galleryPhotos));
-        } catch (e) {}
-    }
-
     let activeGalleryFilter = 'all';
     let currentLightboxPhotoIndex = 0;
-
-    // View Switcher: Grid vs Polaroid
-    const btnViewGrid = document.getElementById('btn-view-grid');
-    const btnViewPolaroid = document.getElementById('btn-view-polaroid');
-    const galleryGridWrapper = document.getElementById('gallery-grid-wrapper');
-    const scrapbookPolaroidWrapper = document.getElementById('scrapbook-polaroid-wrapper');
-
-    if (btnViewGrid && btnViewPolaroid) {
-        btnViewGrid.addEventListener('click', () => {
-            initAudio();
-            playKeyClick();
-            btnViewGrid.classList.add('active');
-            btnViewPolaroid.classList.remove('active');
-            if (galleryGridWrapper) galleryGridWrapper.classList.remove('hidden');
-            if (scrapbookPolaroidWrapper) scrapbookPolaroidWrapper.classList.add('hidden');
-        });
-
-        btnViewPolaroid.addEventListener('click', () => {
-            initAudio();
-            playKeyClick();
-            btnViewPolaroid.classList.add('active');
-            btnViewGrid.classList.remove('active');
-            if (galleryGridWrapper) galleryGridWrapper.classList.add('hidden');
-            if (scrapbookPolaroidWrapper) scrapbookPolaroidWrapper.classList.remove('hidden');
-            renderMemory();
-        });
-    }
 
     // Filter Chips
     document.addEventListener('click', (e) => {
@@ -3849,6 +3979,11 @@ Happy 4th Anniversary, my love! ❤️
             saveGalleryPhotos();
             closeModal('add-photo-caption-modal');
             renderGalleryGrid();
+            polaroidMode = 'uploaded';
+            currentUploadedIndex = 0;
+            if (tabPolaroidUploaded) tabPolaroidUploaded.classList.add('active');
+            if (tabPolaroidStory) tabPolaroidStory.classList.remove('active');
+            renderPolaroid();
             launchCelebration(60);
 
             // Broadcast to partner!
@@ -3868,6 +4003,7 @@ Happy 4th Anniversary, my love! ❤️
             galleryPhotos.unshift(photo);
             saveGalleryPhotos();
             renderGalleryGrid();
+            renderPolaroid();
             playNotificationChime();
             if (typeof triggerChatNotification === 'function') {
                 triggerChatNotification(senderName || 'Her', '📸 Added a new photo to Our Gallery!');

@@ -28,7 +28,7 @@
     <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
     <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
 
-    <link rel="stylesheet" href="styles.css?v=24.0">
+    <link rel="stylesheet" href="styles.css?v=25.0">
 </head>
 <body class="theme-minimal-romantic">
 
@@ -333,52 +333,24 @@
             </button>
         </nav>
 
-        <!-- 5. Romantic Photo Gallery & Polaroid Memory Scrapbook -->
+        <!-- 5. Romantic Polaroid Scrapbook & Photo Gallery -->
         <section class="scrapbook-section tab-panel" id="panel-scrapbook">
-            <!-- View Switcher: Photo Gallery Grid vs Polaroid Carousel -->
-            <div class="gallery-view-switcher">
-                <button class="gallery-view-btn active" id="btn-view-grid">
-                    <span>🖼️ Photo Gallery Grid</span>
-                </button>
-                <button class="gallery-view-btn" id="btn-view-polaroid">
-                    <span>🎞️ Polaroid Story</span>
-                </button>
-            </div>
-
-            <!-- VIEW 1: Romantic Photo Gallery Grid -->
-            <div class="gallery-grid-wrapper" id="gallery-grid-wrapper">
-                <div class="gallery-header-row">
-                    <div class="gallery-title-box">
-                        <h3>Our Love Photo Gallery</h3>
-                        <p>Smiles, milestones & memories from 2022 &mdash; 2026 💕</p>
-                    </div>
-                    <label class="gallery-upload-pill" for="gallery-file-input">
-                        <span>📸 + Add Photo</span>
-                        <input type="file" id="gallery-file-input" accept="image/*" style="display:none;">
-                    </label>
-                </div>
-
-                <!-- Filter Chips -->
-                <div class="gallery-filter-chips" id="gallery-filter-chips">
-                    <button class="filter-chip active" data-filter="all">All Memories</button>
-                    <button class="filter-chip" data-filter="favorites">Favorites ❤️</button>
-                    <button class="filter-chip" data-filter="milestones">Milestones 💍</button>
-                    <button class="filter-chip" data-filter="long_distance">KA ↔ KL 🚗</button>
-                    <button class="filter-chip" data-filter="custom">Our Uploads 📷</button>
-                </div>
-
-                <!-- Photos Grid Container -->
-                <div class="photo-cards-grid" id="photo-cards-grid">
-                    <!-- Populated dynamically via terminal.js -->
-                </div>
-            </div>
-
-            <!-- VIEW 2: Polaroid Scrapbook Carousel -->
-            <div class="scrapbook-card hidden" id="scrapbook-polaroid-wrapper">
+            <!-- Main Polaroid Scrapbook Stage -->
+            <div class="scrapbook-card" id="scrapbook-polaroid-wrapper">
                 <div class="scrapbook-header">
                     <span class="scrapbook-badge">📸 2022 &mdash; 2026</span>
                     <h2 class="scrapbook-title">Our 4-Year Story in Polaroids</h2>
                     <p class="scrapbook-sub">Every photograph is a chapter of our love story 💕</p>
+
+                    <!-- Option Switcher: 4-Year Story vs Uploaded Photos -->
+                    <div class="polaroid-mode-switcher">
+                        <button class="polaroid-mode-tab active" id="tab-polaroid-story">
+                            <span>📖 4-Year Story (2022–2026)</span>
+                        </button>
+                        <button class="polaroid-mode-tab" id="tab-polaroid-uploaded">
+                            <span>📸 Show Uploaded Photos (<span id="uploaded-count-badge">0</span>)</span>
+                        </button>
+                    </div>
                 </div>
 
                 <!-- Main Polaroid Frame Stage -->
@@ -417,13 +389,44 @@
                 <!-- Photo Upload / Replace Action -->
                 <div class="scrapbook-action-row">
                     <label class="polaroid-upload-btn" for="polaroid-file-input">
-                        <span>📷 Add / Change Our Photo</span>
+                        <span>📷 + Upload Photo</span>
                         <input type="file" id="polaroid-file-input" accept="image/*" style="display:none;">
                     </label>
+                    <button id="btn-delete-polaroid" class="pill-btn-outline hidden" style="padding:10px 14px; font-size:12px; color:#ef4444; border-color:#fca5a5;">
+                        <span>🗑️ Delete</span>
+                    </button>
                     <button id="btn-love-memory" class="pill-btn-pink" style="padding:10px 18px; font-size:13px;">
-                        <span>❤️ Like Memory</span>
+                        <span>❤️ Like</span>
                         <span id="memory-likes-count">1,464</span>
                     </button>
+                </div>
+            </div>
+
+            <!-- All Photos Album & Vault (Grid View) -->
+            <div class="gallery-grid-wrapper" id="gallery-grid-wrapper" style="margin-top: 24px;">
+                <div class="gallery-header-row">
+                    <div class="gallery-title-box">
+                        <h3>Our Photo Album &amp; Vault</h3>
+                        <p>Every photo uploaded and saved across our 4 years 💕</p>
+                    </div>
+                    <label class="gallery-upload-pill" for="gallery-file-input">
+                        <span>📸 + Add Photo</span>
+                        <input type="file" id="gallery-file-input" accept="image/*" style="display:none;">
+                    </label>
+                </div>
+
+                <!-- Filter Chips -->
+                <div class="gallery-filter-chips" id="gallery-filter-chips">
+                    <button class="filter-chip active" data-filter="all">All Memories</button>
+                    <button class="filter-chip" data-filter="custom">Our Uploads 📷</button>
+                    <button class="filter-chip" data-filter="favorites">Favorites ❤️</button>
+                    <button class="filter-chip" data-filter="milestones">Milestones 💍</button>
+                    <button class="filter-chip" data-filter="long_distance">KA ↔ KL 🚗</button>
+                </div>
+
+                <!-- Photos Grid Container -->
+                <div class="photo-cards-grid" id="photo-cards-grid">
+                    <!-- Populated dynamically via terminal.js -->
                 </div>
             </div>
         </section>
@@ -963,6 +966,6 @@
         </div>
     </div>
 
-    <script src="terminal.js?v=24.0"></script>
+    <script src="terminal.js?v=25.0"></script>
 </body>
 </html>
